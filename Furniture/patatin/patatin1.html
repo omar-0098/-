@@ -1,0 +1,373 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>كشمير هوم | بطاطين كشمير فاخرة للكبار - دفء وأناقة</title>   
+    <meta name="description" content="اكتشف تشكيلة البطاطين الفاخرة للكبار من كشمير هوم. بطاطين عالية الجودة من خامات كشمير ناعمة توفر الدفء والراحة طوال العام. تشكيلة متنوعة من الأحجام والألوان.">
+    <link rel="icon" href="../../icon-main.png">
+     <!-- font -->
+     <link rel="preconnect" href="https://fonts.googleapis.com">
+     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+     <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+     <link rel="preconnect" href="https://fonts.googleapis.com">
+     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+     <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&display=swap" rel="stylesheet">
+     <link rel="preconnect" href="https://fonts.googleapis.com">
+     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+     <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
+     <link rel="preconnect" href="https://fonts.googleapis.com">
+     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+     <link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@160..700&display=swap" rel="stylesheet"> 
+     <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
+     <!-- css -->
+     <link rel="stylesheet" href="../../css/style.css">
+     <link rel="stylesheet" href="../feyat/style-feyat.css">
+     <!-- font-awsome -->
+     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
+     <!-- Link Swiper's CSS -->
+     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+</head>
+<body>
+   
+    <!-- start-cart -->
+     <div class="cart">
+        <div class="top_cart">
+            <h3>المنتاجات : <span class="Count_item_cart">0</span></h3>
+            <span onclick="open_close_cart()" class="close_cart"><i class="fa-regular fa-circle-xmark"></i></span>
+        </div>
+
+
+
+        <div class="items_in_cart" id="cart_items">
+  
+
+        </div>
+
+
+        <div class="bottom_cart">
+            <div class="total">
+                <p>السعر</p>
+                <p class="price_cart_total">0</p>
+            </div>
+
+
+            <div class="button_cart">
+                <a href="../../chexkout.html" class="btn_cart btn">شراء</a>
+              <a href="patatin1.html" class="btn_cart btn"><span onclick="open_close_cart()" class="btn_cart trans_bg btn">تسوق</span></a>  
+            
+            </div>
+        </div>
+
+        
+     </div>
+    <!-- end-cart -->
+
+
+ 
+    <!-- start-header -->
+    <header>
+        <div class="top_header">
+            <div class="container">
+                <a href="" class="logo"><img src="../../img/logo.png"></a>
+
+                <form action="" class="search_box">
+
+                    <!-- <div class="select_box">
+                        <select id="category" name="category">
+                            <option value="omar">omar</option>
+                            <option value="omar">omar</option>
+                            <option value="omar">omar</option>
+                            <option value="omar">omar</option>
+                            <option value="omar">omar</option>
+                            <option value="omar">omar</option>
+
+     
+                        </select>
+                    </div> -->
+
+                    
+                    <input type="text" id="search" name="search" placeholder=" ابدأ البحث..." required>
+                    <button type="submit">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
+
+                </form>
+
+                <div class="header_icons">
+                    <div class="icon">
+                        <!-- <a href="">
+                            <i class="fa-regular fa-heart"></i>
+                            <span class="count count_favourite">0</span>
+                        </a> -->
+                    </div>
+
+                    <div onclick="open_close_cart()" class="icon">
+                        <i class="fa-solid fa-cart-shopping"></i>
+                        <span class="count count_item_header">0</span>
+                    </div>
+
+
+                </div>
+            </div>
+        </div>
+
+      
+        <div class="bottom_header">
+            <div class="container">
+                <nav class="nav">
+                    <span onclick="open_Menu()" class="open_menu"><i class="fa-solid fa-bars"></i></span>
+                    <div class="category_nav">
+                        <div onclick="Open_Categ_list()" class="category_btn">
+                            <i class="fa-solid fa-bars"></i>
+                            <p>المنتجات</p>
+                            <i class="fa-solid fa-sort-down"></i>
+                        </div>
+
+
+                        <div class="categoru_nav_list">
+                            <a  href="../feyat/feyat1.html">الفواط</a>
+                            <a href="../mlayat/mlayat1.html">الملايات</a>
+                            <a href="../paranes/paranes.html">البرانس</a>
+                            <a class="active2" href="../patatin/patatin1.html">البطاطين</a>
+                            <a href="../ellehaf/ellehaf1.html">اللحاف</a>
+                            <a href="../coferta/coferta1.html">الكوفرتا</a>
+
+                            <!-- <a href="">omar omar</a> -->
+                        </div>
+
+                    </div>
+
+
+                    <ul class="nav_links">
+
+                        <span onclick="open_Menu()" class="close_menu"><i class="fa-regular fa-circle-xmark"></i></span>
+
+                        <li ><a href="../../index.html">الرئيسية</a></li>
+                        <li><a href="../../chexkout.html">الدفع</a></li>
+                        <li><a href="../../callme.html">المساعدة </a></li>
+                        <li><a href="../../Privacy.html">السياسة و الخصوصية</a></li>
+
+                        <hr>
+
+                       <div class="main-link">
+                        <h1>اختر نوع البطانية</h1>
+
+                        <li><a href="#44"> بطاطين كبيرة</a></li>
+                        <li><a href="patatin2.html">بطاطين اطفال </a></li>
+
+                       </div>
+
+
+                    </ul>
+
+
+                </nav>
+
+
+
+                <!-- <div class="login_signup btns">
+                    <a href="" class="btn">Login <i class="fa-solid fa-right-to-bracket"></i></a>
+                    <a href="" class="btn">sign Up <i class="fa-solid fa-user-plus"></i></a>
+                </div> -->
+
+            </div>
+        </div>
+
+
+    
+
+    </header>
+    <!-- end-header -->
+
+
+
+
+   <!-- start-products-1  -->
+   <!-- <div class="products-all-main">
+
+    <div class="container">
+
+        <div class="products-all">
+
+            <div class="top_slide">
+                <h2> <i class="fa-solid fa-thumbs-up"></i>الاكثر مبيعا</h2>
+            </div>
+
+
+            <div class="products swiper1-wrapper1" id="swiper_elaksar">
+        
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+</div> -->
+  <!-- end-products-1 -->
+
+
+
+
+
+   <!--start-products-2 -->
+   <div class="products-all-main" id="44" >
+
+    <div class="container">
+
+        <div class="products-all">
+
+            <div class="top_slide">
+                <h2>  البطاطين الكبيرة</h2>
+            </div>
+
+
+            <div class="products swiper1-wrapper1" id="patatin_man">
+        
+
+            </div>
+
+
+        </div>
+
+
+    </div>
+</div>
+  <!-- end-products-2 -->
+
+
+
+
+
+ 
+
+
+  <!-- start-transion -->
+   <div class="all-transion">
+    <div class="container">
+        <div class="transtion">
+            <a href="patatin1.html" class="act"><h1>1</h1></a>
+            <a href="patatin2.html"><h1>2</h1></a>
+        </div>
+    </div>
+   </div>
+   <!-- end-transtion -->
+
+
+
+  <!-- start-scroll -->
+  <div class="scroll-all" onclick="scrollToTop()">
+    <div class="container">
+        <div class="scroll">
+            <h1>الذهاب للأعلي</h1>
+        </div>
+    </div>
+</div>
+    <!-- end-scroll -->
+
+
+
+
+   <!-- start-footer -->
+   <footer>
+    <div class="container">
+        <div class="big_row">
+            <img class="logo_footer" src="../../img/logo.png" alt="">
+
+            <p>العنوان : <span> القاهره 53 شارع الغوريه أمام محل كامل الشيمي للأحذية أو جيكوريلا </span></p>
+            <div class="icons_footer">
+                <a target="_blank"
+                    href="https://www.facebook.com/p/%D9%83%D8%B4%D9%85%D9%8A%D8%B1-%D9%87%D9%88%D9%85-kashmir-home-100064031503557/"><i
+                        class="fa-brands fa-facebook"></i></a>
+                <a target="_blank"
+                    href="https://www.instagram.com/kashmir_home_center/?fbclid=IwY2xjawHwa8xleHRuA2FlbQIxMAABHc8LrSfm4Gu37osiGk8MTGyptSigZZqTQ0WbYC1CRy2d4y0JmsYTbUiQzQ_aem_W7NnxJhHGMWugD_WC8i6EQ#"><i
+                        class="fa-brands fa-instagram"></i></a>
+                <a target="_blank" href="https://wa.me/201028604523"><i class="fa-brands fa-whatsapp"></i></a>
+                <a target="_blank" href="tel:+201028604523"><i class="fa-solid fa-phone"></i></a>
+
+            </div>
+        </div>
+
+        <div class="row">
+            <h4>المنتجات</h4>
+
+
+            <div class="links">
+                <a href="../feyat/feyat1.html"><i class="fa-solid fa-caret-left"></i>الفوط</a>
+                <a href="../paranes/paranes.html"><i class="fa-solid fa-caret-left"></i>البرانس</a>
+                <a href="../mlayat/mlayat1.html"><i class="fa-solid fa-caret-left"></i> الملايات</a>
+                <a href="../ellehaf/ellehaf1.html"><i class="fa-solid fa-caret-left"></i> اللحاف</a>
+                <a href="../patatin/patatin1.html"><i class="fa-solid fa-caret-left"></i> البطاطين</a>
+                <a href="../coferta/coferta1.html"><i class="fa-solid fa-caret-left"></i> كوفرتا</a>
+            </div>
+        </div>
+
+        <div class="row">
+            <h4>تسوق معانا</h4>
+
+
+            <div class="links">
+                <a target="_blank" href="../../index.html"><i class="fa-solid fa-caret-left"></i> الرئيسية</a>
+                <a target="_blank" href="../../index.html"><i class="fa-solid fa-caret-left"></i>العروض</a>
+                <a target="_blank" href="../../chexkout.html"><i class="fa-solid fa-caret-left"></i>المشتريات</a>
+                <a target="_blank" href="../../callme.html"><i class="fa-solid fa-caret-left"></i>المساعدة</a>
+                <!-- <a href=""><i class="fa-solid fa-caret-right"></i> computer</a> -->
+            </div>
+        </div>
+
+
+        <div class="row">
+            <h4>تواصل معانا</h4>
+
+
+            <div class="links">
+                <a target="_blank"
+                    href="https://www.facebook.com/p/%D9%83%D8%B4%D9%85%D9%8A%D8%B1-%D9%87%D9%88%D9%85-kashmir-home-100064031503557/"><i
+                        class="fa-solid fa-caret-left"></i> فيسبوك</a>
+                <a target="_blank"
+                    href="https://www.instagram.com/kashmir_home_center/?fbclid=IwY2xjawHwa8xleHRuA2FlbQIxMAABHc8LrSfm4Gu37osiGk8MTGyptSigZZqTQ0WbYC1CRy2d4y0JmsYTbUiQzQ_aem_W7NnxJhHGMWugD_WC8i6EQ#"><i
+                        class="fa-solid fa-caret-left"></i> انستجرام</a>
+                <a target="_blank" href="https://wa.me/201028604523"><i class="fa-solid fa-caret-left"></i>
+                    الواتس</a>
+                <a target="_blank" href="tel:+201028604523"><i class="fa-solid fa-caret-left"></i> الهاتف</a>
+
+            </div>
+        </div>
+    </div>
+
+
+    <div class="bottom_footer">
+        <div class="container">
+            <p>&copy; <span>kashmir home</span> All Right Reserved.</p>
+
+            <div class="payment_img">
+                <img src="img/payment_method.png" alt="">
+            </div>
+        </div>
+    </div>
+</footer>
+<!-- end-footer -->
+ 
+ 
+
+
+
+
+
+
+
+
+
+<!-- Swiper JS -->
+ <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script> 
+<!-- fill -->
+
+ <script src="../../js/swiper.js"></script> 
+<script src="items_home_patatin1.js"></script>
+<script src="../../js/main.js"></script>
+<script src="../../js/omar.js"></script>
+
+</body>
+</html>

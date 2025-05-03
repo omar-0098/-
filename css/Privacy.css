@@ -1,0 +1,114 @@
+
+.section {
+    margin-bottom: 23px;
+    padding: 20px 0px;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+    text-align: end;
+}
+
+
+.section h1{
+    font-family: "Readex Pro", serif;
+    font-optical-sizing: auto;
+    font-weight: weight;
+    font-style: normal;
+    font-variation-settings: "HEXP" 0;
+    font-size: 29px;
+    margin-top: 11px;
+    direction: rtl;
+    text-align: start;
+}
+.section p{
+    font-size: 21px;
+    margin: 17px 0px 22px;
+    text-align: end;
+    font-family: "Readex Pro", serif;
+    font-optical-sizing: auto;
+    font-weight: weight;
+    font-style: normal;
+    font-variation-settings: "HEXP" 0;
+}
+.section p span{
+    font-size: 19px;
+    color: black;
+    font-family: "Readex Pro", serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
+    font-variation-settings: "HEXP" 0;
+}
+.section ul li{
+    font-size: 20px;
+    padding: 12px 0px;
+    font-family: "Rubik", serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
+    direction: rtl;
+}
+.section ul li span{
+    color: rgb(37, 37, 116);
+    font-size: 18px;
+    font-family: "Rubik", serif;
+    font-optical-sizing: auto;
+    font-weight: 700;
+    font-style: normal;
+    padding: 0px 3px;
+
+}
+
+
+@media (max-width:500px) {
+    .section h1 {
+        font-size: 28px;
+    }
+    .section p {
+        font-size: 16px;
+        margin: 20px 0px 14px;
+        line-height: 27px;
+    }
+    .section p span {
+        font-size: 22px;
+        padding: 0px 6px;
+    }
+    .section ul li {
+        font-size: 20px;
+        padding: 8px 0px;
+        font-weight: 600;
+        line-height: 31px;
+    }
+    .section ul li span {
+        font-size: 23px;
+    }
+
+}
+
+
+@media (max-width:350px) {
+    .section {
+        padding: 5px;
+    }
+    .section h1 {
+        font-size: 26px;
+    }
+    .section p {
+        font-size: 14px;
+    }
+    .section p span {
+        font-size: 20px;
+        padding: 0px 5px;
+    }
+    .section ul li {
+        font-size: 17px;
+        padding: 7px 0px;
+        font-weight: 600;
+        line-height: 30px;
+    }    
+    .section ul li span {
+        font-size: 18px;
+        padding: 0px 4px;
+    }
+    
+}
