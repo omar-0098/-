@@ -2,9 +2,9 @@
  
 
     {
-      "link":"../../feyatimage/feyet-tree-slice/id-1/item.html",
+      "link":"feyatimage/feyet-tree-slice/id-1/item.html",
       "id": 1,
-      "img": "../../feyatimage/feyet-tree-slice/id-1/main-imag.jpg",
+      "img": "feyatimage/feyet-tree-slice/id-1/main-imag.jpg",
       "name": "طقم فوط فاخر مكوّن من ثلاث قطع من شركة (VOME)، مصنوع من قطن 100%.",
       "price": 875,
       "catetory":"feyat_three",
@@ -13,9 +13,9 @@
       "word":"الاكثر مبيعا"
     },
     {
-      "link":"../../feyatimage/feyet-tree-slice/id-2/item.html",
+      "link":".feyatimage/feyet-tree-slice/id-2/item.html",
       "id": 2,
-      "img": "../../feyatimage/feyet-tree-slice/id-2/main-imag.jpg",
+      "img": "feyatimage/feyet-tree-slice/id-2/main-imag.jpg",
       "name": " فوط ثلاث قطع قطن 100% من شركة (sigma) ",
       "price": 800,
       "catetory":"feyat_three",
@@ -23,9 +23,9 @@
       "catetory1":"Ourproduct"
     },
     {
-      "link":"../../feyatimage/feyet-tree-slice/id-3/item.html",
+      "link":"feyatimage/feyet-tree-slice/id-3/item.html",
       "id": 3,
-      "img": "../../feyatimage/feyet-tree-slice/id-3/main-imag.jpg",
+      "img": "feyatimage/feyet-tree-slice/id-3/main-imag.jpg",
       "name": "طقم فوط ثلاث قطع بنقوش مميزة من شركة (ELrougy)",
       "price": 950,
       "catetory":"feyat_three",
