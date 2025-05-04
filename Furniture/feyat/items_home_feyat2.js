@@ -12,6 +12,7 @@ fetch("../products-furniturre.json")
     const feyat_child=document.getElementById("feyat_child")
 
 
+    date.sort(() => 0.5 - Math.random());
 
 
 ///////////////////////////////////////////
