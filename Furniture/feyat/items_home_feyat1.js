@@ -16,7 +16,7 @@ fetch("../products-furniturre.json")
 
 
 
-
+date.sort(() => 0.5 - Math.random());
 
 
 
