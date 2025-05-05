@@ -1,4 +1,5 @@
 // ========== جزء الفيديو والـ iframe ==========
+// ========== جزء الفيديو والـ iframe ==========
 
 
 
@@ -13,128 +14,7 @@ window.changeItemImage = function(img) {
 
 
 
-
-
-
-
-
-
-
-
-// ========== جزء التعليقات ==========
-
-
-
-document.addEventListener("DOMContentLoaded", function () {
-  const itemContainer = document.getElementById("item-container");
-  const params = new URLSearchParams(window.location.search);
-  const productId = params.get("id");
-
-  fetch("products.json")
-    .then((response) => response.json())
-    .then((data) => {
-      const product = data.products.find((p) => p.id == productId);
-      if (product) {
-        const productCard = `
-          <div class="product-card">
-            <img src="${product.image}" alt="${product.name}">
-            <h2>${product.name}</h2>
-            <p>${product.description}</p>
-            <p>Price: ${product.price} MAD</p>
-            <div class="rating" data-product-id="${product.id}">
-              <span data-rating="1">&#9733;</span>
-              <span data-rating="2">&#9733;</span>
-              <span data-rating="3">&#9733;</span>
-              <span data-rating="4">&#9733;</span>
-              <span data-rating="5">&#9733;</span>
-            </div>
-            <textarea id="comment" placeholder="Write your comment"></textarea>
-            <button onclick="postComment(${product.id})">Submit</button>
-            <div class="comments" id="comments-${product.id}"></div>
-          </div>
-        `;
-        itemContainer.innerHTML = productCard;
-
-        document.querySelectorAll(".rating span").forEach((star) => {
-          star.addEventListener("click", function () {
-            const rating = this.getAttribute("data-rating");
-            const ratingDiv = this.parentElement;
-            ratingDiv.setAttribute("data-selected-rating", rating);
-
-            ratingDiv.querySelectorAll("span").forEach((s, i) => {
-              if (i < rating) {
-                s.classList.add("selected");
-              } else {
-                s.classList.remove("selected");
-              }
-            });
-          });
-        });
-
-        loadComments(product.id);
-      } else {
-        itemContainer.innerHTML = "<p>Product not found.</p>";
-      }
-    })
-    .catch((error) => {
-      console.error("Error loading product data:", error);
-    });
-});
-
-function postComment(productId) {
-  const commentInput = document.getElementById("comment");
-  const comment = commentInput.value;
-  const ratingDiv = document.querySelector(`.rating[data-product-id="${productId}"]`);
-  const rating = ratingDiv.getAttribute("data-selected-rating");
-
-  if (comment && rating) {
-    const commentObj = {
-      text: comment,
-      rating: rating,
-      timestamp: new Date().toISOString(),
-    };
-
-    let comments = JSON.parse(localStorage.getItem(`comments_${productId}`)) || [];
-    comments.push(commentObj);
-    localStorage.setItem(`comments_${productId}`, JSON.stringify(comments));
-
-    commentInput.value = "";
-    loadComments(productId);
-  } else {
-    alert("Please provide a comment and rating.");
-  }
-}
-
-function loadComments(productId) {
-  const commentsDiv = document.getElementById(`comments-${productId}`);
-  const comments = JSON.parse(localStorage.getItem(`comments_${productId}`)) || [];
-
-  commentsDiv.innerHTML = comments
-    .map(
-      (c) => `
-      <div class="comment">
-        <p>${"★".repeat(c.rating)}${"☆".repeat(5 - c.rating)}</p>
-        <p>${c.text}</p>
-        <small>${new Date(c.timestamp).toLocaleString()}</small>
-      </div>
-    `
-    )
-    .join("");
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+// ========== جزء الفيديو والـ iframe ==========
 
 
 
@@ -207,138 +87,138 @@ function updateTransform() {
 
 
 
+// ========== جزء الفيديو والـ iframe ==========
 
 
+// ============================
+// التعليقات والتقييمات للمنتج
+// ============================
 
+let comments = JSON.parse(localStorage.getItem('comments')) || [];
+let displayedCount = 0;
+const commentsPerLoad = 5;
+let currentRating = 0;
 
+// تحميل عند فتح الصفحة
+window.onload = function () {
+  displayComments();
+  updateStats();
+  updateStarDisplay();
+};
 
-
-
-
-const btn = document.getElementById("cartBtn");
-const overlay = document.getElementById("overlay");
-
-let iframe = overlay.querySelector("iframe");
-let video = overlay.querySelector("video");
-
-btn.addEventListener("click", function () {
-  overlay.style.display = "flex";
-
-  if (iframe) {
-    iframe.style.display = "block";
-    iframe.src = iframe.src; // نضمن تشغيله من الأول
-  } else if (video) {
-    video.style.display = "block";
-    video.play(); // نشغل الفيديو
-  }
-});
-
-overlay.addEventListener("click", function (e) {
-  if (iframe && !iframe.contains(e.target)) {
-    overlay.style.display = "none";
-    iframe.style.display = "none";
-    iframe.src = iframe.src; // نوقف الiframe
-  }
-  if (video && !video.contains(e.target)) {
-    overlay.style.display = "none";
-    video.style.display = "none";
-    video.pause(); // نوقف الفيديو
-    video.currentTime = 0; // نرجعه لأول ثانية
-  }
-});
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-let selectedRating = 0;
-
-// تفعيل الضغط على النجوم
-document.querySelectorAll('.star').forEach(star => {
-    star.addEventListener('click', function () {
-        selectedRating = parseInt(this.getAttribute('data-star'));
-        updateStarsDisplay(selectedRating);
-    });
-});
-
-function updateStarsDisplay(rating) {
-    const stars = document.querySelectorAll('.star');
-    stars.forEach(star => {
-        const starValue = parseInt(star.getAttribute('data-star'));
-        star.style.color = starValue <= rating ? 'gold' : 'gray';
-    });
-
-    const ratingDisplay = document.getElementById('ratingDisplay');
-    ratingDisplay.textContent = `التقييم: ${rating} نجوم`;
-}
-
-// إرسال التعليق
+// نشر تعليق وتقييم
 function postComment() {
-    const username = document.getElementById('usernameInput').value.trim();
-    const comment = document.getElementById('commentInput').value.trim();
-    
-    if (username === "" || comment === "" || selectedRating === 0) {
-        alert("يرجى ملء جميع الحقول وتحديد التقييم بالنجوم");
-        return;
-    }
+  const name = document.getElementById("usernameInput").value.trim();
+  const commentText = document.getElementById("commentInput").value.trim();
 
-    const commentHtml = `
-        <div class="comment">
-            <div class="comment-header">
-                <strong>${username}</strong> - ${selectedRating} ★
-            </div>
-            <p>${comment}</p>
-        </div>
-    `;
+  if (!name || !commentText || currentRating === 0) {
+    alert("يرجى تعبئة الاسم والتعليق واختيار التقييم.");
+    return;
+  }
 
-    const container = document.getElementById('commentsContainer');
-    container.insertAdjacentHTML('afterbegin', commentHtml);
+  const comment = {
+    name: name,
+    comment: commentText,
+    stars: currentRating,
+    time: new Date().toLocaleString()
+  };
 
-    // إعادة تعيين الحقول
-    document.getElementById('usernameInput').value = "";
-    document.getElementById('commentInput').value = "";
-    selectedRating = 0;
-    updateStarsDisplay(0);
+  comments.unshift(comment); // نضيف في البداية
+  localStorage.setItem('comments', JSON.stringify(comments));
+  clearInputs();
+  displayedCount = 0;
+  displayComments();
+  updateStats();
 }
 
+// إفراغ الحقول بعد النشر
+function clearInputs() {
+  document.getElementById("usernameInput").value = '';
+  document.getElementById("commentInput").value = '';
+  currentRating = 0;
+  updateStarDisplay();
+}
 
+// عرض التعليقات حسب العدد المحدد
+function displayComments() {
+  const container = document.getElementById("commentsContainer");
+  container.innerHTML = "";
 
+  const commentsToShow = comments.slice(0, displayedCount + commentsPerLoad);
+  commentsToShow.forEach(comment => {
+    const commentDiv = document.createElement("div");
+    commentDiv.className = "comment";
+    commentDiv.innerHTML = `
+      <strong>${comment.name}</strong>
+      <p>${comment.comment}</p>
+      <div>⭐ ${comment.stars} | <small>${comment.time}</small></div>
+      <hr>
+    `;
+    container.appendChild(commentDiv);
+  });
+
+  displayedCount = commentsToShow.length;
+
+  document.getElementById("totalComments").textContent = `عدد التقييمات: ${comments.length}`;
+  document.getElementById("loadMoreBtn").style.display = (displayedCount < comments.length) ? "block" : "none";
+}
+
+// زر "عرض المزيد"
+function loadMoreComments() {
+  displayComments();
+}
+
+// تحديث إحصائيات النجوم
+function updateStats() {
+  const statsContainer = document.getElementById("starsStats");
+  if (comments.length === 0) {
+    statsContainer.innerHTML = "لا توجد تقييمات بعد.";
+    return;
+  }
+
+  let sum = 0;
+  let starsCount = [0, 0, 0, 0, 0]; // من 1 إلى 5 نجوم
+
+  comments.forEach(c => {
+    sum += c.stars;
+    starsCount[c.stars - 1]++;
+  });
+
+  const avg = (sum / comments.length).toFixed(1);
+  let statsHTML = `<p>متوسط التقييم: ${avg} من 5</p>`;
+
+  for (let i = 5; i >= 1; i--) {
+    const count = starsCount[i - 1];
+    const percent = ((count / comments.length) * 100).toFixed(0);
+    statsHTML += `
+      <div>
+        ${i} نجوم: ${count} (${percent}%)
+        <div style="background:#ccc; height:6px; width:100%;">
+          <div style="background:#f39c12; height:6px; width:${percent}%;"></div>
+        </div>
+      </div>
+    `;
+  }
+
+  statsContainer.innerHTML = statsHTML;
+}
+
+// التعامل مع النجوم عند النقر
+document.querySelectorAll(".star").forEach(star => {
+  star.addEventListener("click", () => {
+    currentRating = parseInt(star.dataset.star);
+    updateStarDisplay();
+  });
+});
+
+// عرض النجوم حسب التقييم
+function updateStarDisplay() {
+  const ratingText = document.getElementById("ratingDisplay");
+  document.querySelectorAll(".star").forEach(star => {
+    const starValue = parseInt(star.dataset.star);
+    star.style.color = (starValue <= currentRating) ? "#FFD700" : "#ccc";
+  });
+
+  ratingText.textContent = `التقييم: ${currentRating} نجوم`;
+}
 
