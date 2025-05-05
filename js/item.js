@@ -320,3 +320,93 @@ overlay.addEventListener("click", function (e) {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+let selectedRating = 0;
+
+// تفعيل الضغط على النجوم
+document.querySelectorAll('.star').forEach(star => {
+    star.addEventListener('click', function () {
+        selectedRating = parseInt(this.getAttribute('data-star'));
+        updateStarsDisplay(selectedRating);
+    });
+});
+
+function updateStarsDisplay(rating) {
+    const stars = document.querySelectorAll('.star');
+    stars.forEach(star => {
+        const starValue = parseInt(star.getAttribute('data-star'));
+        star.style.color = starValue <= rating ? 'gold' : 'gray';
+    });
+
+    const ratingDisplay = document.getElementById('ratingDisplay');
+    ratingDisplay.textContent = `التقييم: ${rating} نجوم`;
+}
+
+// إرسال التعليق
+function postComment() {
+    const username = document.getElementById('usernameInput').value.trim();
+    const comment = document.getElementById('commentInput').value.trim();
+    
+    if (username === "" || comment === "" || selectedRating === 0) {
+        alert("يرجى ملء جميع الحقول وتحديد التقييم بالنجوم");
+        return;
+    }
+
+    const commentHtml = `
+        <div class="comment">
+            <div class="comment-header">
+                <strong>${username}</strong> - ${selectedRating} ★
+            </div>
+            <p>${comment}</p>
+        </div>
+    `;
+
+    const container = document.getElementById('commentsContainer');
+    container.insertAdjacentHTML('afterbegin', commentHtml);
+
+    // إعادة تعيين الحقول
+    document.getElementById('usernameInput').value = "";
+    document.getElementById('commentInput').value = "";
+    selectedRating = 0;
+    updateStarsDisplay(0);
+}
+
+
+
+
