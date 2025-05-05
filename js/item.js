@@ -93,26 +93,58 @@ function updateTransform() {
 // ============================
 // التعليقات والتقييمات للمنتج
 // ============================
+// ===== Firebase config (غيّر هذه القيم بحسب مشروعك) =====
+const firebaseConfig = {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT_ID.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID",
+  databaseURL: "https://YOUR_PROJECT_ID.firebaseio.com"
+};
 
-let comments = JSON.parse(localStorage.getItem('comments')) || [];
-let displayedCount = 0;
-const commentsPerLoad = 5;
+// ===== تهيئة Firebase =====
+firebase.initializeApp(firebaseConfig);
+const db = firebase.database();
+
+// ===== المتغيرات =====
 let currentRating = 0;
 
-// تحميل عند فتح الصفحة
-window.onload = function () {
-  displayComments();
-  updateStats();
+// ===== عند تحميل الصفحة =====
+window.onload = () => {
+  setupStarRating();
+  loadComments();
   updateStarDisplay();
 };
 
-// نشر تعليق وتقييم
+// ===== إعداد نظام النجوم =====
+function setupStarRating() {
+  document.querySelectorAll(".star").forEach(star => {
+    star.addEventListener("click", () => {
+      currentRating = parseInt(star.dataset.star);
+      updateStarDisplay();
+    });
+  });
+}
+
+// ===== تحديث عرض النجوم =====
+function updateStarDisplay() {
+  document.querySelectorAll(".star").forEach(star => {
+    const starValue = parseInt(star.dataset.star);
+    star.style.color = (starValue <= currentRating) ? "#FFD700" : "#ccc";
+  });
+
+  document.getElementById("ratingDisplay").textContent = `التقييم: ${currentRating} نجوم`;
+}
+
+// ===== نشر تعليق =====
 function postComment() {
   const name = document.getElementById("usernameInput").value.trim();
   const commentText = document.getElementById("commentInput").value.trim();
 
   if (!name || !commentText || currentRating === 0) {
-    alert("يرجى تعبئة الاسم والتعليق واختيار التقييم.");
+    alert("يرجى ملء جميع الحقول وتحديد التقييم.");
     return;
   }
 
@@ -120,105 +152,75 @@ function postComment() {
     name: name,
     comment: commentText,
     stars: currentRating,
-    time: new Date().toLocaleString()
+    time: new Date().toISOString()
   };
 
-  comments.unshift(comment); // نضيف في البداية
-  localStorage.setItem('comments', JSON.stringify(comments));
-  clearInputs();
-  displayedCount = 0;
-  displayComments();
-  updateStats();
+  db.ref("comments").push(comment)
+    .then(() => {
+      document.getElementById("usernameInput").value = "";
+      document.getElementById("commentInput").value = "";
+      currentRating = 0;
+      updateStarDisplay();
+    })
+    .catch(error => {
+      console.error("فشل في إضافة التعليق:", error);
+    });
 }
 
-// إفراغ الحقول بعد النشر
-function clearInputs() {
-  document.getElementById("usernameInput").value = '';
-  document.getElementById("commentInput").value = '';
-  currentRating = 0;
-  updateStarDisplay();
-}
-
-// عرض التعليقات حسب العدد المحدد
-function displayComments() {
+// ===== تحميل التعليقات من Firebase =====
+function loadComments() {
   const container = document.getElementById("commentsContainer");
-  container.innerHTML = "";
+  let stats = [0, 0, 0, 0, 0]; // 1 إلى 5 نجوم
+  let total = 0, sum = 0;
 
-  const commentsToShow = comments.slice(0, displayedCount + commentsPerLoad);
-  commentsToShow.forEach(comment => {
-    const commentDiv = document.createElement("div");
-    commentDiv.className = "comment";
-    commentDiv.innerHTML = `
-      <strong>${comment.name}</strong>
-      <p>${comment.comment}</p>
-      <div>⭐ ${comment.stars} | <small>${comment.time}</small></div>
-      <hr>
-    `;
-    container.appendChild(commentDiv);
+  db.ref("comments").on("value", snapshot => {
+    container.innerHTML = "";
+    const data = snapshot.val();
+    if (data) {
+      const comments = Object.values(data).sort((a, b) => new Date(b.time) - new Date(a.time));
+      comments.forEach(c => {
+        const div = document.createElement("div");
+        div.innerHTML = `
+          <strong>${c.name}</strong>
+          <p>${c.comment}</p>
+          <div>⭐ ${c.stars} | <small>${new Date(c.time).toLocaleString()}</small></div>
+          <hr>
+        `;
+        container.appendChild(div);
+        stats[c.stars - 1]++;
+        sum += c.stars;
+        total++;
+      });
+    }
+
+    document.getElementById("totalComments").textContent = `عدد التقييمات: ${total}`;
+    updateStats(stats, sum, total);
   });
-
-  displayedCount = commentsToShow.length;
-
-  document.getElementById("totalComments").textContent = `عدد التقييمات: ${comments.length}`;
-  document.getElementById("loadMoreBtn").style.display = (displayedCount < comments.length) ? "block" : "none";
 }
 
-// زر "عرض المزيد"
-function loadMoreComments() {
-  displayComments();
-}
-
-// تحديث إحصائيات النجوم
-function updateStats() {
-  const statsContainer = document.getElementById("starsStats");
-  if (comments.length === 0) {
-    statsContainer.innerHTML = "لا توجد تقييمات بعد.";
+// ===== تحديث الإحصائيات =====
+function updateStats(stats, sum, total) {
+  const statsDiv = document.getElementById("starsStats");
+  if (total === 0) {
+    statsDiv.innerHTML = "لا توجد تقييمات بعد.";
     return;
   }
 
-  let sum = 0;
-  let starsCount = [0, 0, 0, 0, 0]; // من 1 إلى 5 نجوم
-
-  comments.forEach(c => {
-    sum += c.stars;
-    starsCount[c.stars - 1]++;
-  });
-
-  const avg = (sum / comments.length).toFixed(1);
-  let statsHTML = `<p>متوسط التقييم: ${avg} من 5</p>`;
+  const avg = (sum / total).toFixed(1);
+  let html = `<p>متوسط التقييم: ${avg} من 5</p>`;
 
   for (let i = 5; i >= 1; i--) {
-    const count = starsCount[i - 1];
-    const percent = ((count / comments.length) * 100).toFixed(0);
-    statsHTML += `
+    const count = stats[i - 1];
+    const percent = ((count / total) * 100).toFixed(0);
+    html += `
       <div>
         ${i} نجوم: ${count} (${percent}%)
-        <div style="background:#ccc; height:6px; width:100%;">
+        <div style="background:#ccc; height:6px; width:100%; margin:4px 0;">
           <div style="background:#f39c12; height:6px; width:${percent}%;"></div>
         </div>
       </div>
     `;
   }
 
-  statsContainer.innerHTML = statsHTML;
+  statsDiv.innerHTML = html;
 }
-
-// التعامل مع النجوم عند النقر
-document.querySelectorAll(".star").forEach(star => {
-  star.addEventListener("click", () => {
-    currentRating = parseInt(star.dataset.star);
-    updateStarDisplay();
-  });
-});
-
-// عرض النجوم حسب التقييم
-function updateStarDisplay() {
-  const ratingText = document.getElementById("ratingDisplay");
-  document.querySelectorAll(".star").forEach(star => {
-    const starValue = parseInt(star.dataset.star);
-    star.style.color = (starValue <= currentRating) ? "#FFD700" : "#ccc";
-  });
-
-  ratingText.textContent = `التقييم: ${currentRating} نجوم`;
-}
-
