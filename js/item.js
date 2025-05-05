@@ -25,170 +25,102 @@ window.changeItemImage = function(img) {
 
 
 
+document.addEventListener("DOMContentLoaded", function () {
+  const itemContainer = document.getElementById("item-container");
+  const params = new URLSearchParams(window.location.search);
+  const productId = params.get("id");
 
+  fetch("products.json")
+    .then((response) => response.json())
+    .then((data) => {
+      const product = data.products.find((p) => p.id == productId);
+      if (product) {
+        const productCard = `
+          <div class="product-card">
+            <img src="${product.image}" alt="${product.name}">
+            <h2>${product.name}</h2>
+            <p>${product.description}</p>
+            <p>Price: ${product.price} MAD</p>
+            <div class="rating" data-product-id="${product.id}">
+              <span data-rating="1">&#9733;</span>
+              <span data-rating="2">&#9733;</span>
+              <span data-rating="3">&#9733;</span>
+              <span data-rating="4">&#9733;</span>
+              <span data-rating="5">&#9733;</span>
+            </div>
+            <textarea id="comment" placeholder="Write your comment"></textarea>
+            <button onclick="postComment(${product.id})">Submit</button>
+            <div class="comments" id="comments-${product.id}"></div>
+          </div>
+        `;
+        itemContainer.innerHTML = productCard;
 
-  const firebaseConfig = {
-    apiKey: "AIzaSyDNJZ6zmakEvlkNJkiX--bkLedAo5gwtnA",
-    authDomain: "product-comments-9d950.firebaseapp.com",
-    databaseURL: "https://product-comments-9d950-default-rtdb.firebaseio.com",
-    projectId: "product-comments-9d950",
-    storageBucket: "product-comments-9d950.appspot.com",
-    messagingSenderId: "126824621961",
-    appId: "1:126824621961:web:265bb69368667bf9bfe358",
-    measurementId: "G-NFYGH3H6WF"
-  };
+        document.querySelectorAll(".rating span").forEach((star) => {
+          star.addEventListener("click", function () {
+            const rating = this.getAttribute("data-rating");
+            const ratingDiv = this.parentElement;
+            ratingDiv.setAttribute("data-selected-rating", rating);
 
-  firebase.initializeApp(firebaseConfig);
-  firebase.analytics();
-  const db = firebase.database();
+            ratingDiv.querySelectorAll("span").forEach((s, i) => {
+              if (i < rating) {
+                s.classList.add("selected");
+              } else {
+                s.classList.remove("selected");
+              }
+            });
+          });
+        });
 
-  const colors = ['#e74c3c', '#8e44ad', '#3498db', '#f39c12', '#27ae60', '#e67e22', '#1abc9c'];
-  let allComments = [];
-  let selectedRating = 0;
-
-  function getRandomColor() {
-    return colors[Math.floor(Math.random() * colors.length)];
-  }
-
-  function formatDate(date) {
-    return new Date(date).toLocaleString('ar-EG');
-  }
-
-  function saveCommentToFirebase(commentData) {
-    const pageRef = db.ref(`comments/${window.location.pathname}`);
-    pageRef.push(commentData);
-  }
-
-  function postComment() {
-    const nameInput = document.getElementById('usernameInput');
-    const commentInput = document.getElementById('commentInput');
-    const name = nameInput.value.trim();
-    const comment = commentInput.value.trim();
-
-    if (name.split(' ').length < 2 || name.split(' ').length > 5) {
-      alert('❌ يجب أن يكون الاسم ثلاثي إلى خماسي فقط!');
-      return;
-    }
-    if (comment === '') {
-      alert('يرجى كتابة تعليق!');
-      return;
-    }
-    if (selectedRating === 0) {
-      alert('يرجى اختيار تقييم!');
-      return;
-    }
-
-    const newComment = {
-      name,
-      comment,
-      date: new Date().toISOString(),
-      color: getRandomColor(),
-      rating: selectedRating
-    };
-
-    saveCommentToFirebase(newComment);
-    nameInput.value = '';
-    commentInput.value = '';
-    selectedRating = 0;
-    updateStarDisplay();
-  }
-
-  function renderComments() {
-    const container = document.getElementById('commentsContainer');
-    container.innerHTML = '';
-    allComments.slice().reverse().forEach(({ name, comment, date, color, rating }) => {
-      const div = document.createElement('div');
-      div.className = 'comment';
-
-      const avatar = document.createElement('div');
-      avatar.className = 'avatar';
-      avatar.style.backgroundColor = color;
-      avatar.textContent = name.charAt(0);
-
-      const content = document.createElement('div');
-      content.className = 'comment-content';
-
-      content.innerHTML = `
-        <div class="comment-name">${name}</div>
-        <div class="comment-text">${'⭐'.repeat(rating)}</div>
-        <div class="comment-text">${comment}</div>
-        <div class="comment-date">تاريخ النشر: ${formatDate(date)}</div>
-      `;
-
-      div.appendChild(avatar);
-      div.appendChild(content);
-      container.appendChild(div);
-    });
-  }
-
-  function updateProductStats() {
-    const statsContainer = document.getElementById('starsStats');
-    const counts = [0, 0, 0, 0, 0];
-
-    allComments.forEach(c => {
-      if (c.rating >= 1 && c.rating <= 5) counts[c.rating - 1]++;
-    });
-
-    const total = counts.reduce((a, b) => a + b, 0);
-    statsContainer.innerHTML = '';
-
-    for (let i = 5; i >= 1; i--) {
-      const count = counts[i - 1];
-      const percent = total > 0 ? (count / total) * 100 : 0;
-
-      const bar = document.createElement('div');
-      bar.className = 'rating-bar';
-      bar.innerHTML = `
-        <span>⭐ ${i}</span>
-        <div style="background:#eee; width: 100%; height: 10px; margin: 5px 0;">
-          <div style="background:#3498db; height: 10px; width: ${percent}%;"></div>
-        </div>
-        <span>${count}</span>
-      `;
-      statsContainer.appendChild(bar);
-    }
-  }
-
-  function updateCommentCount() {
-    document.getElementById('totalComments').textContent = `عدد التقييمات: ${allComments.length}`;
-  }
-
-  window.onload = function () {
-    const pageRef = db.ref(`comments/${window.location.pathname}`);
-    pageRef.on('value', (snapshot) => {
-      const data = snapshot.val() || {};
-      allComments = Object.values(data);
-      renderComments();
-      updateProductStats();
-      updateCommentCount();
-    });
-  };
-
-  document.querySelectorAll('.star').forEach(star => {
-    star.addEventListener('click', () => {
-      selectedRating = parseInt(star.getAttribute('data-star'));
-      updateStarDisplay();
-    });
-  });
-
-  function updateStarDisplay() {
-    const colorMap = {
-      1: 'red',
-      2: 'orange',
-      3: '#f1c40f',
-      4: 'green',
-      5: '#3498db'
-    };
-    document.querySelectorAll('.star').forEach(star => {
-      const starNum = parseInt(star.getAttribute('data-star'));
-      star.classList.remove('selected');
-      star.style.color = starNum <= selectedRating ? colorMap[selectedRating] : '#ccc';
-      if (starNum <= selectedRating) {
-        star.classList.add('selected');
+        loadComments(product.id);
+      } else {
+        itemContainer.innerHTML = "<p>Product not found.</p>";
       }
+    })
+    .catch((error) => {
+      console.error("Error loading product data:", error);
     });
-    document.getElementById('ratingDisplay').textContent = `التقييم: ${selectedRating} نجمة`;
+});
+
+function postComment(productId) {
+  const commentInput = document.getElementById("comment");
+  const comment = commentInput.value;
+  const ratingDiv = document.querySelector(`.rating[data-product-id="${productId}"]`);
+  const rating = ratingDiv.getAttribute("data-selected-rating");
+
+  if (comment && rating) {
+    const commentObj = {
+      text: comment,
+      rating: rating,
+      timestamp: new Date().toISOString(),
+    };
+
+    let comments = JSON.parse(localStorage.getItem(`comments_${productId}`)) || [];
+    comments.push(commentObj);
+    localStorage.setItem(`comments_${productId}`, JSON.stringify(comments));
+
+    commentInput.value = "";
+    loadComments(productId);
+  } else {
+    alert("Please provide a comment and rating.");
   }
+}
+
+function loadComments(productId) {
+  const commentsDiv = document.getElementById(`comments-${productId}`);
+  const comments = JSON.parse(localStorage.getItem(`comments_${productId}`)) || [];
+
+  commentsDiv.innerHTML = comments
+    .map(
+      (c) => `
+      <div class="comment">
+        <p>${"★".repeat(c.rating)}${"☆".repeat(5 - c.rating)}</p>
+        <p>${c.text}</p>
+        <small>${new Date(c.timestamp).toLocaleString()}</small>
+      </div>
+    `
+    )
+    .join("");
+}
 
 
 
