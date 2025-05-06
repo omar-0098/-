@@ -11,6 +11,7 @@ fetch("../products-furniturre.json")
     const coferta_man=document.getElementById("coferta_man")
 
 
+    date.sort(() => 0.5 - Math.random());
 
 
 
