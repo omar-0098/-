@@ -11,6 +11,7 @@ fetch("../products-furniturre.json")
     const patatin_man=document.getElementById("patatin_man")
  
 
+    date.sort(() => 0.5 - Math.random());
 
 
 
