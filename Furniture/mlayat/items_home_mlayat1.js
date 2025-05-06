@@ -11,7 +11,7 @@ fetch("../products-furniturre.json")
     const mlayat_sada=document.getElementById("mlayat_sada")
 
 
-// date.sort(() => 0.5 - Math.random());
+date.sort(() => 0.5 - Math.random());
 
 
 
