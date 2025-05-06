@@ -11,6 +11,7 @@ fetch("../products-furniturre.json")
     const paranes=document.getElementById("paranes")
 
 
+    date.sort(() => 0.5 - Math.random());
 
 
 
