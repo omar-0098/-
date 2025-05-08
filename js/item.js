@@ -1,3 +1,4 @@
+
 const img = document.getElementById("bidImg");
 let scale = 1;
 let originX = 0;
@@ -5,6 +6,8 @@ let originY = 0;
 let lastX = 0;
 let lastY = 0;
 let isDragging = false;
+let initialPinchDistance = null;
+let lastScale = 1;
 
 // ✅ زووم بالماوس
 img.addEventListener("wheel", (e) => {
@@ -49,7 +52,7 @@ window.addEventListener("mouseup", () => {
   preventPageScroll(false);
 });
 
-// ✅ سحب باللمس
+// ✅ سحب باللمس بإصبع واحد
 img.addEventListener("touchstart", (e) => {
   if (e.touches.length === 1) {
     isDragging = true;
@@ -60,18 +63,39 @@ img.addEventListener("touchstart", (e) => {
 });
 
 img.addEventListener("touchmove", (e) => {
-  if (isDragging && e.touches.length === 1) {
+  if (e.touches.length === 1 && isDragging) {
     originX += (e.touches[0].clientX - lastX) / scale;
     originY += (e.touches[0].clientY - lastY) / scale;
     lastX = e.touches[0].clientX;
     lastY = e.touches[0].clientY;
     updateTransform();
   }
-});
 
-img.addEventListener("touchend", () => {
-  isDragging = false;
-  preventPageScroll(false);
+  // ✅ دعم pinch zoom
+  if (e.touches.length === 2) {
+    e.preventDefault(); // يمنع الزوم الافتراضي
+
+    const dx = e.touches[0].clientX - e.touches[1].clientX;
+    const dy = e.touches[0].clientY - e.touches[1].clientY;
+    const distance = Math.hypot(dx, dy);
+
+    if (initialPinchDistance == null) {
+      initialPinchDistance = distance;
+      lastScale = scale;
+    } else {
+      const pinchScale = distance / initialPinchDistance;
+      scale = Math.min(Math.max(0.5, lastScale * pinchScale), 4);
+      updateTransform();
+    }
+  }
+}, { passive: false });
+
+img.addEventListener("touchend", (e) => {
+  if (e.touches.length < 2) {
+    isDragging = false;
+    initialPinchDistance = null;
+    preventPageScroll(false);
+  }
 });
 
 function updateTransform() {
@@ -87,7 +111,6 @@ function changeItemImage(src) {
   img.style.opacity = 0;
   setTimeout(() => {
     img.src = src;
-    // Reset transform state
     scale = 1;
     originX = 0;
     originY = 0;
