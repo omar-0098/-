@@ -1,3 +1,23 @@
+#bidImg {
+  transition: transform 0.4s ease, opacity 0.4s ease;
+  cursor: grab;
+  user-select: none;
+  max-width: 100%;
+  display: block;
+}
+
+.slide-out {
+  transform: translateX(-100%) scale(0.9);
+  opacity: 0;
+}
+
+.slide-in {
+  transform: translateX(100%) scale(0.9);
+  opacity: 0;
+}
+
+
+
 video{
   border-radius: 5px;
 }
