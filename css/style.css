@@ -1859,6 +1859,12 @@ footer .bottom_footer .payment_img{
 
 
 @media (max-width:500px) {
+      .swiper-pagination-bullet-active{
+        background-color: var(--main_color) !important;
+        width: 20px !important;
+        height: 7px !important;
+        border-radius: 30px !important;
+    }
     header .bottom_header .nav_links li.active a { 
        color: #0e68af;
         font-weight:600;
