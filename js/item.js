@@ -1,15 +1,62 @@
-// ========== جزء الفيديو والـ iframe ==========
 
+  let bigImags = document.getElementById("bidImg");
+  let scale = 1;
+  let initialDistance = null;
 
+  // === الموبايل: زووم باللمس ===
+  bigImags.addEventListener("touchstart", function (e) {
+    if (e.touches.length === 2) {
+      initialDistance = getDistance(e.touches[0], e.touches[1]);
+    }
+  });
 
-let bigImags = document.getElementById("bidImg");
-window.changeItemImage = function(img) {
-  bigImags.style.opacity = 0;
-  setTimeout(function() {
-    bigImags.src = img;
-    bigImags.style.opacity = 1;
-  }, 250);
-}
+  bigImags.addEventListener("touchmove", function (e) {
+    if (e.touches.length === 2 && initialDistance) {
+      const currentDistance = getDistance(e.touches[0], e.touches[1]);
+      scale = currentDistance / initialDistance;
+      bigImags.style.transform = `scale(${scale})`;
+    }
+  });
+
+  bigImags.addEventListener("touchend", function (e) {
+    if (e.touches.length < 2) {
+      initialDistance = null;
+      if (scale < 1) scale = 1;
+      bigImags.style.transform = `scale(${scale})`;
+    }
+  });
+
+  function getDistance(touch1, touch2) {
+    return Math.hypot(
+      touch2.pageX - touch1.pageX,
+      touch2.pageY - touch1.pageY
+    );
+  }
+
+  // === الكمبيوتر: زووم بعجلة الماوس ===
+  bigImags.addEventListener("wheel", function (e) {
+    e.preventDefault();
+    if (e.deltaY < 0) {
+      // scroll up
+      scale += 0.1;
+    } else {
+      // scroll down
+      scale -= 0.1;
+      if (scale < 1) scale = 1;
+    }
+    bigImags.style.transform = `scale(${scale})`;
+  });
+
+  // === تغيير الصورة مع إعادة التهيئة ===
+  window.changeItemImage = function(img) {
+    bigImags.style.opacity = 0;
+    setTimeout(function() {
+      bigImags.src = img;
+      bigImags.style.opacity = 1;
+      bigImags.style.transform = "scale(1)";
+      scale = 1;
+    }, 250);
+  }
 
 
 
