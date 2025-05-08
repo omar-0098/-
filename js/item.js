@@ -1,62 +1,101 @@
+const img = document.getElementById("bidImg");
+let scale = 1;
+let originX = 0;
+let originY = 0;
+let lastX = 0;
+let lastY = 0;
+let isDragging = false;
 
-  let bigImags = document.getElementById("bidImg");
-  let scale = 1;
-  let initialDistance = null;
+// ✅ زووم بالماوس
+img.addEventListener("wheel", (e) => {
+  e.preventDefault();
 
-  // === الموبايل: زووم باللمس ===
-  bigImags.addEventListener("touchstart", function (e) {
-    if (e.touches.length === 2) {
-      initialDistance = getDistance(e.touches[0], e.touches[1]);
-    }
-  });
+  const rect = img.getBoundingClientRect();
+  const offsetX = e.clientX - rect.left;
+  const offsetY = e.clientY - rect.top;
 
-  bigImags.addEventListener("touchmove", function (e) {
-    if (e.touches.length === 2 && initialDistance) {
-      const currentDistance = getDistance(e.touches[0], e.touches[1]);
-      scale = currentDistance / initialDistance;
-      bigImags.style.transform = `scale(${scale})`;
-    }
-  });
+  const zoomIntensity = 0.1;
+  const delta = e.deltaY > 0 ? -zoomIntensity : zoomIntensity;
+  const newScale = Math.min(Math.max(0.5, scale + delta), 4);
 
-  bigImags.addEventListener("touchend", function (e) {
-    if (e.touches.length < 2) {
-      initialDistance = null;
-      if (scale < 1) scale = 1;
-      bigImags.style.transform = `scale(${scale})`;
-    }
-  });
+  originX -= (offsetX / scale - offsetX / newScale);
+  originY -= (offsetY / scale - offsetY / newScale);
 
-  function getDistance(touch1, touch2) {
-    return Math.hypot(
-      touch2.pageX - touch1.pageX,
-      touch2.pageY - touch1.pageY
-    );
+  scale = newScale;
+  updateTransform();
+});
+
+// ✅ سحب بالماوس
+img.addEventListener("mousedown", (e) => {
+  isDragging = true;
+  lastX = e.clientX;
+  lastY = e.clientY;
+  img.style.cursor = "grabbing";
+  preventPageScroll(true);
+});
+
+window.addEventListener("mousemove", (e) => {
+  if (!isDragging) return;
+  originX += (e.clientX - lastX) / scale;
+  originY += (e.clientY - lastY) / scale;
+  lastX = e.clientX;
+  lastY = e.clientY;
+  updateTransform();
+});
+
+window.addEventListener("mouseup", () => {
+  isDragging = false;
+  img.style.cursor = "grab";
+  preventPageScroll(false);
+});
+
+// ✅ سحب باللمس
+img.addEventListener("touchstart", (e) => {
+  if (e.touches.length === 1) {
+    isDragging = true;
+    lastX = e.touches[0].clientX;
+    lastY = e.touches[0].clientY;
+    preventPageScroll(true);
   }
+});
 
-  // === الكمبيوتر: زووم بعجلة الماوس ===
-  bigImags.addEventListener("wheel", function (e) {
-    e.preventDefault();
-    if (e.deltaY < 0) {
-      // scroll up
-      scale += 0.1;
-    } else {
-      // scroll down
-      scale -= 0.1;
-      if (scale < 1) scale = 1;
-    }
-    bigImags.style.transform = `scale(${scale})`;
-  });
-
-  // === تغيير الصورة مع إعادة التهيئة ===
-  window.changeItemImage = function(img) {
-    bigImags.style.opacity = 0;
-    setTimeout(function() {
-      bigImags.src = img;
-      bigImags.style.opacity = 1;
-      bigImags.style.transform = "scale(1)";
-      scale = 1;
-    }, 250);
+img.addEventListener("touchmove", (e) => {
+  if (isDragging && e.touches.length === 1) {
+    originX += (e.touches[0].clientX - lastX) / scale;
+    originY += (e.touches[0].clientY - lastY) / scale;
+    lastX = e.touches[0].clientX;
+    lastY = e.touches[0].clientY;
+    updateTransform();
   }
+});
+
+img.addEventListener("touchend", () => {
+  isDragging = false;
+  preventPageScroll(false);
+});
+
+function updateTransform() {
+  img.style.transform = `translate(${originX}px, ${originY}px) scale(${scale})`;
+}
+
+function preventPageScroll(enable) {
+  document.body.style.overflow = enable ? "hidden" : "";
+}
+
+// ✅ تغيير الصورة عند الضغط على صورة صغيرة
+function changeItemImage(src) {
+  img.style.opacity = 0;
+  setTimeout(() => {
+    img.src = src;
+    // Reset transform state
+    scale = 1;
+    originX = 0;
+    originY = 0;
+    updateTransform();
+    img.style.opacity = 1;
+  }, 200);
+}
+
 
 
 
