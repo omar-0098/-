@@ -538,7 +538,7 @@ header .bottom_header .nav_links li.active a{
 .top_slide h2::before{
     content: '';
     position: absolute;
-    width: 1px;
+    width: 0;
     height: 0;
     top: 0;
     z-index: 9;
@@ -546,9 +546,7 @@ header .bottom_header .nav_links li.active a{
     background-color: #fff;
     left: 0;
     border-bottom: 20px solid #1740a3;
-}
-.slide .container{
-    position: relative;
+}  
 }
 .slide .container .mySwiper{
     padding: 10px 0;
