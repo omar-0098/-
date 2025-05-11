@@ -1,4 +1,4 @@
- fetch("products-shop.json")
+ fetch("products-furniturre.json")
 .then(response => response.json())
 .then(date => {
     console.log(date);
