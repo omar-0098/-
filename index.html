@@ -2,88 +2,86 @@
 <html lang="en">
 
 <head>
-<!--   img -->
-<link rel="preload" as="image" href="img/banner-swiper/banner_home11.webp">
-<link rel="preload" as="image" href="img/banner-swiper/banner_home22.webp">
-<link rel="preload" as="image" href="img/banner-swiper/banner_home33.webp">
-<!--  -->
+  <!-- Preload صور البانر لتحسين LCP -->
+  <link rel="preload" as="image" href="img/banner-swiper/banner_home11.webp">
+  <link rel="preload" as="image" href="img/banner-swiper/banner_home22.webp">
+  <link rel="preload" as="image" href="img/banner-swiper/banner_home33.webp">
 
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="استمتع بعروض متجددة من كشمير هوم – Kashmir Home! ملايات سرير، ملايات عامرية، فوط، برانس، بطاطين أطفال، لحاف فايبر، كوفرتي والمزيد بجودة عالية وتصاميم عصرية.">
+  <title>كشمير هوم – Kashmir Home | ملايات، فوط، برانس، بطاطين</title>
+  <link rel="icon" type="image/png" href="https://kashmair.netlify.app/favicon.png">
 
-
-
+  <!-- Open Graph -->
   <meta property="og:title" content="كشمير هوم - Kashmir Home">
-<meta property="og:description" content="استمتعوا بأجود المنتجات: ملايات، فوط، بطاطين والمزيد. توصيل سريع وخدمة ممتازة!">
-<meta property="og:image" content="https://kashmair.netlify.app/favicon.png">
-<meta property="og:url" content="https://kashmair.netlify.app">
-<meta property="og:type" content="website">
+  <meta property="og:description" content="استمتعوا بأجود المنتجات: ملايات، فوط، بطاطين والمزيد. توصيل سريع وخدمة ممتازة!">
+  <meta property="og:image" content="https://kashmair.netlify.app/favicon.png">
+  <meta property="og:url" content="https://kashmair.netlify.app">
+  <meta property="og:type" content="website">
+  <meta property="og:site_name" content="كشمير هوم" />
+  <meta name="application-name" content="كشمير هوم" />
+  <meta name="google-site-verification" content="xk88hD7NToWLVqfMyYxmdM_XRavqmf8J-nfcO9pkWNw" />
 
-  <meta name="title" content="كشمير هوم" />
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-LQLNQH309W"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
+  <!-- Google Fonts (محسّنة بالـ preload + onload) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Amiri&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Rubik&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Readex+Pro&display=swap" onload="this.onload=null;this.rel='stylesheet'">
+  <noscript>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Amiri&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik&display=swap">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Readex+Pro&display=swap">
+  </noscript>
 
-  gtag('config', 'G-LQLNQH309W');
-</script>
-<!-- Structured Data: WebSite -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "WebSite",
-  "name": "كشمير هوم",
-  "url": "https://kashmirhome.netlify.app",
-  "potentialAction": {
-    "@type": "SearchAction",
-    "target": "https://kashmirhome.netlify.app/?s={search_term_string}",
-    "query-input": "required name=search_term_string"
+  <!-- CSS الأساسي (المحلي) -->
+  <link rel="stylesheet" href="css/style.css">
+
+  <!-- Font Awesome (تأجيل التحميل) -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css"></noscript>
+
+  <!-- Swiper CSS (تأجيل التحميل) -->
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" media="print" onload="this.media='all'">
+  <noscript><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"></noscript>
+
+  <!-- Google Analytics -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-LQLNQH309W"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-LQLNQH309W');
+  </script>
+
+  <!-- Structured Data: WebSite -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "كشمير هوم",
+    "url": "https://kashmirhome.netlify.app",
+    "potentialAction": {
+      "@type": "SearchAction",
+      "target": "https://kashmirhome.netlify.app/?s={search_term_string}",
+      "query-input": "required name=search_term_string"
+    }
   }
-}
-</script>
+  </script>
 
-<!-- Structured Data: Organization -->
-<script type="application/ld+json">
-{
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  "name": "كشمير هوم",
-  "url": "https://kashmirhome.netlify.app",
-  "logo": "https://kashmirhome.netlify.app/logo.png"
-}
-</script>
-    <meta property="og:site_name" content="كشمير هوم" />
-<meta name="application-name" content="كشمير هوم" />
-    <meta name="google-site-verification" content="xk88hD7NToWLVqfMyYxmdM_XRavqmf8J-nfcO9pkWNw" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <meta charset="UTF-8">
-    <meta name="description" content="استمتع بعروض متجددة من كشمير هوم – Kashmir Home! ملايات سرير، ملايات عامرية، فوط، برانس، بطاطين أطفال، لحاف فايبر، كوفرتي والمزيد بجودة عالية وتصاميم عصرية.">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>كشمير هوم – Kashmir Home | ملايات، فوط، برانس، بطاطين</title>
-  <link rel="icon" type="image/png" href="https://kashmair.netlify.app/favicon.png"> 
-
-<!-- <link rel="icon" type="image/png" sizes="16x16" href="/path/to/favicon-16x16.png">
-    font --> 
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400;1,700&display=swap"
-        rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&display=swap" rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap"rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@160..700&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap"
-        rel="stylesheet">
-    <!-- css -->
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-    <!-- Link Swiper's CSS -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+  <!-- Structured Data: Organization -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "كشمير هوم",
+    "url": "https://kashmirhome.netlify.app",
+    "logo": "https://kashmirhome.netlify.app/logo.png"
+  }
+  </script>
 </head>
 
 <body>
