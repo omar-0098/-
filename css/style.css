@@ -932,10 +932,10 @@ footer .container{
 }
 footer .container .big_row .logo_footer{
     width: 266px;
+    height: fit-content;
 }
 footer .container .big_row{
     width: 35%;
-    height: fit-content;
 }
 footer .container .big_row p{
     width: 90%;
