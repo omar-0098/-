@@ -538,14 +538,15 @@ header .bottom_header .nav_links li.active a{
 .top_slide h2::before{
     content: '';
     position: absolute;
-    width: 0;
-    height: 0;
+    width: 1px;
+    height: 1px;
     top: 0;
     z-index: 9;
     border-left: 20px solid transparent;
     background-color: #fff;
     left: 0;
     border-bottom: 20px solid #1740a3;
+    margin: -1px 0px 0px -2px;
 }  
 }
 .slide .container .mySwiper{
