@@ -538,7 +538,7 @@ header .bottom_header .nav_links li.active a{
 .top_slide h2::before{
     content: '';
     position: absolute;
-    width: 0;
+    width: 1px;
     height: 0;
     top: 0;
     z-index: 9;
