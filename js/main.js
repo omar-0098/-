@@ -1,3 +1,6 @@
+
+
+
 const soldCounts = {};
 
 // ✅ القوائم وفتح وإغلاق القوائم
@@ -368,19 +371,29 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 // ✅ تطبيق الكوبون
-document.querySelector(".copon").addEventListener("click", () => {
-  const coponInput = document.querySelector(".copon_input").value.trim().toLowerCase();
-  if (availableCoupons.hasOwnProperty(coponInput)) {
-    const discountPercent = availableCoupons[coponInput];
-    localStorage.setItem("appliedCoupon", JSON.stringify({ code: coponInput, percent: discountPercent }));
-    localStorage.setItem("appliedCouponFromUser", "true");
+const coponBtn = document.querySelector(".copon");
+if (coponBtn) {
+  coponBtn.addEventListener("click", () => {
+    const coponInputField = document.querySelector(".copon_input");
+    if (!coponInputField) {
+      alert("⚠️ خانة الكوبون غير موجودة!");
+      return;
+    }
 
-    alert(`🎉 تم تطبيق خصم ${discountPercent}% بنجاح!`);
-    updateCart();
-  } else {
-    alert("❌ الكوبون غير صالح!");
-  }
-});
+    const coponInput = coponInputField.value.trim().toLowerCase();
+    if (availableCoupons.hasOwnProperty(coponInput)) {
+      const discountPercent = availableCoupons[coponInput];
+      localStorage.setItem("appliedCoupon", JSON.stringify({ code: coponInput, percent: discountPercent }));
+      localStorage.setItem("appliedCouponFromUser", "true");
+
+      alert(`🎉 تم تطبيق خصم ${discountPercent}% بنجاح!`);
+      updateCart();
+    } else {
+      alert("❌ الكوبون غير صالح!");
+    }
+  });
+}
+
 
 window.addEventListener("beforeunload", () => {
   localStorage.removeItem("appliedCoupon");
@@ -456,6 +469,18 @@ function setupCartEvents() {
 }
 
 ////////////////////////////
+
+
+
+
+
+
+
+
+
+
+// script.js
+
 
 
 
