@@ -29,8 +29,8 @@ const shippingPrices = {
 };
 
 const jsonFiles = [
-  "products-shop.json",
-  "../products-furniturre.json",
+  // "products-shop.json",
+  "../../products-furniturre.json"
 ];
 
 // ✅ دالة لرفع الصور إلى ImgBB
@@ -197,7 +197,7 @@ function updateCart() {
 
     const itemHTML = `
       <div class="item_cart">
-        <img src="../paranes/${item.img}">
+        <img src="${item.img}">
         <div class="content">
           <h4>${item.name}</h4>
           ${item.color ? `<h5> ${item.color}</h5>` : ""}
@@ -480,6 +480,7 @@ function setupCartEvents() {
 
 
 // script.js
+
 
 
 
