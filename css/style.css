@@ -2252,6 +2252,13 @@ footer .bottom_footer .payment_img{
 
 
 @media (max-width:400px) {
+        .checkout .ordersummary .item_cart h4 {
+        margin-bottom: 10px;
+        font-size: 11px;
+        height: 33px;
+        overflow: auto;
+        /* background: #eee; */
+    }
     .product .name_product {
         line-height: 21px;
     }
@@ -2406,6 +2413,25 @@ footer .bottom_footer .payment_img{
 
 
 @media (max-width:350px) {
+            .checkout .ordersummary .item_cart h4 {
+        margin-bottom: 13px;      
+          font-size: 10px;
+        height: 33px;
+        overflow: auto;
+        /* background: #eee; */
+    }
+    .checkout .ordersummary .quantity_control span {
+    font-size: 13px;
+    min-width: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: var(--bg_color);
+    padding: 3px 0;
+    }
+        .checkout .ordersummary .delet_item i {
+        font-size: 17px;
+    }
     .shop {
         font-size: 11px;
     }
