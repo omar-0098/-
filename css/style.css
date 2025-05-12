@@ -1859,6 +1859,16 @@ footer .bottom_footer .payment_img{
 }
 
 
+@media (max-width:700px) {
+    .checkout .ordersummary .item_cart h4 {
+    margin-bottom: 10px;
+    font-size: 12px;
+    font-family: "Almarai", sans-serif;
+    font-weight: 600;
+    font-style: normal;
+    line-height: 20px;
+}
+}
 
 
 @media (max-width:500px) {
@@ -2098,7 +2108,7 @@ footer .bottom_footer .payment_img{
 }
 .checkout .ordersummary .item_cart h4 {
     margin-bottom: 10px;
-    font-size: 12px;
+    font-size: 11px;
 }
 .checkout .ordersummary .delet_item i {
     font-size: 20px;
