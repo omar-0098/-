@@ -546,6 +546,8 @@ z-index:9999;
 @media (max-width:500px) {
     body {
     background: rgb(243, 244, 248);
+     padding: 240px 0px 0px;
+
 }
     .all_formation .container {
     display: flex;
@@ -645,6 +647,9 @@ z-index:9999;
 
 
 @media (max-width:400px) {
+          body {
+        padding: 225px 0px 0px;
+    }
     .formation .section h3 {
         height: 43px;
     }
