@@ -94,6 +94,26 @@
 
                 </form>
 
+
+<!-- قسم إنشاء الحساب -->
+<div class="person1" id="registerSection">
+    <div class="person2">
+        <i id="person" class="fa-regular fa-user"></i>
+        <h1>انشاء حساب</h1>
+    </div>
+</div>
+
+<!-- قسم الترحيب (مخفي في البداية) -->
+<div class="man1" id="welcomeSection" style="display: none;">
+    <div class="man2">
+        <h1 id="welcomeMessage">مرحباً <span id="userName"></span></h1>
+       <a href="../../user/accoun.html"><i id="icon_person" class="fa-solid fa-circle-user"></i></a> 
+    </div>
+</div>
+
+
+
+                
                 <div class="header_icons">
                     <div class="icon">
                         <!-- <a href="">
@@ -358,17 +378,110 @@
 
 
 
+<div class="masege-login" >
+    <h1>يجب انشاء حساب</h1>
+</div>
 
 
 
+<div class="overlay" id="overlay">
+ 
+  <form class="glass-form" id="registerForm" method="post" action="https://script.google.com/macros/s/AKfycbxRGNbJlfhu0R3y9cjeevewdavkR63cUmRWWDYcW5dIoQFwyHe0OQfdkL5BJ1CqmFyuJg/exec">
+    <div class="ex">       
+        <button type="button" id="closeOverlay">×</button>
+    </div>
+    <div class="logine-img"><img src="../../login.png" alt="" style="width: 100%;"></div>
+    <div class="hesp"><h1>إنشاء حساب</h1></div>
+
+<div class="inputGroups" >
+    <div class="inputGroup">
+      <input name="Nameo" type="text" id="name" required placeholder="اسمك">
+    </div>
+    <div class="inputGroup" >
+      <input name="FamilyName" type="text" id="family" required placeholder="اسم العائلة">
+    </div>
+    </div>
+    <div class="inputGroup">
+      <input name="Phone" type="text" id="phone" required placeholder="رقم الموبايل">
+    </div>
+    <div class="inputGroup">
+      <input name="Emailo" type="email" id="email" required placeholder="البريد الإلكتروني">
+    </div>
+    <div class="inputGroup">
+      <input name="Passwordo" type="password" id="password" required placeholder="كلمة السر">
+    </div>
+
+    <div class="hrs">
+        <hr>
+        <h4>أو</h4>
+        <hr>
+    </div>
+
+
+
+
+
+    <!-- data-client_id="442684890271-8eokvtd5irf0t04jm1r9db6nfi5ok7tb.apps.googleusercontent.com" -->
+
+
+
+<div id="google-login-container">
+<div id="g_id_onload"
+     data-client_id="442684890271-8eokvtd5irf0t04jm1r9db6nfi5ok7tb.apps.googleusercontent.com"
+     data-context="signup"
+     data-ux_mode="popup"
+     data-callback="logineCallback"
+     data-auto_prompt="false">
+</div>
+
+<div class="g_id_signin"
+     data-type="standard"
+     data-shape="pill"
+     data-theme="filled_blue"
+     data-text="signup_with"
+     data-size="large"
+     data-logo_alignment="left"
+     data-width="250">
+</div>
+</div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <div class="button-login">    <button class="login" type="submit">تسجيل</button></div>
+  <h2> هذ الموقع يحمي بيناتك و تطبق علية <span><a href="Privacy.html" target="_blank">السياسة و الخصوصية</a></span> الخاصة بكشمير هوم</h2>
+  </form>
+</div>
+
+
+
+
+
+
+  <script src="https://accounts.google.com/gsi/client" async defer></script>
+  <!-- مكتبة jwt-decode - النسخة الصحيحة ✅ -->
+  <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
 <!-- Swiper JS -->
  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script> 
 <!-- fill -->
-
+<script src="../../js/login.js"></script>
+<script src="../../js/google.js"></script>
  <script src="../../js/swiper.js"></script> 
-<script src="items_home_patatin1.js"></script>
+<script src="items_home_mlayat1.js"></script>
 <script src="../../js/main.js"></script>
 <script src="../../js/omar.js"></script>
+
 
 </body>
 </html>
