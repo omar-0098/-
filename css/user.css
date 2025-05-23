@@ -1,0 +1,710 @@
+body{
+    background: #fff4f4;
+}
+.all_formation .container{
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: space-between;
+}
+.formation{
+    max-width: 40%;
+}
+.formation .section{
+ background: white;
+    width: 320px;
+    padding: 19px;
+    margin-bottom: 40px;
+    border-radius: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+.formation .section div{
+    display: flex;
+    flex-direction: row-reverse;
+    align-items: center;
+}
+.formation .section h1 {
+    font-size: 26px;
+    margin: 0px 10px;
+    font-family: "Rubik", serif;
+    font-optical-sizing: auto;
+    font-weight: 700;
+    font-style: normal;
+    direction: rtl;
+}
+.formation .section h2 {
+    font-size: 15px;
+    margin-top: 16px;
+}
+#icon_person {
+    font-size: 46px;
+    color: #4e65ff;
+}
+.formation .section a{
+    width: 100%;
+}
+.formation .section a h3 i{
+    margin-left: 5px;
+    font-size: 15px;
+}
+
+.formation .section h3 {
+    text-align: end;
+    width: 100%;
+    padding: 0px 8px;
+    height: 48px;
+    align-content: center;
+    background: #eee;
+    margin: 11px 0px;
+    border-radius: 8px;
+    transition: 0.3s;
+}
+.formation .section h3:hover {
+    background-color: #117aca;
+    color: white;
+}
+.formation .section .active4{
+ background-color: #117aca;
+    color: white;
+} 
+.formation .section h3 a img{
+    width: 7%;
+    margin-left: 8px;
+}
+.formation .section a h3 {
+   font-family: "Rubik", serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;    
+    font-size: 15px;
+}
+.all_formation .user{
+    width: 65%;
+    display: flex;
+    flex-direction: row-reverse;
+    flex-wrap: wrap;
+    align-content: flex-start;
+}
+.all_formation .user .text {
+    width: 100%;
+    text-align: end;
+    height: fit-content;
+}
+.all_formation .user .text h2{
+font-family: "Readex Pro", serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;
+    font-variation-settings: "HEXP" 0;
+}
+.all_formation .user .text h3{
+    font-family: "Readex Pro", serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;
+    font-variation-settings: "HEXP" 0;
+    font-size: 14px;
+    color: #525252;
+    padding: 10px 0px;
+}
+.all_formation .user .info_user1 , .info_user1{
+    width: 100%;
+    background: white;
+    border-radius: 15px;  
+    display: flex;
+    flex-wrap: wrap;
+    flex-direction: row-reverse;
+    padding: 10px 25px 40px;
+     margin: 22px 0px;
+
+}
+.all_formation .user .info_user1 h2 , .info_user1 h2{
+    font-size: 20px;
+    width: 100%;
+    text-align: end;
+    padding: 11px 7px 30px;
+    font-family: "Readex Pro", serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;
+    font-variation-settings: "HEXP" 0;
+}
+.all_formation .user .info_user1 .input , .info_user1 h2 .input{
+    text-align: end;
+    margin-left: 30px;
+    position: relative;
+}
+.egypt img {
+    position: absolute;
+    left: -67px;
+    top: 39%;
+    transform: translateY(50%);
+    color: #999;
+    pointer-events: none;
+    border-radius: 5px;
+}
+ .input i.fa-pen {
+    position: absolute;
+    left: 20px;
+    top: 58%;
+    transform: translateY(50%); 
+    color: #999; 
+    pointer-events: none; 
+}
+.all_formation .user .info_user1 .input h3, .info_user1 h2 .input h3{
+    font-family: "Almarai", sans-serif;
+    font-weight: 600;
+    font-style: normal;
+    color: #656565;
+    width: 35%;
+    font-size: 14px;
+    width: 100%;
+    padding: 11px;
+    text-align: end;
+}
+.all_formation .user .info_user1 .input input, .info_user1 h2 .input input{
+    padding: 15px 13px 15px 45px;
+    border-radius: 12px;
+    border: 2px solid #b6b6b6;
+    outline: none;
+    display: inline-block;
+    box-sizing: border-box;
+    font-family: "Almarai", sans-serif;
+    font-weight: 600;
+    font-style: normal;
+    font-size: 14px;
+    text-align: end;
+    background-color: #f3f4f8;
+}
+.all_formation .user .info_user1 .input p, .info_user1 h2 .input p{
+    font-family: "Readex Pro", serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;
+    font-variation-settings: "HEXP" 0;
+    font-size: 10px;
+    color: black;
+    padding: 10px 10px;
+}
+.all_formation .user .radios{
+    width: 100%;
+    margin-top: 30px;
+    display: flex;
+    justify-content: flex-start;
+    flex-direction: row-reverse;
+}
+.all_formation .user .radios label{
+    direction: rtl;
+    padding: 0px 13px;
+    font-family: "Readex Pro", serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;
+    font-variation-settings: "HEXP" 0;
+}
+.buttons{
+    height: 80px;
+}
+.buttons button{
+    background: #1e8be0;
+    color: white;
+    padding: 12px 70px;
+    border-radius: 10px;
+    font-family: "Rubik", serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;
+    font-size: 15px;
+    transition: 0.3s;
+}
+.buttons button:hover{
+    border:2px solid #1e8be0;
+    color:black;
+    background: transparent;
+}
+.update-btn {
+    background-color: #4a6baf;
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    margin-top: 15px;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+    transition: background-color 0.3s;
+}
+
+button:hover {
+    background-color: #3a5a9f;
+}
+
+button:active {
+    background-color: #2a4a8f;
+}
+
+button.disabled {
+    background-color: #cccccc;
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+button.disabled:hover {
+    background-color: #cccccc;
+}
+.info_user1 p{
+    font-family: "Almarai", sans-serif;
+    font-weight: 600;
+    font-style: normal;
+    padding: 26px 0px 0px;
+    font-size: 13px;
+    color: #0e68af;
+}
+  #icon_person {
+    font-size: 100px;
+    cursor: pointer;
+  }
+
+  #profileImage {
+    width: 100px;
+    height: 100px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: none; /* مخفية في البداية */
+  }
+
+.user .discount{
+    height: 100vh;
+    width: 100%;
+    background: white;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 22px 0px;
+    border-radius: 10px;
+}
+.user .discount img{
+    width: 40%;
+    filter: grayscale(1);
+    opacity: 0.8;
+}
+.info_user1 h5{
+    color: #429e16;
+    font-family: "Readex Pro", serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;
+    font-variation-settings: "HEXP" 0;
+    width: 100%;
+    text-align: end;
+    font-size: 20px;
+    padding: 17px 0px 0px;
+}
+.info_user1 a{
+  width: 100%;
+    text-align: end;
+    color: #2786d1;
+    font-family: 'Rubik';
+   padding: 12px 0px 0px;
+    font-size: 20px;
+}
+.all_formation .user .info_user1 img{
+    width: 20%;
+}
+.egypt{
+    height: 0px;
+}
+
+
+
+
+
+
+
+ /* أنماط التأثيرات البصرية */
+  .confirmation-modal {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.7);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+  }
+  
+  .modal-content {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    width: 90%;
+    max-width: 400px;
+    text-align: center;
+  }
+  
+  .modal-actions {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+  }
+  
+  .danger-btn {
+    background: #e74c3c;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .cancel-btn {
+    background: #ecf0f1;
+    border: none;
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  .loader-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(255,255,255,0.9);
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 1001;
+  }
+  
+  .spinner {
+    width: 50px;
+    height: 50px;
+    border: 5px solid #f3f3f3;
+    border-top: 5px solid #3498db;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+    margin-bottom: 15px;
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  
+  /* input[type="email"] {
+    width: 100%;
+    padding: 8px;
+    margin: 10px 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+  } */
+
+#accountDeletionModal{
+display:none;
+position:fixed;
+top:0;
+left:0;
+width:100%;
+height:100%;
+background:rgba(0,0,0,0.7);
+z-index:9999;
+}
+#accountDeletionModal .accountDeletionModal2{
+ background: #fff;
+    width: 90%;
+    max-width: 400px;
+    margin: 100px auto;
+    padding: 40px 0px 0px;
+    border-radius: 8px;
+    display: flex
+;
+    flex-direction: column;
+}
+#accountDeletionModal .accountDeletionModal2 h4 ,p{
+    font-family: "Readex Pro", serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;
+    font-variation-settings: "HEXP" 0;
+    color: #0079d6;
+    font-size: 19px;
+}
+#accountDeletionModal .accountDeletionModal2 p{
+ font-size: 11px;
+    padding: 10px 0px 32px;
+    color: #666666;
+    font-weight: 400;
+}
+#deletionErrorMsg{
+    color:red;
+    display:none;
+}
+#deletionLoader{
+    display:none;
+    position:fixed;
+    top:0;
+    left:0;
+    width:100%;
+    height:100%;
+    background:rgba(255,255,255,0.9);
+    z-index:10000;
+    flex-direction:column;
+    justify-content:center;
+    align-items:center;
+}
+#deletionLoader div{
+    width:50px;
+    height:50px;
+    border:5px solid #f3f3f3;
+    border-top:5px solid #3498db;
+    border-radius:50%;animation:spin 1s linear infinite;
+}
+#accountDeletionModal div input{
+   padding: 12px 13px 12px 45px;
+    border-radius: 12px;
+    border: 2px solid #b6b6b6;
+    outline: none;
+    display: inline-block;
+    box-sizing: border-box;
+    font-family: "Almarai", sans-serif;
+    font-weight: 600;
+    font-style: normal;
+    font-size: 14px;
+    text-align: end;
+    background-color: #f3f4f8;  
+}
+.sure{
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin: 0px;
+    flex-direction: row-reverse;
+    padding: 40px 0px 20px;
+}
+#confirmAccountDeletion{
+    padding: 10px 15px;
+    border-radius: 20px;
+    border: 0;
+    outline: 0;
+    background: #bd1212;
+    color: white;
+    cursor: pointer;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    font-family: "Readex Pro", serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;
+    font-variation-settings: "HEXP" 0; 
+}
+#cancelAccountDeletion{
+    padding: 10px 15px;
+    border-radius: 20px;
+    border: 0;
+    outline: 0;
+    background: #808080;
+    color: white;
+    cursor: pointer;
+    box-shadow: rgba(0, 0, 0, 0.24) 0px 3px 8px;
+    font-family: "Readex Pro", serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;
+    font-variation-settings: "HEXP" 0; 
+}
+  
+
+
+@media (max-width:1000px) {
+    body {
+    padding: 280px 0px 0px;
+}
+    .formation .section {
+    width: 261px;
+    padding: 14px;
+}
+#icon_person {
+    font-size: 60px;
+}
+.formation .section h1 {
+    font-size: 21px;
+}
+
+}
+@media (max-width:900px) {
+        .formation .section {
+        width: 235px;
+        padding: 13px;
+    }
+}
+
+@media (max-width:500px) {
+    body {
+    background: rgb(243, 244, 248);
+}
+    .all_formation .container {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: center;
+}
+    .formation {
+    max-width: 100%;
+}
+.formation .section {
+    display: flex;
+    align-items: flex-end;
+    flex-wrap: wrap;
+    flex-direction: row-reverse;
+    width: 100%;
+    margin-bottom: 23px;
+    padding: 10px;
+}
+.formation .section a {
+    margin: 0px 8px;
+    flex-basis: 127px;
+    flex-grow: 1;
+}
+.formation .section h1 {
+    font-size: 21px;
+}
+   #icon_person {
+    font-size: 70px;
+    cursor: pointer;
+}
+
+
+.all_formation .user {
+        width: 100%;
+        margin-top: 30px;
+ }
+.all_formation .user .info_user1 .input, .info_user1 h2 .input {
+    text-align: end;
+    margin-left: 30px;
+    width: 100%;
+}
+.all_formation .user .info_user1 .input input, .info_user1 h2 .input input {
+    padding: 15px 13px 15px 45px;
+    border: 1px solid #b6b6b6;
+    width: 100%;
+}
+.all_formation .user .info_user1 .input p, .info_user1 h2 .input p {
+    color: green;
+}
+.input i.fa-pen {
+    position: absolute;
+    left: 21px;
+    top: 58%;
+    transform: translateY(50%);
+    color: #999;
+    pointer-events: none;
+}
+.egypt img {
+    position: absolute;
+    left: 11px;
+    top: 7%;
+    transform: translateY(50%);
+    color: #999;
+    pointer-events: none;
+    border-radius: 5px;
+}
+.info_user1 p {
+    font-size: 10px;
+}
+.user .discount img {
+    width: 60%;
+    filter: grayscale(1);
+    opacity: 0.8;
+}
+.all_formation .user .info_user1 img {
+    width: 15%;
+    padding: 20px 0px 0px;
+}
+
+.info_user1 a {
+    padding: 17px 0px 0px;
+    font-size: 19px;
+}
+.info_user1 h5 {
+    font-size: 18px;
+}
+.formation .section h3 {
+    height: 45px;
+}
+.formation .section h2 {
+    color: #0361c5;
+}
+
+}
+
+
+
+@media (max-width:400px) {
+    .formation .section h3 {
+        height: 43px;
+    }
+    .all_formation .user .text h2 {
+    font-size: 23px;
+}
+.all_formation .user .text h3 {
+    font-size: 11px;
+    padding: 12px 0px;
+}
+    .all_formation .user .info_user1 .input, .info_user1 h2 .input {
+        margin-left: 0px;
+        width: 100%;
+    }
+.all_formation .user .info_user1 .input h3, .info_user1 h2 .input h3 {
+    font-size: 13px;
+    padding: 9px;
+}
+.all_formation .user .info_user1 .input p, .info_user1 h2 .input p {
+    font-size: 9px;
+    color: green;
+}
+.info_user1 p {
+        font-size: 10px;
+        width: fit-content;
+        text-align: end;
+    }
+        .info_user1 a {
+        padding: 17px 0px 0px;
+        font-size: 14px;
+    }
+        .info_user1 h5 {
+        font-size: 16px;
+    }
+
+}
+
+
+
+
+
+
+
+@media (max-width:350px) {
+        .formation .section a {
+        margin: 0px 8px;
+        flex-basis: 105px;
+        flex-grow: 1;
+    }
+    .all_formation .user .text h2 {
+        font-size: 21px;
+    }
+.all_formation .user .text h3 {
+        font-size: 10px;
+        padding: 12px 0px;
+    }
+.all_formation .user .info_user1, .info_user1 {
+    padding: 10px 12px 40px;
+}
+.buttons button {
+    font-size: 12px;
+}
+}
