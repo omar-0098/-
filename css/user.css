@@ -650,6 +650,9 @@ z-index:9999;
           body {
         padding: 225px 0px 0px;
     }
+    .formation .section div {
+    margin-bottom: 20px;
+}
     .formation .section h3 {
         height: 43px;
     }
