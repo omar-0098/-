@@ -59,6 +59,7 @@
     font-family: sans-serif;
     color: var(--color_heading);
     scroll-behavior: smooth;
+
 }
 .ooo{
     position: absolute;
@@ -68,7 +69,7 @@
     width: fit-content;
     padding: 5px 14px;
     color: white;
-    font-size: 9px;
+    font-size: 12px;
     border-radius: 11px;
     font-family: "Readex Pro", serif;
     font-optical-sizing: auto;
@@ -235,7 +236,7 @@ header .top_header .search_box{
 }
 header .top_header .search_box input{
     height: 44px;
-    width: 390px;
+    width: 575px;
     padding: 5px 15px 5px 10px;
     background-color: var(--bg_color);
     font-size: 18px;
@@ -403,6 +404,73 @@ header .bottom_header .nav_links li:hover a{
 header .bottom_header .nav_links li.active a{
     color: #0e68af;
 }
+
+
+
+
+
+
+
+
+
+
+
+.person1 ~ .man1 {
+        display: none;
+}
+    
+    /* أو إذا كانا في هيكل مختلف */
+.person1 + .man1 {
+        display: none;
+}
+
+.person1{
+    cursor: pointer;
+    width: 14%; 
+    background: #e5e7f0;
+    padding: 9px;
+    border-radius: 8px;
+}
+.person2{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    justify-content: space-evenly;
+}
+.person1 .person2 h1{
+     font-size: 20px;
+     font-family: "Rubik", serif;
+    font-optical-sizing: auto;
+    font-weight: 300;
+    font-style: normal;
+    margin-right: 12px;
+}
+#person{
+    font-size: 20px;
+    cursor: pointer;
+}
+.man1{
+    width: 14%;
+}
+.man2{
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+.man1 .man2 h1{
+    font-size: 20px;
+    font-family: "Readex Pro", serif;
+    font-optical-sizing: auto;
+    font-weight: 900;
+    font-style: normal;
+    font-variation-settings: "HEXP" 0;
+    margin-right: 12px;
+}
+#icon_person{
+    font-size: 35px;
+}
 /* /////////////////////////////// */
 
 
@@ -532,22 +600,24 @@ header .bottom_header .nav_links li.active a{
     font-weight: weight;
     font-style: normal;
 }
-.top_slide h2 i{
+ .top_slide h2 i{
     color: var(--white_color);
-}
-.top_slide h2::before{
+} 
+ .top_slide h2::before{
     content: '';
     position: absolute;
-    width: 1px;
-    height: 1px;
+    width: 0;
+    height: 0;
     top: 0;
     z-index: 9;
     border-left: 20px solid transparent;
     background-color: #fff;
     left: 0;
     border-bottom: 20px solid #1740a3;
-    margin: -1px 0px 0px -2px;
-}  
+}   
+
+.slide .container{
+    position: relative;
 }
 .slide .container .mySwiper{
     padding: 10px 0;
@@ -932,7 +1002,6 @@ footer .container{
 }
 footer .container .big_row .logo_footer{
     width: 266px;
-    height: fit-content;
 }
 footer .container .big_row{
     width: 35%;
@@ -1289,7 +1358,7 @@ footer .bottom_footer .payment_img{
     border-radius: 5px;
     box-shadow: 0px 8px 10px #c0bfbf44;
 }
-.checkout .ordersummary h1{
+.checkout .ordersummary h2{
     border-bottom: 1px solid var(--border_color);
     padding: 16px 16px;;
     margin-bottom: 20px;
@@ -1598,8 +1667,22 @@ footer .bottom_footer .payment_img{
 
 
 /* the screen madia */
+@media (max-width:1300px) {
+    .person1 .person2 h1 {
+    font-size: 16px;
+    font-weight: 700;
+    }
 
+}
 @media (max-width:1100px) {
+    .person1 {
+    width: 16%;
+}
+
+     .person1 .person2 h1 {
+    font-size: 13px;
+    font-weight: 700;
+    }
     body{
         padding-top: 250px;
     }
@@ -1706,6 +1789,9 @@ footer .bottom_footer .payment_img{
     }
 }
 @media (max-width:1000px) {
+    .person1 {
+        width: 17%;
+    }
     .telephone1 {
         align-self: flex-end;
         background: transparent;
@@ -1783,6 +1869,14 @@ footer .bottom_footer .payment_img{
 
 
 @media (max-width:800px) {
+        .person1 {
+       width: 22%;
+        padding: 9px;
+    }
+        .person1 .person2 h1 {
+        font-size: 14px;
+        font-weight: 700;
+    }
     .top_slide h2{
         font-size: 16px;
         padding: 10px 25px;
@@ -1858,8 +1952,10 @@ footer .bottom_footer .payment_img{
     }
 }
 
-
 @media (max-width:700px) {
+        .person1 {
+        width: 25%;
+        }
     .checkout .ordersummary .item_cart h4 {
     margin-bottom: 10px;
     font-size: 12px;
@@ -1872,6 +1968,61 @@ footer .bottom_footer .payment_img{
 
 
 @media (max-width:500px) {
+
+    .g_id_signin {
+
+    height: 42px;
+}
+    .login-start2 {
+    width: 80%;
+}
+.login-start2 input {
+    padding: 10px 11px !important;
+}
+#submitPhone {
+    margin: 20px 0px 0px !important;
+        padding: 3px !important;
+}
+    .masege-login {
+    position: fixed;
+    top: 230px !important;
+    right: 41%;
+    z-index: 111111;
+    display: none;
+    width: 40%;
+    right: 30%;
+    left: 30%;
+}
+.masege-login h1 {
+    width: 100%;
+    font-size: 15px !important;
+    padding: 15px 20px !important;
+}
+    .person1 {
+        width: 29%;
+    }
+    #person {
+    font-size: 16px;
+    cursor: pointer;
+}
+    .success-message {
+            font-size: 13px;
+        font-weight: 900;
+    }
+    .error-message {
+    font-size: 12px;
+}
+    form h1{
+    font-size: 20px !important;
+     padding: 15px !important;
+    margin: 5px 0px !important;
+}
+    .hesp {
+    padding: 0px 1em 0.6em 1em !important;
+}
+    .logo img {
+    width: 80%;
+}
       .swiper-pagination-bullet-active{
         background-color: var(--main_color) !important;
         width: 20px !important;
@@ -2175,6 +2326,80 @@ footer .bottom_footer .payment_img{
 }
 
 @media (max-width:400px) {
+
+    #welcomeMessage {
+    font-size: 13px !important;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+}
+    #icon_person {
+    font-size: 32px;
+}
+        .open_menu {
+        margin-right: 20px;
+    }
+    header .bottom_header nav{
+     justify-content: flex-start;
+    }
+    .man1 {
+    position: relative;
+    top: 124px;
+    left: 71px;
+}
+    .hrs {
+    margin: 6px 0px 19px !important;
+}
+    .login-start2 h3 {
+    margin: 5px 0px 18px !important;
+    font-size: 17px !important;
+}
+.login-start2 h2 {
+    padding: 18px 0px 0px !important;
+    font-size: 9px !important;
+}
+#submitPhone {
+    width: 63% !important;
+    padding: 5px !important;
+    font-size: 17px !important;
+    margin: 15px 0px 0px !important;
+}
+    .masege-login {
+    position: fixed;
+    top: 270px !important;
+    right: 30%;
+    z-index: 111111;
+    display: none;
+    left: 30%;
+    width: 46%;
+}
+.masege-login h1 {
+    width: 100%;
+    font-size: 14px !important;
+    padding: 15px 13px !important;
+}
+
+        .logo img {
+            width: 100%;
+        }
+    .inputGroups {
+    width: 100%;
+padding:  1em 0.5em 0em !important;
+}
+.inputGroups .inputGroup {
+    width: 50%;
+    padding: 0px 0.5em 0.6em 0.5em !important;
+}
+        form h1 {
+        margin: 0px 0px 0px !important;
+    }
+    .login {
+    box-sizing: border-box;
+    margin-top: 15px !important;
+    }
+    .inputGroup {
+    padding: 0px 1em 0.6em 1em !important;
+}
     header .bottom_header .category_nav {
         width: 43%;
         direction: ltr;
@@ -2213,6 +2438,12 @@ footer .bottom_footer .payment_img{
     }
 }
 @media (max-width: 500px) {
+    .inputGroup input {
+    padding: 11px 10px !important;
+}
+.inputGroups .inputGroup {
+    margin-bottom: 0px !important;
+}
     .checkout .ordersummary,
     .checkout .input_info{
         width: 100%;
@@ -2262,6 +2493,29 @@ footer .bottom_footer .payment_img{
 
 
 @media (max-width:400px) {
+        .person1 .person2 h1 {
+        font-size: 14px;
+        font-weight: 700;
+    }
+        .person1 {
+        width: 37%;
+        padding: 9px 3px;
+    }
+    #person {
+    font-size: 17px;
+    cursor: pointer;
+}
+    header .top_header .header_icons{
+            display: flex;
+    gap: 5px;
+    }
+        header .top_header .logo {
+        width: 140px;
+        height: 40px;
+        display: flex;
+        align-items: center;
+    }
+        
         .checkout .ordersummary .item_cart h4 {
         margin-bottom: 10px;
         font-size: 11px;
@@ -2271,6 +2525,10 @@ footer .bottom_footer .payment_img{
     }
     .product .name_product {
         line-height: 21px;
+    }
+    .inputGroup input {
+        width: 100%;
+        padding: 11px !important;
     }
 .shop {
     font-size: 13px;
@@ -2421,9 +2679,50 @@ footer .bottom_footer .payment_img{
 
 
 
-
 @media (max-width:350px) {
-            .checkout .ordersummary .item_cart h4 {
+    #person {
+    font-size: 18px;
+    cursor: pointer;
+}
+    .person1 {
+        width: 37%;
+    }
+    .person1 .person2 h1 {
+        font-size: 13px;
+        font-weight: 700;
+        margin-right: 0px;
+    }
+    header .top_header .header_icons {
+    display: flex;
+    gap: 0px;
+}
+    header .top_header .logo {
+        width: 120px;
+        height: 40px;
+    }
+    .inputGroup input {
+    padding: 11px !important;
+    }
+ 
+
+    form h1 {
+        font-size: 17px !important;
+        padding: 15px !important;  
+         margin: 16px 0px !important;
+    }
+#closeOverlay {
+    border-radius: 50%;
+    height: 25px;
+    width: 25px;
+    border: 2px solid;
+    font-size: 20px;
+    margin-right: 19px;
+    margin-top: 17px;
+}
+.login {
+    margin-top: 8px !important;
+}
+        .checkout .ordersummary .item_cart h4 {
         margin-bottom: 13px;      
           font-size: 10px;
         height: 33px;
@@ -2528,3 +2827,467 @@ body {
   body.dark-mode a {
     color: #00bcd4;
   }  */
+
+
+
+
+
+ body {
+    height: 100%;
+    font-family: 'Segoe UI', sans-serif;
+  }
+body.no-scroll {
+  overflow: hidden;
+}
+  .freeze-all {
+    pointer-events: none !important;
+    user-select: none;
+    animation-play-state: paused !important;
+    transition: none !important;
+  }
+  .logine-img{
+    padding: 0px 3em 0.6em 3em; 
+  }
+  .hesp{
+    padding: 0px 3em 0.6em 3em; 
+  }
+  .button-login{
+    padding: 0px 3em 0.6em 3em; 
+  }
+  .site-content {
+    padding: 2em;
+  }
+  
+  #overlay {
+  display: none; /* مخفي عند التحميل */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  backdrop-filter: blur(10px);
+  background-color: rgba(255, 255, 255, 0.2);
+  z-index: 9999;
+  justify-content: center;
+  align-items: center;
+}
+  form div img{
+        width: 98%;
+  }
+  .glass-form {
+    background-color: rgb(255, 255, 255);
+    /* padding: 0px 3em 0.6em 3em; */
+    border-radius: 20px;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
+    max-width: 409px;
+    width: 90%;
+    display: inline-block; /* هنا التعديل */
+  }
+  .inputGroup {
+    margin-bottom: 7px;
+    width: 100%;
+    display: inline-block; /* هنا التعديل */
+    padding: 0px 3em 0.6em 3em;
+
+  }
+  .inputGroups{
+       width: 100%;
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    padding: 0px 3em 0.6em 3em;
+    flex-direction: row-reverse;
+  }
+.inputGroups .inputGroup{
+    margin-bottom: 7px;
+    width: 49%;
+    display: inline-block;
+    padding: 0px 0em 0.6em 0em;
+}
+  .inputGroup label {
+    margin-bottom: 10px;
+    display: inline-block; /* هنا التعديل */
+    color: #000;
+    width: 100%;
+  }
+  .inputGroup input {
+    width: 100%;
+    padding: 15px;
+    border-radius: 12px;
+    border: 2px solid #ccc;
+    outline: none;
+    display: inline-block; /* هنا التعديل */
+    box-sizing: border-box;
+    font-family: "Almarai", sans-serif;
+    font-weight: 600;
+    font-style: normal;
+    font-size: 14px;
+    text-align: end;
+  }
+  .inputGroup input:focus {
+    border-color: #4e65ff;
+  }
+
+
+  .login {
+box-sizing: border-box;
+    margin-top: 13px;
+    outline: 0px;
+    text-decoration: none;
+    line-height: 1.71429;
+    text-transform: unset;
+    min-width: 64px;
+    border: 0px currentcolor;
+    --variant-containedBg: #2A3148;
+    box-shadow: none;
+    width: 100%;
+    background: rgb(0, 115, 250);
+    color: white;
+    padding: 8px;
+    border-radius: 8px;
+    font-size: 18px;
+    display: inline-block;
+    cursor: pointer;
+    transition: 0.3s;
+    border: 2px solid rgb(0, 115, 250);
+    font-family: "Rubik", serif;
+    font-optical-sizing: auto;
+    font-weight: 700;
+    font-style: normal;
+  }
+  button:hover {
+    background: transparent;
+    color: black;
+  }
+  form h1{
+    text-align: center;
+    background: #404553;
+    color: white;
+    border-radius: 12px;
+    padding: 11px;
+    font-family: "Readex Pro", serif;
+    font-optical-sizing: auto;
+    font-weight: 700;
+    font-style: normal;
+    font-variation-settings: "HEXP" 0;
+    font-size: 24px;
+    margin: 25px 0px;
+  }
+    form h2{
+    text-align: center;
+    color: #404553;
+    border-radius: 12px;
+    padding: 8px;
+    font-size: 10px;
+    font-family: "Almarai", sans-serif;
+    font-weight: 600;
+    font-style: normal;
+   
+  }
+
+
+   form h2 span a{
+    text-align: center;
+    color: #2353d4;
+    border-radius: 12px;
+    padding: 8px;
+    font-size: 10px;
+    font-family: "Almarai", sans-serif;
+    font-weight: 600;
+    font-style: normal;
+   margin: 0px;
+   padding: 0px;
+  }
+#closeOverlay{
+ border-radius: 50%;
+    height: 30px;
+    width: 30px;
+    border: 2px solid #818283;
+    font-size: 22px;
+     margin-right: 20px;
+    margin-top: 22px;  
+}
+.ex{
+    display: flex;
+    justify-content: end;
+ 
+}
+   .masege-login{
+ position: fixed;
+    top: 179px;
+    right: 41%;
+    z-index: 111111;   
+    display: none;
+}    
+
+
+
+
+.masege-login h1{
+     background-image: linear-gradient(45deg, #b4d7ff66, #0e68af, #f9607f);
+    width: 100%;
+    font-size: 25px;
+    font-family: "Rubik", serif;
+    font-optical-sizing: auto;
+    font-weight: bolder;
+    font-style: normal;
+    text-align: center;
+    padding: 15px 38px;
+    border-radius: 8px;
+    color: white;
+}
+.error-message{
+    font-family: "Readex Pro", serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
+    font-variation-settings: "HEXP" 0;
+}
+#welcomeMessage #userName{
+     font-family: "Readex Pro", serif;
+    font-optical-sizing: auto;
+    font-weight: 900;
+    font-style: normal;
+    font-variation-settings: "HEXP" 0;
+}
+.google{
+ margin: 0px 3em 0.6em 3em;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    box-sizing: border-box;
+    -webkit-tap-highlight-color: transparent;
+    outline: 0px;
+    cursor: pointer;
+    text-decoration: none;
+    line-height: 1.71429;
+    text-transform: unset;
+    min-width: 64px;
+    --variant-containedBg: #2A3148;
+    box-shadow: none;
+    background: white;
+    color: black;
+    padding: 8px 12px;
+    transition: 0.3s;
+    border: 1px solid rgba(0, 148, 255, 0.4);
+    border-radius: 8px;
+    font-weight: 400;
+    font-size: 12px;
+    gap: 16px;
+    flex-direction: row-reverse;
+}
+.google h3{
+        font-family: "Rubik", serif;
+    font-optical-sizing: auto;
+    font-weight: weight;
+    font-style: normal;
+}
+
+.google img{
+    width: 8%;
+}
+.hrs{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+     margin: 20px 0px;
+}
+.hrs hr{
+    margin: 0px;
+    flex-shrink: 0;
+    border-width: 0px 0px thin;
+    border-style: solid;
+    border-color: rgba(133, 141, 156, 0.2);
+    height: 1px;
+    width: 34%;
+    background-color: rgba(156, 154, 165, 0.3);
+}
+.hrs h4{
+    margin: 0px 14px;
+    font-family: "Readex Pro", serif;
+    font-optical-sizing: auto;
+    font-weight: 900;
+    font-style: normal;
+    font-variation-settings: "HEXP" 0;
+    color: rgba(156, 154, 165, 0.44);
+    font-size: 12px;
+}
+
+#userDataDisplay{
+    display: none;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/* تنسيق قسم الترحيب */
+.man1 {
+    display: none;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+}
+
+.man2 {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+#welcomeMessage {
+    margin: 0;
+    font-size: 16px;
+    color: #333;
+    font-weight: bold;
+}
+
+#userName {
+    color: #4e65ff;
+    font-weight: bold;
+}
+
+#icon_person {
+    font-size: 30px;
+    color: #4e65ff;
+}
+
+/* تنسيق رسائل الخطأ والنجاح */
+.error-message {
+    color: red;
+    margin: 10px 0;
+    text-align: center;
+    font-size: 10px;
+}
+
+.success-message {
+    color: green;
+    margin: 10px 0;
+    text-align: center;
+    font-family: "Readex Pro", serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
+    font-variation-settings: "HEXP" 0;
+}
+
+
+
+  #google-login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: fit-content; /* أو حسب الحاجة */
+  }
+
+.g_id_signin {
+    font-family: 'Arial', sans-serif;
+    font-size: 18px;
+    border-radius: 8px;
+     background-color: white;
+}
+
+#submitPhone{
+box-sizing: border-box;
+    margin-top: 13px;
+    outline: 0px;
+    text-decoration: none;
+    line-height: 1.71429;
+    text-transform: unset;
+    min-width: 64px;
+    border: 0px currentcolor;
+    --variant-containedBg: #2A3148;
+    box-shadow: none;
+    width: 61%;
+    background: rgb(0, 115, 250);
+    color: white;
+    padding: 5px;
+    border-radius: 8px;
+    font-size: 18px;
+    display: inline-block;
+    cursor: pointer;
+    transition: 0.3s;
+    border: 2px solid rgb(0, 115, 250);
+    font-family: "Rubik", serif;
+    font-optical-sizing: auto;
+    font-weight: 700;
+    font-style: normal;
+    margin: 15px 0px 0px;
+}
+#phoneError{
+    color: red;
+     height: 20px;
+      margin: 5px;
+}
+.login-start2{
+    background: white;
+    padding: 20px;
+    border-radius: 10px;
+    text-align: center;
+    max-width: 400px;
+    margin: auto;
+}
+.login-start2 h3{
+    color: var(--color_heading);
+    font-family: "Almarai", sans-serif;
+    font-weight: 800;
+    font-style: normal;
+    margin: 6px 0px 33px;
+}
+.login-start2 input{
+    width: 84%;
+    padding: 12px 12px;
+    border-radius: 12px;
+    border: 2px solid #ccc;
+    outline: none;
+    display: inline-block;
+    box-sizing: border-box;
+    font-family: "Almarai", sans-serif;
+    font-weight: 600;
+    font-style: normal;
+    font-size: 14px;
+    text-align: end;
+}
+.login-start2 h2{
+    text-align: center;
+    color: #404553;
+    border-radius: 12px;
+    padding: 8px;
+    font-size: 10px;
+    font-family: "Almarai", sans-serif;
+    font-weight: 600;
+    font-style: normal; 
+}
+.login-start2 h2 span a {
+    text-align: center;
+    color: #2353d4;
+    border-radius: 12px;
+    padding: 8px;
+    font-size: 10px;
+    font-family: "Almarai", sans-serif;
+    font-weight: 600;
+    font-style: normal;
+    margin: 0px;
+    padding: 0px;
+}
+ 
