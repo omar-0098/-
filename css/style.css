@@ -2533,8 +2533,7 @@ padding:  1em 0.5em 0em !important;
     }
     .inputGroup input {
         width: 100%;
-        padding: 11px !important;
-    }
+padding: 16px 13px !important;    }
 .shop {
     font-size: 13px;
 }
@@ -2712,7 +2711,7 @@ padding:  1em 0.5em 0em !important;
         height: 40px;
     }
     .inputGroup input {
-    padding: 11px !important;
+           padding: 15px 16px !important;
     }
  
 
