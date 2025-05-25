@@ -1,5 +1,5 @@
 
-const scriptURL = "https://script.google.com/macros/s/AKfycbxRGNbJlfhu0R3y9cjeevewdavkR63cUmRWWDYcW5dIoQFwyHe0OQfdkL5BJ1CqmFyuJg/exec";
+const scriptURL = "https://script.google.com/macros/s/AKfycbySyZDEa2Aavrz1p7GHVBSGDbQXn0ow2Y_9jyihRDfTVixI9JSCI8KLANcuSw0VuQwjpQ/exec";
 // const scriptURL = "https://script.google.com/macros/s/AKfycby2NA_ysjrMtpA5cJFaXDeXG55-FvuO46ajiG7L9lNDgSmxalCLfRJpS5Vh8KHlqH7kgA/exec";
 const form = document.getElementById("registerForm");
 const overlay = document.getElementById("overlay");
