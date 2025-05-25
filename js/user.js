@@ -429,12 +429,7 @@ function isUpdated() {
 
 
 
-
-
-
-
-
- const icon = document.getElementById("icon_person");
+const icon = document.getElementById("icon_person");
 const fileInput = document.getElementById("fileInput");
 const profileImage = document.getElementById("profileImage");
 
@@ -486,6 +481,9 @@ fileInput.addEventListener("change", (event) => {
             userData.profileImage = e.target.result;
             localStorage.setItem('userData', JSON.stringify(userData));
             
+            // إرسال البيانات إلى Google Sheets
+            sendToGoogleSheets(userData);
+            
             alert('تم حفظ الصورة بنجاح!');
         };
         
@@ -497,6 +495,54 @@ fileInput.addEventListener("change", (event) => {
     }
 });
 
+// إضافة حدث الضغط المزدوج لحذف الصورة
+profileImage.addEventListener("dblclick", function() {
+    if (confirm("هل تريد حقاً حذف هذه الصورة؟")) {
+        // حذف الصورة من localStorage
+        localStorage.removeItem('userProfileImage');
+        
+        // حذف الصورة من بيانات المستخدم
+        const userData = JSON.parse(localStorage.getItem('userData')) || {};
+        delete userData.profileImage;
+        localStorage.setItem('userData', JSON.stringify(userData));
+        
+        // إعادة عرض الأيقونة الأصلية
+        profileImage.style.display = "none";
+        icon.style.display = "block";
+        profileImage.src = "";
+        
+        alert("تم حذف الصورة بنجاح");
+    }
+});
+
+// دالة لإرسال البيانات إلى Google Sheets
+function sendToGoogleSheets(data) {
+    // هنا يجب وضع رابط سكربت Google Apps Script الخاص بك
+    const scriptURL = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec';
+    
+    // تحضير البيانات للإرسال
+    const formData = new FormData();
+    formData.append('action', 'saveProfileImage');
+    formData.append('data', JSON.stringify(data));
+    
+    // إرسال البيانات
+    fetch(scriptURL, {
+        method: 'POST',
+        body: formData
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        console.log('تم إرسال البيانات بنجاح:', data);
+    })
+    .catch(error => {
+        console.error('حدث خطأ أثناء الإرسال:', error);
+    });
+}
 
 
 
