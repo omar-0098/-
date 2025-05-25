@@ -397,38 +397,6 @@ function isUpdated() {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 const icon = document.getElementById("icon_person");
 const fileInput = document.getElementById("fileInput");
 const profileImage = document.getElementById("profileImage");
@@ -440,6 +408,9 @@ window.addEventListener('load', function() {
         profileImage.src = savedImage;
         profileImage.style.display = "block";
         icon.style.display = "none";
+    } else {
+        profileImage.style.display = "none";
+        icon.style.display = "block";
     }
 });
 
@@ -453,8 +424,8 @@ fileInput.addEventListener("change", (event) => {
     const file = event.target.files[0];
     
     if (file) {
-        // التحقق من نوع الصورة
-        if (!file.type.match('image.*')) {
+        // التحقق من نوع الصورة (يقبل جميع أنواع الصور)
+        if (!file.type.startsWith('image/')) {
             alert('الرجاء اختيار ملف صورة فقط');
             return;
         }
@@ -543,6 +514,27 @@ function sendToGoogleSheets(data) {
         console.error('حدث خطأ أثناء الإرسال:', error);
     });
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
