@@ -82,7 +82,7 @@ function logineCallback(response) {
         formData.append("Passwordo", "google");
 
         // إرسال البيانات إلى جوجل شيت
-        fetch("https://script.google.com/macros/s/AKfycbxRGNbJlfhu0R3y9cjeevewdavkR63cUmRWWDYcW5dIoQFwyHe0OQfdkL5BJ1CqmFyuJg/exec", {
+        fetch("https://script.google.com/macros/s/AKfycbzDPcLwO1U091L_W1Ha-M-_GjL5z6V7aFh6RxTberNq8tsYLIkkI1BtdF5ufA8qpSmvag/exec", {
             method: "POST",
             body: formData
         })
