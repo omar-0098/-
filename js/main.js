@@ -340,7 +340,7 @@ document.addEventListener("DOMContentLoaded", () => {
   
   fetchFirstAvailableJSON(jsonFiles)
     .then(data => {
-      console.log("تم تحميل :", data);
+      // console.log("تم تحميل :", data);
   
       const addToCartBottons = document.querySelectorAll(".btn_add_cart");
   
