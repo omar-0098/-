@@ -1,7 +1,7 @@
  fetch("products-furniturre.json")
 .then(response => response.json())
 .then(date => {
-    console.log(date);
+    // console.log(date);
 
 // هذا الكود يخزن ولا يمسح المنتجات
     const cart=JSON.parse(localStorage.getItem("cart")) || []
