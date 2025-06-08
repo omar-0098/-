@@ -139,7 +139,6 @@ function changeItemImage(src) {
 
 
 
-
 // إعدادات JSONBin
 const BIN_ID = "684430798561e97a5020a6a3";
 const API_KEY = "$2a$10$xAWjC3zelpDKCd6zdOdUg.D0bwtEURjcR5sEiYdonjBmP5lHuqzq2";
@@ -162,30 +161,18 @@ function formatDate(date) {
   });
 }
 
-function createCommentElement({ name, comment, date, color, rating, userImage, userName }) {
+function createCommentElement({ name, comment, date, color, rating, imageUrl }) {
   const commentDiv = document.createElement('div');
   commentDiv.className = 'comment';
 
   const avatar = document.createElement('div');
   avatar.className = 'avatar';
 
-  // 🆕 استخدام الصورة المحفوظة في localStorage للمستخدم الحالي
-  const currentUserData = JSON.parse(localStorage.getItem('userData')) || {};
-  
-  // إذا كان التعليق للمستخدم الحالي، استخدم الصورة من localStorage
-  if (userName === currentUserData.name && currentUserData.profileImage) {
-    avatar.style.backgroundImage = `url(${currentUserData.profileImage})`;
+  if (imageUrl) {
+    avatar.style.backgroundImage = `url(${imageUrl})`;
     avatar.style.backgroundSize = 'cover';
     avatar.style.backgroundPosition = 'center';
-  } 
-  // إذا كان للتعليق صورة محفوظة مسبقاً
-  else if (userImage) {
-    avatar.style.backgroundImage = `url(${userImage})`;
-    avatar.style.backgroundSize = 'cover';
-    avatar.style.backgroundPosition = 'center';
-  } 
-  // إذا لم توجد صورة، استخدم الحرف الأول والخلفية الملونة
-  else {
+  } else {
     avatar.style.backgroundColor = color;
     avatar.textContent = name.charAt(0);
   }
@@ -272,9 +259,7 @@ async function postComment() {
   const comment = commentInput.value.trim();
   const userData = JSON.parse(localStorage.getItem('userData')) || {};
   const name = userData.name || 'مستخدم';
-  
-  // 🆕 الحصول على صورة المستخدم من localStorage
-  const userImage = userData.profileImage || null;
+  const imageUrl = userData.imageUrl || null;
 
   if (name === 'مستخدم') {
     return alert("❌ يجب عليك إنشاء حساب أولاً قبل نشر التعليق.");
@@ -289,9 +274,8 @@ async function postComment() {
     date: new Date(),
     color: getRandomColor(),
     rating: selectedRating,
-    userImage, // 🆕 حفظ صورة المستخدم مع التعليق
-    userName: name, // 🆕 حفظ اسم المستخدم للمقارنة لاحقاً
-    productId
+    imageUrl,
+    productId // 🆕
   };
 
   try {
