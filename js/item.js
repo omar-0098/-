@@ -279,7 +279,7 @@ async function postComment() {
     name,
     comment,
     date: new Date(),
-    // color: getRandomColor(),
+     color: getRandomColor(),
     rating: selectedRating,
     productId // ❌ تمت إزالة imageUrl عمداً
   };
