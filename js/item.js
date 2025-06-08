@@ -131,11 +131,6 @@ function changeItemImage(src) {
 
 
 
-
-
-
-
-
 // إعدادات JSONBin
 const BIN_ID = "684430798561e97a5020a6a3";
 const API_KEY = "$2a$10$xAWjC3zelpDKCd6zdOdUg.D0bwtEURjcR5sEiYdonjBmP5lHuqzq2";
@@ -180,7 +175,7 @@ function createCommentElement({ name, comment, date, color, rating, imageUrl, id
   content.innerHTML = `
     <div class="comment-name">${name}</div>
     <div class="comment-date .comment-stars"> ${formatDate(date)}</div>
-    <div class="comment-text">${'⭐'.repeat(rating)}</div>
+    <div class="comment-text">${'<i class="fa-solid fa-star" id="star"></i>'.repeat(rating)}</div>
     <div class="comment-text">${comment}</div>
   `;
 
@@ -404,8 +399,6 @@ window.onload = async function () {
   updateProductStats();
   updateCommentCount();
 };
-
-
 
 
 
