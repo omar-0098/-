@@ -138,7 +138,6 @@ function changeItemImage(src) {
 
 
 
-
 // إعدادات JSONBin
 const BIN_ID = "684430798561e97a5020a6a3";
 const API_KEY = "$2a$10$xAWjC3zelpDKCd6zdOdUg.D0bwtEURjcR5sEiYdonjBmP5lHuqzq2";
@@ -259,6 +258,8 @@ async function postComment() {
   const comment = commentInput.value.trim();
   const userData = JSON.parse(localStorage.getItem('userData')) || {};
   const name = userData.name || 'مستخدم';
+  const fatherName = userData.family || ''; // افترض أن هناك حقل اسم الأب
+  const fullName = fatherName ? `${name} ${fatherName}` : name; // دمج الاسم واسم الأب
   const imageUrl = userData.imageUrl || null;
 
   if (name === 'مستخدم') {
@@ -269,13 +270,13 @@ async function postComment() {
   if (selectedRating === 0) return alert('يرجى اختيار تقييم من النجوم!');
 
   const newComment = {
-    name,
+    name: fullName, // استخدام الاسم الكامل بدلاً من الاسم الأول فقط
     comment,
     date: new Date(),
     color: getRandomColor(),
     rating: selectedRating,
     imageUrl,
-    productId // 🆕
+    productId
   };
 
   try {
