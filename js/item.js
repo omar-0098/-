@@ -130,14 +130,29 @@ function changeItemImage(src) {
 
 
 
-// ========== جزء التعليقات ==========
+
+
+
+
+
+
+
+
+
+
+
+
+// إعدادات JSONBin
+const BIN_ID = "684430798561e97a5020a6a3";
+const API_KEY = "$2a$10$xAWjC3zelpDKCd6zdOdUg.D0bwtEURjcR5sEiYdonjBmP5lHuqzq2";
+
 const colors = ['#e74c3c', '#8e44ad', '#3498db', '#f39c12', '#27ae60', '#e67e22', '#1abc9c'];
 let allComments = [];
 let visibleCount = 5;
 let selectedRating = 0;
 
-// 🆕 تحديد اسم مفتاح التخزين حسب الصفحة
-const pageKey = `comments_${window.location.pathname}`;
+// 🆕 معرف المنتج الحالي (الصفحة)
+const productId = window.location.pathname;
 
 function getRandomColor() {
   return colors[Math.floor(Math.random() * colors.length)];
@@ -145,106 +160,41 @@ function getRandomColor() {
 
 function formatDate(date) {
   return new Date(date).toLocaleDateString('ar-EG', {
-    year: 'numeric',
-    month: 'long',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit'
+    year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit'
   });
 }
 
-// 🆕 حفظ التعليقات الخاصة بالصفحة فقط
-function saveComments() {
-  localStorage.setItem(pageKey, JSON.stringify(allComments));
-}
-
-function updateProductStats() {
-  const statsContainer = document.getElementById('starsStats');
-  const counts = [0, 0, 0, 0, 0];
-
-  allComments.forEach(c => {
-    if (c.rating >= 1 && c.rating <= 5) {
-      counts[c.rating - 1]++;
-    }
-  });
-
-  const total = counts.reduce((a, b) => a + b, 0);
-  statsContainer.innerHTML = '';
-
-  for (let i = 5; i >= 1; i--) {
-    const count = counts[i - 1];
-    const percent = total > 0 ? (count / total) * 100 : 0;
-
-    const bar = document.createElement('div');
-    bar.className = 'rating-bar';
-    bar.innerHTML = `
-      <span class="label">⭐ ${i}</span>
-      <div class="progress">
-        <div class="progress-inner" style="width: ${percent}%;"></div>
-      </div>
-      <span class="count">${count}</span>
-    `;
-    statsContainer.appendChild(bar);
-  }
-}
-
-function createCommentElement({ name, comment, date, color, rating }) {
+function createCommentElement({ name, comment, date, color, rating, imageUrl }) {
   const commentDiv = document.createElement('div');
   commentDiv.className = 'comment';
 
   const avatar = document.createElement('div');
   avatar.className = 'avatar';
-  avatar.style.backgroundColor = color;
-  avatar.textContent = name.charAt(0);
+
+  // ✅ جلب الصورة من localStorage فقط (بدون حفظها في التعليقات)
+  const userData = JSON.parse(localStorage.getItem('userData')) || {};
+  const currentUserImage = userData.profileImage || null;
+
+  if (currentUserImage) {
+    avatar.style.backgroundImage = `url(${currentUserImage})`;
+    avatar.style.backgroundSize = 'cover';
+    avatar.style.backgroundPosition = 'center';
+  } else {
+    avatar.style.backgroundColor = color;
+    avatar.textContent = name.charAt(0);
+  }
 
   const content = document.createElement('div');
   content.className = 'comment-content';
-
-  const nameDiv = document.createElement('div');
-  nameDiv.className = 'comment-name';
-  nameDiv.textContent = name;
-
-  const textDiv = document.createElement('div');
-  textDiv.className = 'comment-text';
-  textDiv.id = 'text';
-  textDiv.textContent = comment;
-
-  const ratingDiv = document.createElement('div');
-  ratingDiv.className = 'comment-text';
-  ratingDiv.innerHTML = '⭐'.repeat(rating);
-
-  const dateDiv = document.createElement('div');
-  dateDiv.className = 'comment-date';
-  dateDiv.textContent = 'تاريخ النشر: ' + formatDate(date);
-
-  content.appendChild(nameDiv);
-  content.appendChild(ratingDiv);
-  content.appendChild(textDiv);
-  content.appendChild(dateDiv);
+  content.innerHTML = `
+    <div class="comment-name">${name}</div>
+    <div class="comment-text">${'⭐'.repeat(rating)}</div>
+    <div class="comment-text">${comment}</div>
+    <div class="comment-date">تاريخ النشر: ${formatDate(date)}</div>
+  `;
 
   commentDiv.appendChild(avatar);
   commentDiv.appendChild(content);
-
-  let clickCount = 0;
-  commentDiv.addEventListener('click', () => {
-    clickCount++;
-    if (clickCount === 3) {
-      const password = prompt("🔒 أدخل كلمة السر لحذف التعليق:");
-      if (password === 'omar') {
-        commentDiv.remove();
-        allComments = allComments.filter(c =>
-          !(c.name === name && c.comment === comment && formatDate(c.date) === formatDate(date))
-        );
-        saveComments();
-        renderComments();
-        updateProductStats();
-        updateCommentCount();
-      } else {
-        alert("❌ كلمة السر غير صحيحة!");
-      }
-      clickCount = 0;
-    }
-  });
 
   return commentDiv;
 }
@@ -252,12 +202,12 @@ function createCommentElement({ name, comment, date, color, rating }) {
 function renderComments() {
   const container = document.getElementById('commentsContainer');
   container.innerHTML = '';
-  const toShow = allComments.slice().reverse().slice(0, visibleCount);
+  const filtered = allComments.filter(c => c.productId === productId);
+  const toShow = filtered.slice().reverse().slice(0, visibleCount);
   toShow.forEach(comment => {
-    const commentEl = createCommentElement(comment);
-    container.appendChild(commentEl);
+    container.appendChild(createCommentElement(comment));
   });
-  document.getElementById('loadMoreBtn').style.display = (visibleCount < allComments.length) ? 'block' : 'none';
+  document.getElementById('loadMoreBtn').style.display = (visibleCount < filtered.length) ? 'block' : 'none';
 }
 
 function loadMoreComments() {
@@ -267,46 +217,41 @@ function loadMoreComments() {
   updateCommentCount();
 }
 
-function postComment() {
-  const nameInput = document.getElementById('usernameInput');
-  const commentInput = document.getElementById('commentInput');
-  const name = nameInput.value.trim();
-  const comment = commentInput.value.trim();
-  const wordCount = name.split(' ').length;
+function updateProductStats() {
+  const statsContainer = document.getElementById('starsStats');
+  const counts = [0, 0, 0, 0, 0];
 
-  if (wordCount < 2 || wordCount > 5) {
-    alert('❌ يجب أن يكون الاسم ثلاثي إلى خماسي فقط!');
-    return;
+  const filtered = allComments.filter(c => c.productId === productId);
+  filtered.forEach(c => { if (c.rating >= 1 && c.rating <= 5) counts[c.rating - 1]++; });
+
+  const total = counts.reduce((a, b) => a + b, 0);
+  statsContainer.innerHTML = '';
+
+  for (let i = 5; i >= 1; i--) {
+    const percent = total > 0 ? (counts[i - 1] / total) * 100 : 0;
+    statsContainer.innerHTML += `
+      <div class="rating-bar">
+        <span class="label">⭐ ${i}</span>
+        <div class="progress"><div class="progress-inner" style="width: ${percent}%;"></div></div>
+        <span class="count">${counts[i - 1]}</span>
+      </div>
+    `;
   }
+}
 
-  if (comment === '') {
-    alert('يرجى كتابة تعليق!');
-    return;
-  }
+function updateCommentCount() {
+  const count = allComments.filter(c => c.productId === productId).length;
+  document.getElementById('totalComments').textContent = `عدد التقيمات: ${count}`;
+}
 
-  if (selectedRating === 0) {
-    alert('يرجى اختيار تقييم من النجوم!');
-    return;
-  }
-
-  const newComment = {
-    name,
-    comment,
-    date: new Date(),
-    color: getRandomColor(),
-    rating: selectedRating
-  };
-
-  allComments.push(newComment);
-  saveComments();
-  renderComments();
-  updateProductStats();
-  updateCommentCount();
-
-  nameInput.value = '';
-  commentInput.value = '';
-  selectedRating = 0;
-  updateStarDisplay();
+function updateStarDisplay() {
+  const colorMap = { 1: 'red', 2: 'orange', 3: '#f1c40f', 4: 'green', 5: '#3498db' };
+  document.querySelectorAll('.star').forEach(star => {
+    const num = parseInt(star.getAttribute('data-star'));
+    star.classList.toggle('selected', num <= selectedRating);
+    star.style.color = num <= selectedRating ? colorMap[selectedRating] : '#ccc';
+  });
+  document.getElementById('ratingDisplay').textContent = `التقييم: ${selectedRating} نجمة`;
 }
 
 document.querySelectorAll('.star').forEach(star => {
@@ -316,50 +261,79 @@ document.querySelectorAll('.star').forEach(star => {
   });
 });
 
-function updateStarDisplay() {
-  const colorMap = {
-    1: 'red',
-    2: 'orange',
-    3: '#f1c40f',
-    4: 'green',
-    5: '#3498db'
+async function postComment() {
+  const commentInput = document.getElementById('commentInput');
+  const comment = commentInput.value.trim();
+  const userData = JSON.parse(localStorage.getItem('userData')) || {};
+  const name = userData.name || 'مستخدم';
+  const imageUrl = userData.profileImage || null;
+
+  if (name === 'مستخدم') {
+    return alert("❌ يجب عليك إنشاء حساب أولاً قبل نشر التعليق.");
+  }
+
+  if (!comment) return alert('يرجى كتابة تعليق!');
+  if (selectedRating === 0) return alert('يرجى اختيار تقييم من النجوم!');
+
+ const newComment = {
+    name,
+    comment,
+    date: new Date(),
+    // color: getRandomColor(),
+    rating: selectedRating,
+    productId // ❌ تمت إزالة imageUrl عمداً
   };
-  document.querySelectorAll('.star').forEach(star => {
-    const starNum = parseInt(star.getAttribute('data-star'));
-    star.classList.remove('selected');
-    star.style.color = starNum <= selectedRating ? colorMap[selectedRating] : '#ccc';
-    if (starNum <= selectedRating) {
-      star.classList.add('selected');
-    }
-  });
-  document.getElementById('ratingDisplay').textContent = `التقييم: ${selectedRating} نجمة`;
+
+  try {
+    const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
+      headers: { 'X-Master-Key': API_KEY }
+    });
+    const data = await res.json();
+    const comments = data.record.comments || [];
+
+    comments.push(newComment);
+
+    await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
+      method: "PUT",
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Master-Key': API_KEY
+      },
+      body: JSON.stringify({ comments })
+    });
+
+    allComments.push(newComment);
+    renderComments();
+    updateProductStats();
+    updateCommentCount();
+
+    commentInput.value = '';
+    selectedRating = 0;
+    updateStarDisplay();
+
+    alert("✅ تم نشر تعليقك!");
+  } catch (err) {
+    console.error("❌ خطأ أثناء إرسال التعليق:", err);
+    alert("حدث خطأ أثناء إرسال التعليق.");
+  }
 }
 
-// ✅ تحميل التعليقات الخاصة بالصفحة
-window.onload = function () {
-  allComments = JSON.parse(localStorage.getItem(pageKey) || '[]');
+// تحميل التعليقات عند فتح الصفحة
+window.onload = async function () {
+  try {
+    const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
+      headers: { 'X-Master-Key': API_KEY }
+    });
+    const data = await res.json();
+    allComments = data.record.comments || [];
+  } catch (e) {
+    console.error("⚠️ خطأ أثناء تحميل التعليقات:", e);
+    allComments = [];
+  }
   renderComments();
   updateProductStats();
   updateCommentCount();
 };
-
-function updateCommentCount() {
-  const count = allComments.length;
-  document.getElementById('totalComments').textContent = `عدد التقيمات: ${count}`;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
