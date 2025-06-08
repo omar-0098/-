@@ -1,6 +1,3 @@
-*{
-     user-select: none;
-}
 #bidImg {
   transition: transform 0.4s ease, opacity 0.4s ease;
   cursor: grab;
@@ -18,8 +15,6 @@
   transform: translateX(100%) scale(0.9);
   opacity: 0;
 }
-
-
 
 video{
   border-radius: 5px;
@@ -390,12 +385,13 @@ h5 span{
   .comment {
     display: flex;
     align-items: flex-start;
-    margin-bottom: 25px;
-    background-color: #ecf0f1;
+    margin-bottom: 60px;
+    /* background-color: #ecf0f1; */
     padding: 15px;
     border-radius: 8px;
     flex-direction: row-reverse;
     text-align: end;
+    position: relative;
   }
 .tkyyem{
   font-size: 26px;
@@ -413,10 +409,10 @@ h5 span{
 }
 
   .avatar {
-    width: 48px;
-    height: 48px;
+       width: 44px;
+    height: 44px;
     color: #fff;
-    font-size: 25px;
+    font-size: 22px;
     font-weight: bold;
     display: flex;
     align-items: center;
@@ -430,8 +426,8 @@ h5 span{
   }
 
   .comment-name {
-    font-size: 16px;
-    color: #2c3e50;
+       font-size: 16px;
+    color: rgb(24 17 17);
     margin-bottom: 7px;
     font-family: "Readex Pro", serif;
     font-optical-sizing: auto;
@@ -441,9 +437,21 @@ h5 span{
   }
 
   .comment-text {
-    color: #34495e;
-    margin-bottom: 3px;
+    color: #000000;
     font-size: 15px;
+    font-family: "Readex Pro", serif;
+    font-optical-sizing: auto;
+    font-weight: weight;
+    font-style: normal;
+    font-variation-settings: "HEXP" 0;
+    position: relative;
+    right: -56px;
+    margin: 5px 0px 0px;
+    line-height: 23px;
+  }
+  .comment-stars{
+        font-size: 17px;
+    margin: 8px 0px;
   }
   #text {
     font-size: 18px;
@@ -458,8 +466,8 @@ h5 span{
 }
 
   .comment-date {
-    font-size: 12px;
-    color: #7f8c8d;
+    font-size: 14px;
+    color: rgb(136 99 100);
   }
 
   .stars {
@@ -529,20 +537,20 @@ h5 span{
   }
 
   .rating-bar .progress {
-    flex: 1;
-    background-color: #f5f5f5;
-    height: 27px;
+flex: 1;
+    background-color: #e5e7eb;
+    height:8px;
     margin: 0 11px;
     border-radius: 5px;
     overflow: hidden;
-    border: 2px solid #838282;
 }
 
   .rating-bar .progress-inner {
-    height: 100%;
-    background-color: gold;
+      height: 100%;
+    background-color: #e4650f;
     width: 0%;
     transition: width 0.3s ease-in-out;
+    border-radius: 9999px;
   }
 
   .rating-bar .count {
@@ -570,7 +578,33 @@ h5 span{
   font-weight: weight;
   font-style: normal;
 }
-
+.comment-reactions {
+display: flex;
+gap: 15px;
+    font-size: 18px;
+    position: absolute;
+    bottom: -24px;
+}
+.comment-reactions button {
+      font-family: cursive;
+background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 18px;
+color: #886364;
+    transition: transform 0.1s;
+    display: flex;
+    align-items: center;
+    width: 40px;
+    gap: 0.3rem;
+}
+.comment-reactions button:hover {
+  transform: scale(1.2);
+  color: #2c3e50;
+}
+.comment-score {
+  font-weight: bold;
+}
 
 
 
@@ -618,6 +652,7 @@ h5 span{
     .img_item .big_img{
         width: 100%;
         height: 340px;
+        border-radius: 5px;
     }
     .item_detail .img_item .big_img img {
         width:70%;
@@ -667,7 +702,10 @@ h5 span{
     }
 
 
-
+.comment {
+    padding: 15px 0px ;
+      margin-bottom: 45px;
+}
     .comment-box {
       margin-top: 75px;
   }
@@ -691,10 +729,9 @@ h5 span{
   font-weight: 700;
 }
 .rating-bar .progress {
-  background-color: #ffffff;
-  height: 21px;
-  margin: 0 0px 0px 10px;
-  border: 2px solid #7d7d7d;
+background-color: #e5e7eb;
+        height: 10px;
+        margin: 0 0px 0px 10px;
 }
 #starsStats {
   width: 80%;
@@ -706,9 +743,7 @@ h5 span{
 .rating-bar .count {
   width: 24px;
   font-size: 22px;
-  background: #d1dde9;
   text-align: center;
-  border-radius: 10px 3px;
 }
 #hr {
   height: 2px;
@@ -761,7 +796,7 @@ h5 span{
   margin-bottom: 30px;
 }
 .comment-name {
-  font-size:9px;
+  font-size:14px;
 }
 #text {
   font-size: 14px;
@@ -770,17 +805,19 @@ h5 span{
   margin-bottom: 10px;
 }
 .comment-date {
-  font-size: 9px;
+  font-size: 12px;
   width: 100%;
 }
 .avatar {
-  width: 45px;
-  height: 45px;
+  width: 52px;
+  height: 52px;
 }
 .comment-text {
-  color: #34495e;
-  margin-bottom: 5px;
-  font-size: 14px;
+        color: #000000;
+        margin-bottom: 5px;
+        font-size: 14px;
+        right: -11px;
+        width: 111%;
 }
 .most {
   font-size: 12px;
@@ -792,6 +829,14 @@ h5 span{
   width: 38px;
   height: 38px;
   font-size: 18px;
+}
+.comment-reactions {
+    display: flex;
+    gap: 14px !important;
+    font-size: 18px;
+    position: absolute;
+    bottom: -15px !important;
+    right: -8px !important;
 }
 }
 
@@ -835,94 +880,11 @@ h5 span{
 
 
 @media (max-width:350px) {
-  
-
-.fa-solid, .fas {
-    font-weight: 900;
-    margin-right: 5px;
-}
-  #cartBtn {
-    margin: 12px 0px 18px;
-    padding: 10px 23px;
-    font-size: 9px;
-}
-  iframe {
-    height: 588px !important;
-    width: 72%;
-}
-  .avatar {
-    width: 37px;
-    height: 37px;
-    font-size: 16px;
-}
-.comment-name {
-  font-size: 8px;
-}
-#text {
-  font-size: 12px;
-  line-height: 22px;
-  width: 120%;
-  margin-bottom: 9px;
-}
-.comment-text {
-  color: #34495e;
-  margin-bottom: 0px;
-  font-size: 11px;
-}
-.tkyyem {
-  font-size: 18px;
-  margin-top: 21px;
-}
-#productStats h2 {
-  font-size: 18px;
-}
-.commentss {
-  margin-top: 23px;
-}
-#totalComments {
-  font-size: 20px;
-}
-.rating-display {
-  font-size: 14px;
-}
-.commentss h2 {
-  margin-top: 20px;
-  font-size: 16px;
-}
-.star {
-  font-size: 24px;
-}
-.comment-date {
-  font-size: 9px;
-  width: 120%;
-}
-#button {
-  padding: 8px 35px;
-  font-size: 15px;
-  position: relative;
-  left: 62%;
-  margin-top: 0px;
-  margin-bottom: 30px;
-}
-.item_detail .img_item {
-  width: 90%;
-}
-.item_detail .img_item .sm_imgs img {
-  width: 28%;
-  height: 76px;
-}
-.price p span span {
-  font-size: 30px;
-}
-.detils h2 {
-  font-size: 17px;
-}
-.item_detail .details_item h5 {
-  font-size: 14px;
-}
-h5 span {
-  font-size: 13px;
-}
+    .comment-text {
+        font-size: 14px;
+        right: -22px;
+        width: 111%;
+    }
 }
 
 
@@ -969,12 +931,6 @@ h5 span {
   width: 122%;
 }
 }
-
-
-
-
-
-
 
 
 
