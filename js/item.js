@@ -140,8 +140,6 @@ function changeItemImage(src) {
 
 
 
-
-
 // إعدادات JSONBin
 const BIN_ID = "684430798561e97a5020a6a3";
 const API_KEY = "$2a$10$xAWjC3zelpDKCd6zdOdUg.D0bwtEURjcR5sEiYdonjBmP5lHuqzq2";
@@ -171,12 +169,8 @@ function createCommentElement({ name, comment, date, color, rating, imageUrl }) 
   const avatar = document.createElement('div');
   avatar.className = 'avatar';
 
-  // ✅ جلب الصورة من localStorage فقط (بدون حفظها في التعليقات)
-  const userData = JSON.parse(localStorage.getItem('userData')) || {};
-  const currentUserImage = userData.profileImage || null;
-
-  if (currentUserImage) {
-    avatar.style.backgroundImage = `url(${currentUserImage})`;
+  if (imageUrl) {
+    avatar.style.backgroundImage = `url(${imageUrl})`;
     avatar.style.backgroundSize = 'cover';
     avatar.style.backgroundPosition = 'center';
   } else {
@@ -266,7 +260,7 @@ async function postComment() {
   const comment = commentInput.value.trim();
   const userData = JSON.parse(localStorage.getItem('userData')) || {};
   const name = userData.name || 'مستخدم';
-  const imageUrl = userData.profileImage || null;
+  const imageUrl = userData.imageUrl || null;
 
   if (name === 'مستخدم') {
     return alert("❌ يجب عليك إنشاء حساب أولاً قبل نشر التعليق.");
@@ -275,13 +269,14 @@ async function postComment() {
   if (!comment) return alert('يرجى كتابة تعليق!');
   if (selectedRating === 0) return alert('يرجى اختيار تقييم من النجوم!');
 
- const newComment = {
+  const newComment = {
     name,
     comment,
     date: new Date(),
-     color: getRandomColor(),
+    color: getRandomColor(),
     rating: selectedRating,
-    productId // ❌ تمت إزالة imageUrl عمداً
+    imageUrl,
+    productId // 🆕
   };
 
   try {
