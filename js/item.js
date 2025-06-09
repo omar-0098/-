@@ -131,6 +131,11 @@ function changeItemImage(src) {
 
 
 
+
+
+
+
+
 // إعدادات JSONBin
 const BIN_ID = "684430798561e97a5020a6a3";
 const API_KEY = "$2a$10$xAWjC3zelpDKCd6zdOdUg.D0bwtEURjcR5sEiYdonjBmP5lHuqzq2";
@@ -262,6 +267,7 @@ function loadMoreComments() {
   updateCommentCount();
 }
 
+// تحديث دالة updateProductStats لإنشاء التصميم المطلوب
 function updateProductStats() {
   const statsContainer = document.getElementById('starsStats');
   const counts = [0, 0, 0, 0, 0];
@@ -270,23 +276,165 @@ function updateProductStats() {
   filtered.forEach(c => { if (c.rating >= 1 && c.rating <= 5) counts[c.rating - 1]++; });
 
   const total = counts.reduce((a, b) => a + b, 0);
+  const averageRating = total > 0 ? (counts.reduce((sum, count, index) => sum + count * (index + 1), 0) / total).toFixed(1) : 0;
+  
   statsContainer.innerHTML = '';
 
+  // إنشاء قسم العرض الرئيسي
+  const mainSection = document.createElement('div');
+  // mainSection.style.cssText = ``;
+
+  // قسم التقييم العام
+  const ratingSection = document.createElement('div');
+  ratingSection.style.cssText = `
+    text-align: center;
+    min-width: 120px;
+  `;
+
+  // عنوان Reviews
+  const reviewsTitle = document.createElement('h3');
+  reviewsTitle.textContent = 'إحصائيات تقييم المنتج';
+  reviewsTitle.style.cssText = `
+    margin: 0 0 35px 0;
+    font-size: 18px;
+    color:rgb(0, 0, 0);
+    font-weight: 600;
+        font-family: "Readex Pro", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    font-variation-settings: 
+  `;
+
+  // التقييم الرقمي الكبير
+  const ratingNumber = document.createElement('div');
+  ratingNumber.textContent = averageRating;
+  ratingNumber.style.cssText = `
+    font-size: 48px;
+    font-weight: bold;
+    color: #333;
+    margin: 10px 0;
+    line-height: 1;
+  `;
+
+  // النجوم
+  const starsDiv = document.createElement('div');
+  starsDiv.style.cssText = `
+    display: flex;
+    justify-content: center;
+    gap: 2px;
+    margin: 10px 0;
+  `;
+
+  for (let i = 1; i <= 5; i++) {
+    const star = document.createElement('span');
+    star.innerHTML = '★';
+    star.style.cssText = `
+      font-size: 28px;
+      color: ${i <= Math.round(averageRating) ? '#ffc107' : '#e9ecef'};
+          text-shadow: 0px 0px 2px black;
+    `;
+    starsDiv.appendChild(star);
+  }
+
+  // عدد المراجعات
+  const reviewCount = document.createElement('div');
+  reviewCount.textContent = `مراجعات ${total}`;
+  reviewCount.style.cssText = `
+     color: rgb(108, 117, 125);
+    font-size: 16px;
+    margin-top: 5px;
+    font-family: "Readex Pro", sans-serif;
+    font-optical-sizing: auto;
+    font-style: normal;
+    margin-bottom: 10px;;
+  `;
+
+  ratingSection.appendChild(reviewsTitle);
+  ratingSection.appendChild(ratingNumber);
+  ratingSection.appendChild(starsDiv);
+  ratingSection.appendChild(reviewCount);
+
+  // قسم التفصيل
+  const detailSection = document.createElement('div');
+  detailSection.style.cssText = `
+    flex: 1;
+    min-width: 300px;
+  `;
+
+  // إنشاء أشرطة التقييم
   for (let i = 5; i >= 1; i--) {
     const percent = total > 0 ? (counts[i - 1] / total) * 100 : 0;
-    statsContainer.innerHTML += `
-      <div class="rating-bar">
-        <span class="label">⭐ ${i}</span>
-        <div class="progress"><div class="progress-inner" style="width: ${percent}%;"></div></div>
-        <span class="count">${counts[i - 1]}</span>
-      </div>
+    
+    const ratingBar = document.createElement('div');
+    ratingBar.style.cssText = `
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin-bottom: 13px;
     `;
+
+    // النسبة المئوية
+    const percentLabel = document.createElement('span');
+    percentLabel.textContent = `${Math.round(percent)}%`;
+    percentLabel.style.cssText = `
+      width: 35px;
+      text-align: right;
+      font-size: 15px;
+      color: #6c757d;
+      font-weight: 500;
+    `;
+
+    // شريط التقدم
+    const progressContainer = document.createElement('div');
+    progressContainer.style.cssText = `
+      flex: 1;
+      height: 8px;
+      background-color: rgb(228 219 219);
+      border-radius: 6px;
+      overflow: hidden;
+      position: relative;
+       direction: rtl;
+    `;
+
+    const progressBar = document.createElement('div');
+    progressBar.style.cssText = `
+      height: 100%;
+      width: ${percent}%;
+      background: linear-gradient(90deg, #333 0%, #555 100%);
+      border-radius: 6px;
+      transition: width 0.3s ease;
+    `;
+
+    progressContainer.appendChild(progressBar);
+
+    // رقم النجمة
+    const starNumber = document.createElement('span');
+    starNumber.textContent = i.toString();
+    starNumber.style.cssText = `
+      width: 20px;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 600;
+      color: #333;
+    `;
+
+    ratingBar.appendChild(percentLabel);
+    ratingBar.appendChild(progressContainer);
+    ratingBar.appendChild(starNumber);
+    detailSection.appendChild(ratingBar);
   }
+
+  mainSection.appendChild(ratingSection);
+  mainSection.appendChild(detailSection);
+  statsContainer.appendChild(mainSection);
 }
 
 function updateCommentCount() {
   const count = allComments.filter(c => c.productId === productId).length;
-  document.getElementById('totalComments').textContent = `عدد التقيمات: ${count}`;
+  const totalElement = document.getElementById('totalComments');
+  if (totalElement) {
+    totalElement.textContent = `عدد التقيمات: ${count}`;
+  }
 }
 
 function updateStarDisplay() {
@@ -296,7 +444,10 @@ function updateStarDisplay() {
     star.classList.toggle('selected', num <= selectedRating);
     star.style.color = num <= selectedRating ? colorMap[selectedRating] : '#ccc';
   });
-  document.getElementById('ratingDisplay').textContent = `التقييم: ${selectedRating} نجمة`;
+  const ratingDisplay = document.getElementById('ratingDisplay');
+  if (ratingDisplay) {
+    ratingDisplay.textContent = `التقييم: ${selectedRating} نجمة`;
+  }
 }
 
 document.querySelectorAll('.star').forEach(star => {
@@ -418,6 +569,7 @@ window.onload = async function () {
 
 
 
+
 const btn = document.getElementById("cartBtn");
 const overlay = document.getElementById("overlay");
 
@@ -449,8 +601,6 @@ overlay.addEventListener("click", function (e) {
     video.currentTime = 0; // نرجعه لأول ثانية
   }
 });
-
-
 
 
 
