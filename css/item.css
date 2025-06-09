@@ -860,6 +860,19 @@ background-color: #e5e7eb;
     bottom: -15px !important;
     right: -8px !important;
 }
+  .comment-reactions button {
+    font-family: 'Readex Pro';
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 15px;
+    color: #886364;
+    transition: transform 0.1s;
+    display: flex;
+    align-items: center;
+    width: 40px;
+    gap: 0.2rem;
+}
 }
 
 @media (max-width:400px) {
