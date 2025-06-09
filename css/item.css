@@ -829,6 +829,7 @@ background-color: #e5e7eb;
 .comment-date {
   font-size: 12px;
   width: 100%;
+  font-weight: 700;
 }
 .avatar {
   width: 52px;
