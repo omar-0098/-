@@ -111,18 +111,32 @@ function logineCallback(response) {
     });
 }
 
+// إعدادات JSONBin
+const JSONBIN_CONFIG = {
+    API_KEY: "$2a$10$xAWjC3zelpDKCd6zdOdUg.D0bwtEURjcR5sEiYdonjBmP5lHuqzq2",
+    BIN_ID: "6848177e8960c979a5a77f85"
+};
+
 // دالة لإرسال البيانات إلى JSONBin.io
 async function sendToJSONBin(userData) {
     try {
-        const response = await fetch('https://api.jsonbin.io/v3/b', {
-            method: 'POST',
+        // أولاً، جرب الحصول على البيانات الموجودة
+        const existingData = await getExistingJSONBinData();
+        
+        // إضافة المستخدم الجديد إلى القائمة
+        const updatedData = {
+            users: existingData.users ? [...existingData.users, userData] : [userData],
+            lastUpdated: new Date().toISOString(),
+            totalUsers: existingData.users ? existingData.users.length + 1 : 1
+        };
+        
+        const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_CONFIG.BIN_ID}`, {
+            method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
-                'X-Master-Key': '$2a$10$xAWjC3zelpDKCd6zdOdUg.D0bwtEURjcR5sEiYdonjBmP5lHuqzq2', // ضع مفتاح API الخاص بك هنا
-                'X-Bin-Name': `user_${userData.id}`,
-                'X-Collection-Id': '6848177e8960c979a5a77f85' // اختياري: إذا كنت تريد تجميع البيانات
+                'X-Master-Key': JSONBIN_CONFIG.API_KEY
             },
-            body: JSON.stringify(userData)
+            body: JSON.stringify(updatedData)
         });
         
         const result = await response.json();
@@ -181,11 +195,11 @@ async function sendToJSONBinWithUpdate(userData) {
             totalUsers: existingData.users ? existingData.users.length + 1 : 1
         };
         
-        const response = await fetch('https://api.jsonbin.io/v3/b/YOUR_BIN_ID', {
+        const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_CONFIG.BIN_ID}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
-                'X-Master-Key': '$2a$10$xAWjC3zelpDKCd6zdOdUg.D0bwtEURjcR5sEiYdonjBmP5lHuqzq2'
+                'X-Master-Key': JSONBIN_CONFIG.API_KEY
             },
             body: JSON.stringify(updatedData)
         });
@@ -208,10 +222,10 @@ async function sendToJSONBinWithUpdate(userData) {
 // دالة للحصول على البيانات الموجودة من JSONBin
 async function getExistingJSONBinData() {
     try {
-        const response = await fetch('https://api.jsonbin.io/v3/b/YOUR_BIN_ID/latest', {
+        const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_CONFIG.BIN_ID}/latest`, {
             method: 'GET',
             headers: {
-                'X-Master-Key': '$2a$10$xAWjC3zelpDKCd6zdOdUg.D0bwtEURjcR5sEiYdonjBmP5lHuqzq2'
+                'X-Master-Key': JSONBIN_CONFIG.API_KEY
             }
         });
         
