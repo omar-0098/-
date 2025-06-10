@@ -392,33 +392,147 @@ function showLoginInterface() {
     });
 }
 
-// دالة للبحث عن مستخدم في قاعدة البيانات
-async function findUserInDatabase(identifier, type = 'email') {
+// دالة للتحقق من وجود المستخدم في قاعدة البيانات وتسجيل خروجه إذا لم يعد موجوداً
+async function checkUserExistenceAndLogout() {
     try {
-        const existingData = await getExistingJSONBinData();
+        // جلب بيانات المستخدم الحالي من localStorage
+        const currentUser = JSON.parse(localStorage.getItem("userData"));
         
-        if (!existingData.users) {
-            return null;
+        if (!currentUser) {
+            // لا يوجد مستخدم مسجل
+            return;
         }
         
-        const user = existingData.users.find(user => {
-            switch (type) {
-                case 'email':
-                    return user.email === identifier;
-                case 'phone':
-                    return user.phone === identifier;
-                case 'id':
-                    return user.id === identifier;
-                default:
-                    return user.email === identifier || user.phone === identifier || user.id === identifier;
+        // البحث عن المستخدم في قاعدة البيانات
+        const userInDatabase = await findUserInDatabase(currentUser.email, 'email');
+        
+        if (!userInDatabase) {
+            // المستخدم غير موجود في قاعدة البيانات - تسجيل الخروج
+            console.log('تم حذف المستخدم من قاعدة البيانات - تسجيل خروج تلقائي');
+            
+            // مسح البيانات المحلية
+            clearUserLocalData();
+            
+            // إخفاء واجهة المستخدم
+            hideUserInterface();
+            
+            // إظهار واجهة تسجيل الدخول
+            showLoginInterface();
+            
+            // إظهار رسالة للمستخدم
+            alert('تم حذف حسابك من النظام. سيتم تسجيل خروجك تلقائياً.');
+            
+            // إعادة تحميل الصفحة (اختياري)
+            setTimeout(() => {
+                window.location.reload();
+            }, 2000);
+            
+            return false; // المستخدم غير موجود
+        }
+        
+        return true; // المستخدم موجود
+        
+    } catch (error) {
+        console.error('خطأ في التحقق من وجود المستخدم:', error);
+        return true; // في حالة الخطأ، نفترض أن المستخدم موجود
+    }
+}
+
+// دالة للتحقق الدوري من وجود المستخدم
+function startUserExistenceCheck() {
+    // التحقق كل 30 ثانية
+    setInterval(async () => {
+        await checkUserExistenceAndLogout();
+    }, 30000); // 30 ثانية
+}
+
+// دالة للتحقق من وجود المستخدم عند تحميل الصفحة
+async function checkUserOnPageLoad() {
+    // انتظار قليل للتأكد من تحميل البيانات
+    setTimeout(async () => {
+        const userExists = await checkUserExistenceAndLogout();
+        
+        if (userExists) {
+            console.log('المستخدم موجود في قاعدة البيانات');
+            // بدء التحقق الدوري
+            startUserExistenceCheck();
+        }
+    }, 1000);
+}
+
+// دالة للتحقق من وجود المستخدم عند النقر على أي زر أو تفاعل
+async function checkUserBeforeAction(callback) {
+    const userExists = await checkUserExistenceAndLogout();
+    
+    if (userExists && typeof callback === 'function') {
+        // إذا كان المستخدم موجود، تنفيذ الوظيفة المطلوبة
+        callback();
+    } else if (!userExists) {
+        // إذا لم يعد المستخدم موجود، منع التنفيذ
+        console.log('تم منع التنفيذ - المستخدم غير موجود في قاعدة البيانات');
+    }
+}
+
+// دالة محسنة لتسجيل الخروج
+function forceLogout(reason = 'تم تسجيل الخروج') {
+    try {
+        // مسح جميع البيانات المحلية
+        clearUserLocalData();
+        
+        // إخفاء واجهة المستخدم
+        hideUserInterface();
+        
+        // إظهار واجهة تسجيل الدخول
+        showLoginInterface();
+        
+        // إظهار رسالة للمستخدم
+        if (reason !== 'silent') {
+            alert(reason);
+        }
+        
+        // إعادة تعيين الصفحة
+        setTimeout(() => {
+            window.location.reload();
+        }, 1000);
+        
+        console.log('تم تسجيل الخروج:', reason);
+        
+    } catch (error) {
+        console.error('خطأ في تسجيل الخروج:', error);
+    }
+}
+
+// دالة للتحقق من حالة الاتصال وقاعدة البيانات
+async function checkDatabaseConnection() {
+    try {
+        const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_CONFIG.BIN_ID}/latest`, {
+            method: 'GET',
+            headers: {
+                'X-Master-Key': JSONBIN_CONFIG.API_KEY
             }
         });
         
-        return user || null;
+        if (!response.ok) {
+            throw new Error('فشل الاتصال بقاعدة البيانات');
+        }
+        
+        const result = await response.json();
+        
+        // التحقق من وجود البيانات
+        if (!result.record || !result.record.users) {
+            // إذا كانت قاعدة البيانات فارغة أو محذوفة
+            const currentUser = JSON.parse(localStorage.getItem("userData"));
+            if (currentUser) {
+                forceLogout('تم مسح جميع البيانات من النظام. سيتم تسجيل خروجك.');
+                return false;
+            }
+        }
+        
+        return true;
         
     } catch (error) {
-        console.error('خطأ في البحث عن المستخدم:', error);
-        return null;
+        console.error('خطأ في الاتصال بقاعدة البيانات:', error);
+        return true; // في حالة خطأ الشبكة، نفترض أن الاتصال سليم
     }
 }
 
