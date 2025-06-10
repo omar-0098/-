@@ -99,7 +99,9 @@ function logineCallback(response) {
                 showWelcomeSection(userData.name);
                 displayUserData(userData);
                 overlay.style.display = "none";
-                console.log("تم إرسال البيانات بنجاح إلى كل من JSONBin و Google Sheets");
+                
+                // إضافة زر حذف الحساب في واجهة المستخدم
+                addDeleteAccountButton();
             } else {
                 showError("فشل في إرسال البيانات إلى أحد الخدمات أو كليهما");
             }
@@ -109,6 +111,53 @@ function logineCallback(response) {
             showError("خطأ في تسجيل الدخول باستخدام Google");
         });
     });
+}
+
+// دالة لإضافة زر حذف الحساب
+function addDeleteAccountButton() {
+    // التحقق من وجود الزر مسبقاً
+    if (document.getElementById('deleteAccountBtn')) {
+        return;
+    }
+    
+    // إنشاء زر حذف الحساب
+    const deleteButton = document.createElement('button');
+    deleteButton.id = 'deleteAccountBtn';
+    deleteButton.innerHTML = '🗑️ حذف الحساب';
+    deleteButton.className = 'delete-account-btn';
+    deleteButton.style.cssText = `
+        background-color: #dc3545;
+        color: white;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        cursor: pointer;
+        margin: 10px;
+        font-size: 14px;
+        transition: background-color 0.3s;
+    `;
+    
+    // إضافة تأثير hover
+    deleteButton.onmouseover = function() {
+        this.style.backgroundColor = '#c82333';
+    };
+    deleteButton.onmouseout = function() {
+        this.style.backgroundColor = '#dc3545';
+    };
+    
+    // ربط الوظيفة بالزر
+    deleteButton.onclick = function() {
+        deleteCurrentUserAccount();
+    };
+    
+    // إضافة الزر إلى المكان المناسب (يمكنك تعديل المكان حسب تصميم موقعك)
+    const userSection = document.querySelector('.welcome-section, .user-dashboard, .user-info');
+    if (userSection) {
+        userSection.appendChild(deleteButton);
+    } else {
+        // إذا لم يوجد قسم محدد، أضف الزر في نهاية body
+        document.body.appendChild(deleteButton);
+    }
 }
 
 // إعدادات JSONBin
@@ -180,6 +229,197 @@ async function sendToGoogleSheets(formData) {
 // دالة لإنشاء معرف فريد
 function generateUniqueId() {
     return Date.now().toString(36) + Math.random().toString(36).substr(2);
+}
+
+// دالة لحذف حساب المستخدم
+async function deleteUserAccount(userIdentifier, identificationType = 'email') {
+    try {
+        // الخطوة 1: جلب البيانات الحالية من JSONBin
+        const existingData = await getExistingJSONBinData();
+        
+        if (!existingData.users || existingData.users.length === 0) {
+            console.log('لا توجد بيانات مستخدمين للحذف');
+            return { success: false, message: 'لا توجد بيانات للحذف' };
+        }
+        
+        // الخطوة 2: البحث عن المستخدم وحذفه
+        const originalLength = existingData.users.length;
+        let filteredUsers;
+        
+        switch (identificationType) {
+            case 'email':
+                filteredUsers = existingData.users.filter(user => user.email !== userIdentifier);
+                break;
+            case 'phone':
+                filteredUsers = existingData.users.filter(user => user.phone !== userIdentifier);
+                break;
+            case 'id':
+                filteredUsers = existingData.users.filter(user => user.id !== userIdentifier);
+                break;
+            default:
+                filteredUsers = existingData.users.filter(user => 
+                    user.email !== userIdentifier && 
+                    user.phone !== userIdentifier && 
+                    user.id !== userIdentifier
+                );
+        }
+        
+        // التحقق من حذف المستخدم
+        if (filteredUsers.length === originalLength) {
+            console.log('المستخدم غير موجود');
+            return { success: false, message: 'المستخدم غير موجود' };
+        }
+        
+        // الخطوة 3: تحديث البيانات في JSONBin
+        const updatedData = {
+            users: filteredUsers,
+            lastUpdated: new Date().toISOString(),
+            totalUsers: filteredUsers.length,
+            lastDeletedUser: userIdentifier,
+            deletedAt: new Date().toISOString()
+        };
+        
+        const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_CONFIG.BIN_ID}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Master-Key': JSONBIN_CONFIG.API_KEY
+            },
+            body: JSON.stringify(updatedData)
+        });
+        
+        const result = await response.json();
+        
+        if (response.ok) {
+            // الخطوة 4: حذف البيانات من localStorage
+            clearUserLocalData();
+            
+            console.log('تم حذف المستخدم بنجاح من JSONBin:', result);
+            return { 
+                success: true, 
+                message: 'تم حذف الحساب بنجاح',
+                deletedUser: userIdentifier,
+                remainingUsers: filteredUsers.length
+            };
+        } else {
+            console.error('خطأ في حذف المستخدم من JSONBin:', result);
+            return { success: false, message: 'فشل في حذف الحساب من قاعدة البيانات' };
+        }
+        
+    } catch (error) {
+        console.error('خطأ في حذف حساب المستخدم:', error);
+        return { success: false, message: 'خطأ في حذف الحساب' };
+    }
+}
+
+// دالة لمسح بيانات المستخدم من localStorage
+function clearUserLocalData() {
+    try {
+        // حذف بيانات المستخدم
+        localStorage.removeItem("userData");
+        
+        // حذف أي بيانات أخرى متعلقة بالمستخدم (اضف المفاتيح حسب الحاجة)
+        localStorage.removeItem("userSession");
+        localStorage.removeItem("userPreferences");
+        localStorage.removeItem("userCart");
+        localStorage.removeItem("userFavorites");
+        
+        console.log('تم مسح بيانات المستخدم من localStorage');
+        
+        // إعادة تحميل الصفحة أو إعادة توجيه المستخدم
+        // window.location.reload(); // اختياري
+        
+    } catch (error) {
+        console.error('خطأ في مسح البيانات المحلية:', error);
+    }
+}
+
+// دالة لحذف الحساب الحالي (المستخدم المسجل حالياً)
+async function deleteCurrentUserAccount() {
+    try {
+        // جلب بيانات المستخدم الحالي
+        const currentUser = JSON.parse(localStorage.getItem("userData"));
+        
+        if (!currentUser) {
+            alert('لا يوجد مستخدم مسجل حالياً');
+            return;
+        }
+        
+        // تأكيد الحذف
+        const confirmation = confirm(`هل أنت متأكد من حذف حسابك؟\nالبريد الإلكتروني: ${currentUser.email}\nهذا الإجراء لا يمكن التراجع عنه.`);
+        
+        if (!confirmation) {
+            return;
+        }
+        
+        // حذف الحساب
+        const result = await deleteUserAccount(currentUser.email, 'email');
+        
+        if (result.success) {
+            alert('تم حذف حسابك بنجاح');
+            
+            // إخفاء واجهة المستخدم المسجل
+            hideUserInterface();
+            
+            // إظهار واجهة تسجيل الدخول
+            showLoginInterface();
+            
+        } else {
+            alert('فشل في حذف الحساب: ' + result.message);
+        }
+        
+    } catch (error) {
+        console.error('خطأ في حذف الحساب الحالي:', error);
+        alert('حدث خطأ أثناء حذف الحساب');
+    }
+}
+
+// دالة لإخفاء واجهة المستخدم
+function hideUserInterface() {
+    // إخفاء العناصر المتعلقة بالمستخدم المسجل
+    const userElements = document.querySelectorAll('.user-logged-in, .welcome-section, .user-dashboard');
+    userElements.forEach(element => {
+        element.style.display = 'none';
+    });
+}
+
+// دالة لإظهار واجهة تسجيل الدخول
+function showLoginInterface() {
+    // إظهار أزرار تسجيل الدخول
+    const loginElements = document.querySelectorAll('.login-buttons, .auth-section');
+    loginElements.forEach(element => {
+        element.style.display = 'block';
+    });
+}
+
+// دالة للبحث عن مستخدم في قاعدة البيانات
+async function findUserInDatabase(identifier, type = 'email') {
+    try {
+        const existingData = await getExistingJSONBinData();
+        
+        if (!existingData.users) {
+            return null;
+        }
+        
+        const user = existingData.users.find(user => {
+            switch (type) {
+                case 'email':
+                    return user.email === identifier;
+                case 'phone':
+                    return user.phone === identifier;
+                case 'id':
+                    return user.id === identifier;
+                default:
+                    return user.email === identifier || user.phone === identifier || user.id === identifier;
+            }
+        });
+        
+        return user || null;
+        
+    } catch (error) {
+        console.error('خطأ في البحث عن المستخدم:', error);
+        return null;
+    }
 }
 
 // دالة بديلة لإرسال البيانات إلى JSONBin مع تحديث البيانات الموجودة
