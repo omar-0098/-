@@ -163,7 +163,7 @@ function addDeleteAccountButton() {
 // إعدادات JSONBin
 const JSONBIN_CONFIG = {
     API_KEY: "$2a$10$xAWjC3zelpDKCd6zdOdUg.D0bwtEURjcR5sEiYdonjBmP5lHuqzq2",
-    BIN_ID: "6848177e8960c979a5a77f85"
+    BIN_ID: "684969188a456b7966ac3e0f"
 };
 
 // دالة لإرسال البيانات إلى JSONBin.io
