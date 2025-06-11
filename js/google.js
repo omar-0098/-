@@ -18,9 +18,33 @@ const userNameElement = document.getElementById("userName");
 // متغير لحفظ موضع التمرير الحالي
 let scrollPosition = 0;
 
-// ===============================
-// دالة تسجيل الدخول عبر Google
-// ===============================
+// عند تحميل الصفحة، تحقق إذا كان المستخدم مسجل مسبقاً
+document.addEventListener('DOMContentLoaded', async function() {
+    const savedUser = localStorage.getItem('userData');
+    if (savedUser) {
+        const userData = JSON.parse(savedUser);
+        
+        // التحقق من وجود البيانات في JSONBin قبل عرض الترحيب
+        const userExists = await checkUserInJSONBin(userData.email);
+        
+        if (userExists) {
+            showWelcomeSection(userData.name);
+            console.log("بيانات المستخدم المحفوظة:", userData);
+            displayUserData(userData);
+        } else {
+            // إذا لم توجد البيانات في JSONBin، امسح الحساب المحلي
+            deleteLocalAccount();
+            console.log("لم توجد بيانات المستخدم في JSONBin، تم مسح الحساب المحلي");
+        }
+    }
+    
+    // إضافة التحقق المباشر من التكرار
+    setTimeout(() => {
+        setupRealTimeValidation();
+    }, 1000);
+});
+
+// دالة تسجيل الدخول بـ Google (callback)
 function logineCallback(response) {
     const decoded = jwt_decode(response.credential);
     
@@ -31,7 +55,7 @@ function logineCallback(response) {
             <div class="logine-img"><img src="login.png" alt="" style="width: 100%;"></div>
             <h3>الرجاء إدخال رقم الهاتف</h3>
             <input type="tel" id="userPhone" placeholder="رقم الهاتف" maxlength="11" inputmode="numeric">
-            <div id="phoneError" style="color: red; margin: 10px 0; text-align: center;"></div>
+            <div id="phoneError" style="color: red; font-size: 14px; margin-top: 5px;"></div>
             <button id="submitPhone">تسجيل</button>
             <h2>هذا الموقع يحمي بياناتك وتطبق عليه <span><a href="Privacy.html" target="_blank">السياسة والخصوصية</a></span> الخاصة بكشمير هوم</h2>
         </div>
@@ -41,13 +65,6 @@ function logineCallback(response) {
     overlay.innerHTML = "";
     overlay.appendChild(phoneForm);
     overlay.style.display = "flex";
-    
-    // منع التمرير في الخلفية
-    scrollPosition = window.pageYOffset || document.documentElement.scrollTop;
-    document.body.style.overflow = 'hidden';
-    document.body.style.position = 'fixed';
-    document.body.style.top = `-${scrollPosition}px`;
-    document.body.style.width = '100%';
     
     // التحقق من المدخلات أثناء الكتابة
     document.getElementById("userPhone").addEventListener("input", function(e) {
@@ -94,32 +111,26 @@ function logineCallback(response) {
         }
         
         if (!/^01[0125][0-9]{8}$/.test(phoneNumber)) {
-            phoneError.textContent = "رقم الهاتف غير صالح (يجب أن يبدأ بـ 010, 011, 012, أو 015)";
+            phoneError.textContent = "رقم الهاتف غير صالح";
             return;
         }
         
-        // إظهار رسالة التحقق من التكرار
-        showGoogleLoginLoading("جاري التحقق من البيانات...");
+        // التحقق من تكرار الإيميل والهاتف
+        showGoogleLoading("جاري التحقق من البيانات...");
         
         try {
-            // التحقق من تكرار الإيميل والتليفون
             const duplicateCheck = await checkDuplicateUser(decoded.email, phoneNumber);
             
-            clearGoogleLoginMessages();
-            
             if (duplicateCheck.emailExists && duplicateCheck.phoneExists) {
-                showGoogleLoginError("هذا الإيميل ورقم الهاتف مستخدمان بالفعل. يرجى استخدام حساب Google آخر ورقم هاتف مختلف.");
+                phoneError.textContent = "هذا الإيميل ورقم الهاتف مستخدمان بالفعل";
                 return;
             } else if (duplicateCheck.emailExists) {
-                showGoogleLoginError("هذا البريد الإلكتروني مستخدم بالفعل. يرجى استخدام حساب Google آخر.");
+                phoneError.textContent = "هذا البريد الإلكتروني مستخدم بالفعل";
                 return;
             } else if (duplicateCheck.phoneExists) {
-                showGoogleLoginError("رقم الهاتف هذا مستخدم بالفعل. يرجى استخدام رقم هاتف آخر.");
+                phoneError.textContent = "رقم الهاتف هذا مستخدم بالفعل";
                 return;
             }
-            
-            // إظهار رسالة الإرسال
-            showGoogleLoginLoading("جاري تسجيل الدخول...");
             
             // إعداد بيانات المستخدم مع رقم الهاتف
             const userData = {
@@ -132,20 +143,22 @@ function logineCallback(response) {
                 copon2: ""
             };
 
-            const formData = new FormData();
-            formData.append("name", userData.name);
-            formData.append("family", userData.family);
-            formData.append("email", userData.email);
-            formData.append("phone", userData.phone);
-            formData.append("password", "google_login");
-            formData.append("copon1", "");
-            formData.append("copon2", "");
+            showGoogleLoading("جاري تسجيل البيانات...");
 
             let googleSheetsSuccess = false;
             let jsonBinSuccess = false;
 
             try {
                 // إرسال إلى Google Sheets
+                const formData = new FormData();
+                formData.append("name", userData.name);
+                formData.append("family", userData.family);
+                formData.append("email", userData.email);
+                formData.append("phone", userData.phone);
+                formData.append("password", "google_login");
+                formData.append("copon1", "");
+                formData.append("copon2", "");
+
                 const googleResponse = await sendToGoogleSheets(formData);
                 
                 if (googleResponse.result === "success") {
@@ -164,21 +177,16 @@ function logineCallback(response) {
             }
 
             // إظهار النتائج
-            clearGoogleLoginMessages();
-            
             if (googleSheetsSuccess && jsonBinSuccess) {
-                showGoogleLoginSuccess("تم تسجيل الدخول بنجاح!");
+                showGoogleSuccess("تم تسجيل الدخول بنجاح!");
             } else if (googleSheetsSuccess || jsonBinSuccess) {
-                const platforms = [];
-                if (googleSheetsSuccess) platforms.push("Google Sheets");
-                if (jsonBinSuccess) platforms.push("JSONBin");
-                showGoogleLoginWarning(`تم التسجيل بنجاح في: ${platforms.join(', ')}`);
+                showGoogleSuccess("تم تسجيل الدخول بنجاح!");
             } else {
-                showGoogleLoginError("فشل في تسجيل الدخول. يرجى المحاولة مرة أخرى.");
+                phoneError.textContent = "فشل في تسجيل البيانات. يرجى المحاولة مرة أخرى.";
                 return;
             }
 
-            // إخفاء النافذة وإظهار الترحيب بعد ثانيتين
+            // حفظ البيانات محلياً وإظهار الترحيب
             setTimeout(() => {
                 localStorage.setItem("userData", JSON.stringify(userData));
                 showWelcomeSection(userData.name);
@@ -191,142 +199,36 @@ function logineCallback(response) {
                 document.body.style.top = '';
                 document.body.style.width = '';
                 window.scrollTo(0, scrollPosition);
-                
             }, 2000);
 
         } catch (error) {
-            console.error('خطأ في عملية تسجيل الدخول عبر Google:', error);
-            clearGoogleLoginMessages();
-            showGoogleLoginError("حدث خطأ أثناء التحقق من البيانات. يرجى المحاولة مرة أخرى.");
+            console.error('خطأ في تسجيل الدخول بـ Google:', error);
+            phoneError.textContent = "حدث خطأ أثناء التحقق من البيانات";
         }
     });
 }
 
-// دوال الرسائل لتسجيل الدخول عبر Google
-function showGoogleLoginError(message) {
-    clearGoogleLoginMessages();
-    const errorDiv = document.createElement('div');
-    errorDiv.className = 'google-error-message';
-    errorDiv.style.cssText = `
-        color: red;
-        margin: 10px 0;
-        text-align: center;
-        padding: 10px;
-        background-color: #fee;
-        border: 1px solid #fcc;
-        border-radius: 5px;
-    `;
-    errorDiv.textContent = message;
-    document.querySelector('.login-start2').insertBefore(errorDiv, document.querySelector('#submitPhone'));
-}
-
-function showGoogleLoginSuccess(message) {
-    clearGoogleLoginMessages();
-    const successDiv = document.createElement('div');
-    successDiv.className = 'google-success-message';
-    successDiv.style.cssText = `
-        color: green;
-        margin: 10px 0;
-        text-align: center;
-        padding: 10px;
-        background-color: #efe;
-        border: 1px solid #cfc;
-        border-radius: 5px;
-    `;
-    successDiv.textContent = message;
-    document.querySelector('.login-start2').insertBefore(successDiv, document.querySelector('#submitPhone'));
-}
-
-function showGoogleLoginWarning(message) {
-    clearGoogleLoginMessages();
-    const warningDiv = document.createElement('div');
-    warningDiv.className = 'google-warning-message';
-    warningDiv.style.cssText = `
-        color: orange;
-        margin: 10px 0;
-        text-align: center;
-        padding: 10px;
-        background-color: #ffeaa7;
-        border: 1px solid #fdcb6e;
-        border-radius: 5px;
-    `;
-    warningDiv.textContent = message;
-    document.querySelector('.login-start2').insertBefore(warningDiv, document.querySelector('#submitPhone'));
-}
-
-function showGoogleLoginLoading(message) {
-    clearGoogleLoginMessages();
-    const loadingDiv = document.createElement('div');
-    loadingDiv.className = 'google-loading-message';
-    loadingDiv.style.cssText = `
-        color: blue;
-        margin: 10px 0;
-        text-align: center;
-        padding: 10px;
-        background-color: #e3f2fd;
-        border: 1px solid #2196f3;
-        border-radius: 5px;
-    `;
-    loadingDiv.innerHTML = `
-        <div style="display: flex; align-items: center; justify-content: center;">
-            <div style="width: 20px; height: 20px; border: 2px solid #2196f3; border-top: 2px solid transparent; border-radius: 50%; animation: spin 1s linear infinite; margin-left: 10px;"></div>
-            ${message}
-        </div>
-    `;
-    
-    // إضافة CSS للأنيميشن إذا لم يكن موجوداً
-    if (!document.getElementById('loading-styles')) {
-        const style = document.createElement('style');
-        style.id = 'loading-styles';
-        style.textContent = `
-            @keyframes spin {
-                0% { transform: rotate(0deg); }
-                100% { transform: rotate(360deg); }
-            }
+// دوال عرض الرسائل الخاصة بـ Google Login
+function showGoogleLoading(message) {
+    const phoneError = document.getElementById("phoneError");
+    if (phoneError) {
+        phoneError.style.color = "blue";
+        phoneError.innerHTML = `
+            <div style="display: flex; align-items: center; justify-content: center;">
+                <div style="width: 15px; height: 15px; border: 2px solid #2196f3; border-top: 2px solid transparent; border-radius: 50%; animation: spin 1s linear infinite; margin-left: 5px;"></div>
+                ${message}
+            </div>
         `;
-        document.head.appendChild(style);
     }
-    
-    document.querySelector('.login-start2').insertBefore(loadingDiv, document.querySelector('#submitPhone'));
 }
 
-function clearGoogleLoginMessages() {
-    const messages = document.querySelectorAll('.google-error-message, .google-success-message, .google-warning-message, .google-loading-message');
-    messages.forEach(msg => msg.remove());
-}
-
-// ===============================
-// باقي الكود الأساسي
-// ===============================
-
-// عند تحميل الصفحة، تحقق إذا كان المستخدم مسجل مسبقاً
-document.addEventListener('DOMContentLoaded', async function() {
-    const savedUser = localStorage.getItem('userData');
-    if (savedUser) {
-        const userData = JSON.parse(savedUser);
-        
-        // التحقق من وجود البيانات في JSONBin قبل عرض الترحيب
-        const userExists = await checkUserInJSONBin(userData.email);
-        
-        if (userExists) {
-            showWelcomeSection(userData.name);
-            console.log("بيانات المستخدم المحفوظة:", userData);
-            displayUserData(userData);
-        } else {
-            // إذا لم توجد البيانات في JSONBin، امسح الحساب المحلي
-            deleteLocalAccount();
-            console.log("لم توجد بيانات المستخدم في JSONBin، تم مسح الحساب المحلي");
-        }
+function showGoogleSuccess(message) {
+    const phoneError = document.getElementById("phoneError");
+    if (phoneError) {
+        phoneError.style.color = "green";
+        phoneError.textContent = message;
     }
-    
-    // إضافة التحقق المباشر من التكرار
-    setTimeout(() => {
-        setupRealTimeValidation();
-    }, 1000);
-    
-    // تحديث الواجهة حسب حالة المستخدم
-    updateUIBasedOnMan1();
-});
+}
 
 // دالة لعرض بيانات المستخدم مع زر مسح الحساب
 function displayUserData(userData) {
@@ -419,8 +321,8 @@ function showDeleteConfirmation() {
     `;
     
     // إضافة overlay خلفي
-    const overlay = document.createElement('div');
-    overlay.style.cssText = `
+    const overlayBg = document.createElement('div');
+    overlayBg.style.cssText = `
         position: fixed;
         top: 0;
         left: 0;
@@ -430,19 +332,19 @@ function showDeleteConfirmation() {
         z-index: 9999;
     `;
     
-    document.body.appendChild(overlay);
+    document.body.appendChild(overlayBg);
     document.body.appendChild(confirmation);
     
     // إضافة الأحداث
     document.getElementById('confirmDelete').addEventListener('click', async () => {
         document.body.removeChild(confirmation);
-        document.body.removeChild(overlay);
+        document.body.removeChild(overlayBg);
         await deleteUserAccount();
     });
     
     document.getElementById('cancelDelete').addEventListener('click', () => {
         document.body.removeChild(confirmation);
-        document.body.removeChild(overlay);
+        document.body.removeChild(overlayBg);
     });
 }
 
@@ -603,7 +505,7 @@ async function sendToGoogleSheets(formData) {
     }
 }
 
-// عند إرسال النموذج (التسجيل العادي)
+// عند إرسال النموذج العادي
 form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
@@ -691,4 +593,142 @@ form.addEventListener("submit", async (e) => {
 
         // إخفاء النافذة بعد ثانيتين
         setTimeout(() => {
-            overlay.style.display =
+            overlay.style.display = 'none';
+            form.reset();
+            
+            registerSection.style.display = 'none';
+            showWelcomeSection(userName);
+            
+            localStorage.setItem('userData', JSON.stringify(userData));
+            displayUserData(userData);
+            
+            // استعادة التمرير
+            document.body.style.overflow = '';
+            document.body.style.position = '';
+            document.body.style.top = '';
+            document.body.style.width = '';
+            window.scrollTo(0, scrollPosition);
+            
+        }, 2000);
+
+    } catch (error) {
+        console.error('خطأ في عملية التسجيل:', error);
+        clearMessages();
+        showError("حدث خطأ أثناء التحقق من البيانات. يرجى المحاولة مرة أخرى.");
+    }
+});
+
+// دوال التحقق والرسائل
+function validateForm(email, password, phone) {
+    clearMessages();
+    
+    if (!/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(email)) {
+        showError("البريد الإلكتروني غير صالح");
+        return false;
+    }
+    
+    if (!/^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{6,}$/.test(password)) {
+        showError("كلمة المرور يجب أن تحتوي على أحرف إنجليزية وأرقام معاً (6 أحرف على الأقل)");
+        return false;
+    }
+    
+    if (!/^01[0125][0-9]{8}$/.test(phone)) {
+        showError("رقم الهاتف غير صالح");
+        return false;
+    }
+    
+    return true;
+}
+
+function showError(message) {
+    clearMessages();
+    const errorDiv = document.createElement('div');
+    errorDiv.className = 'error-message';
+    errorDiv.style.cssText = `
+        color: red;
+        margin: 10px 0;
+        text-align: center;
+        padding: 10px;
+        background-color: #fee;
+        border: 1px solid #fcc;
+        border-radius: 5px;
+    `;
+    errorDiv.textContent = message;
+    form.insertBefore(errorDiv, form.querySelector('h2'));
+}
+
+function showSuccess(message) {
+    clearMessages();
+    const successDiv = document.createElement('div');
+    successDiv.className = 'success-message';
+    successDiv.style.cssText = `
+        color: green;
+        margin: 10px 0;
+        text-align: center;
+        padding: 10px;
+        background-color: #efe;
+        border: 1px solid #cfc;
+        border-radius: 5px;
+    `;
+    successDiv.textContent = message;
+    form.insertBefore(successDiv, form.querySelector('h2'));
+}
+
+function showWarning(message) {
+    clearMessages();
+    const warningDiv = document.createElement('div');
+    warningDiv.className = 'warning-message';
+    warningDiv.style.cssText = `
+        color: orange;
+        margin: 10px 0;
+        text-align: center;
+        padding: 10px;
+        background-color: #ffeaa7;
+        border: 1px solid #fdcb6e;
+        border-radius: 5px;
+    `;
+    warningDiv.textContent = message;
+    form.insertBefore(warningDiv, form.querySelector('h2'));
+}
+// تكملة showLoading
+function showLoading(message) {
+    clearMessages();
+    const loadingDiv = document.createElement('div');
+    loadingDiv.className = 'loading-message';
+    loadingDiv.style.cssText = `
+        color: blue;
+        margin: 10px 0;
+        text-align: center;
+        padding: 10px;
+        background-color: #e3f2fd;
+        border: 1px solid #2196f3;
+        border-radius: 5px;
+    `;
+    loadingDiv.innerHTML = `
+        <div style="display: flex; align-items: center; justify-content: center; gap: 10px;">
+            <div style="width: 20px; height: 20px; border: 2px solid #2196f3; border-top: 2px solid transparent; border-radius: 50%; animation: spin 1s linear infinite;"></div>
+            <span>${message}</span>
+        </div>
+    `;
+    form.insertBefore(loadingDiv, form.querySelector('h2'));
+}
+
+// إضافة حركة الدوران
+const style = document.createElement('style');
+style.innerHTML = `
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}`;
+document.head.appendChild(style);
+
+// دالة لحذف الرسائل السابقة
+function clearMessages() {
+    const messages = form.querySelectorAll('.error-message, .success-message, .warning-message, .loading-message');
+    messages.forEach(msg => msg.remove());
+}
+
+// تأكد إن عندك تعريف للفورم
+
+// استدعاء الدالة لتحديث حالة الزراء
+updateButtonsState();
