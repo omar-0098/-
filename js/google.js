@@ -1,3 +1,66 @@
+// دالة للتحقق من وجود مستخدم بالإيميل أو الهاتف
+async function checkUserExists(email, phone) {
+    try {
+        const existingData = await getExistingJSONBinData();
+        
+        if (!existingData.users || existingData.users.length === 0) {
+            return { exists: false };
+        }
+        
+        // البحث عن الإيميل أو الهاتف في قاعدة البيانات
+        const emailExists = existingData.users.find(user => user.email === email);
+        const phoneExists = existingData.users.find(user => user.phone === phone);
+        
+        return {
+            exists: emailExists || phoneExists,
+            emailExists: !!emailExists,
+            phoneExists: !!phoneExists,
+            existingUser: emailExists || phoneExists
+        };
+    } catch (error) {
+        console.error('خطأ في التحقق من وجود المستخدم:', error);
+        return { exists: false, error: true };
+    }
+}
+
+// دالة محسنة للعثور على المستخدم في قاعدة البيانات
+async function findUserInDatabase(identifier, type = 'email') {
+    try {
+        const existingData = await getExistingJSONBinData();
+        
+        if (!existingData.users || existingData.users.length === 0) {
+            return null;
+        }
+        
+        let foundUser = null;
+        
+        switch (type) {
+            case 'email':
+                foundUser = existingData.users.find(user => user.email === identifier);
+                break;
+            case 'phone':
+                foundUser = existingData.users.find(user => user.phone === identifier);
+                break;
+            case 'id':
+                foundUser = existingData.users.find(user => user.id === identifier);
+                break;
+            default:
+                // البحث بجميع الطرق
+                foundUser = existingData.users.find(user => 
+                    user.email === identifier || 
+                    user.phone === identifier || 
+                    user.id === identifier
+                );
+        }
+        
+        return foundUser || null;
+    } catch (error) {
+        console.error('خطأ في البحث عن المستخدم:', error);
+        return null;
+    }
+}
+
+// دالة محسنة لتسجيل الدخول مع التحقق من التكرار
 function logineCallback(response) {
     const decoded = jwt_decode(response.credential);
     
@@ -11,7 +74,8 @@ function logineCallback(response) {
             <input type="tel" id="userPhone" placeholder="رقم الهاتف" maxlength="11" inputmode="numeric">
             <button id="submitPhone">تسجيل</button>
             <div id="phoneError" style="color: red; margin-top: 10px;"></div>
-            <h2> هذ الموقع يحمي بيناتك و تطبق علية <span><a href="Privacy.html" target="_blank">السياسة و الخصوصية</a></span> الخاصة بكشمير هوم</h2>
+            <div id="loadingMessage" style="color: blue; margin-top: 10px; display: none;">جاري التحقق...</div>
+            <h2> هذا الموقع يحمي بياناتك و تطبق عليه <span><a href="Privacy.html" target="_blank">السياسة و الخصوصية</a></span> الخاصة بكشمير هوم</h2>
         </div>
     `;
     
@@ -36,16 +100,19 @@ function logineCallback(response) {
         }
     });
     
-    // التعامل مع إرسال رقم الهاتف
-    document.getElementById("submitPhone").addEventListener("click", function() {
+    // التعامل مع إرسال رقم الهاتف مع التحقق من التكرار
+    document.getElementById("submitPhone").addEventListener("click", async function() {
         const phoneInput = document.getElementById("userPhone");
         const phoneError = document.getElementById("phoneError");
+        const loadingMessage = document.getElementById("loadingMessage");
         const phoneNumber = phoneInput.value.trim();
+        const userEmail = decoded.email || "";
         
-        // إعادة تعيين رسالة الخطأ
+        // إعادة تعيين رسائل الخطأ والتحميل
         phoneError.textContent = "";
+        loadingMessage.style.display = "none";
         
-        // التحقق من الشروط
+        // التحقق من الشروط الأساسية
         if (!phoneNumber) {
             phoneError.textContent = "الرجاء إدخال رقم الهاتف";
             return;
@@ -66,34 +133,85 @@ function logineCallback(response) {
             return;
         }
         
-        // إعداد بيانات المستخدم مع رقم الهاتف
-        const userData = {
-            id: generateUniqueId(), // إنشاء معرف فريد
-            name: decoded.given_name || "غير معروف",
-            family: decoded.family_name || "",
-            email: decoded.email || "",
-            phone: phoneNumber,
-            registered: true,
-            timestamp: new Date().toISOString()
-        };
+        // إظهار رسالة التحميل
+        loadingMessage.style.display = "block";
+        loadingMessage.textContent = "جاري التحقق من البيانات...";
+        
+        try {
+            // التحقق من وجود المستخدم بالإيميل أو الهاتف
+            const userCheck = await checkUserExists(userEmail, phoneNumber);
+            
+            if (userCheck.error) {
+                throw new Error("خطأ في الاتصال بقاعدة البيانات");
+            }
+            
+            if (userCheck.exists) {
+                loadingMessage.style.display = "none";
+                
+                let errorMessage = "";
+                if (userCheck.emailExists && userCheck.phoneExists) {
+                    errorMessage = "هذا الإيميل ورقم الهاتف مسجلان مسبقاً";
+                } else if (userCheck.emailExists) {
+                    errorMessage = "هذا الإيميل مسجل مسبقاً";
+                } else if (userCheck.phoneExists) {
+                    errorMessage = "رقم الهاتف هذا مسجل مسبقاً";
+                }
+                
+                phoneError.textContent = errorMessage;
+                
+                // إظهار خيار تسجيل الدخول للمستخدم الموجود
+                const loginOption = document.createElement("div");
+                loginOption.innerHTML = `
+                    <p style="color: #007bff; margin-top: 10px;">
+                        هل تريد تسجيل الدخول بدلاً من إنشاء حساب جديد؟
+                        <button id="loginExistingUser" style="margin-left: 10px; padding: 5px 10px; background: #007bff; color: white; border: none; border-radius: 3px; cursor: pointer;">
+                            تسجيل دخول
+                        </button>
+                    </p>
+                `;
+                
+                if (!document.getElementById("loginExistingUser")) {
+                    phoneError.appendChild(loginOption);
+                    
+                    document.getElementById("loginExistingUser").addEventListener("click", function() {
+                        loginExistingUser(userCheck.existingUser);
+                    });
+                }
+                
+                return;
+            }
+            
+            // إذا لم يكن المستخدم موجوداً، متابعة إنشاء الحساب
+            loadingMessage.textContent = "جاري إنشاء الحساب...";
+            
+            // إعداد بيانات المستخدم مع رقم الهاتف
+            const userData = {
+                id: generateUniqueId(),
+                name: decoded.given_name || "غير معروف",
+                family: decoded.family_name || "",
+                email: userEmail,
+                phone: phoneNumber,
+                registered: true,
+                timestamp: new Date().toISOString()
+            };
 
-        // إعداد بيانات Google Sheets
-        const formData = new FormData();
-        formData.append("Nameo", userData.name);
-        formData.append("FamilyName", userData.family);
-        formData.append("Emailo", userData.email);
-        formData.append("Phone", userData.phone);
-        formData.append("Passwordo", "google");
-        formData.append("ID", userData.id);
+            // إعداد بيانات Google Sheets
+            const formData = new FormData();
+            formData.append("Nameo", userData.name);
+            formData.append("FamilyName", userData.family);
+            formData.append("Emailo", userData.email);
+            formData.append("Phone", userData.phone);
+            formData.append("Passwordo", "google");
+            formData.append("ID", userData.id);
 
-        // إرسال البيانات إلى كل من JSONBin و Google Sheets
-        Promise.all([
-            // إرسال إلى JSONBin.io
-            sendToJSONBin(userData),
-            // إرسال إلى Google Sheets
-            sendToGoogleSheets(formData)
-        ])
-        .then(([jsonbinResult, googleSheetsResult]) => {
+            // إرسال البيانات إلى كل من JSONBin و Google Sheets
+            const results = await Promise.all([
+                sendToJSONBin(userData),
+                sendToGoogleSheets(formData)
+            ]);
+            
+            const [jsonbinResult, googleSheetsResult] = results;
+            
             if (jsonbinResult.success && googleSheetsResult.success) {
                 localStorage.setItem("userData", JSON.stringify(userData));
                 showWelcomeSection(userData.name);
@@ -102,74 +220,121 @@ function logineCallback(response) {
                 
                 // إضافة زر حذف الحساب في واجهة المستخدم
                 addDeleteAccountButton();
+                
+                // إظهار رسالة نجاح
+                showSuccessMessage("تم إنشاء الحساب بنجاح!");
+                
             } else {
-                showError("فشل في إرسال البيانات إلى أحد الخدمات أو كليهما");
+                throw new Error("فشل في إرسال البيانات إلى أحد الخدمات أو كليهما");
             }
-        })
-        .catch(err => {
-            console.error("خطأ في إرسال البيانات:", err);
-            showError("خطأ في تسجيل الدخول باستخدام Google");
-        });
+            
+        } catch (error) {
+            console.error("خطأ في تسجيل الدخول:", error);
+            loadingMessage.style.display = "none";
+            phoneError.textContent = "خطأ في تسجيل الدخول: " + (error.message || "خطأ غير معروف");
+        }
     });
 }
 
-// دالة لإضافة زر حذف الحساب
-function addDeleteAccountButton() {
-    // التحقق من وجود الزر مسبقاً
-    if (document.getElementById('deleteAccountBtn')) {
-        return;
-    }
-    
-    // إنشاء زر حذف الحساب
-    const deleteButton = document.createElement('button');
-    deleteButton.id = 'deleteAccountBtn';
-    deleteButton.innerHTML = '🗑️ حذف الحساب';
-    deleteButton.className = 'delete-account-btn';
-    deleteButton.style.cssText = `
-        background-color: #dc3545;
-        color: white;
-        border: none;
-        padding: 10px 20px;
-        border-radius: 5px;
-        cursor: pointer;
-        margin: 10px;
-        font-size: 14px;
-        transition: background-color 0.3s;
-    `;
-    
-    // إضافة تأثير hover
-    deleteButton.onmouseover = function() {
-        this.style.backgroundColor = '#c82333';
-    };
-    deleteButton.onmouseout = function() {
-        this.style.backgroundColor = '#dc3545';
-    };
-    
-    // ربط الوظيفة بالزر
-    deleteButton.onclick = function() {
-        deleteCurrentUserAccount();
-    };
-    
-    // إضافة الزر إلى المكان المناسب (يمكنك تعديل المكان حسب تصميم موقعك)
-    const userSection = document.querySelector('.welcome-section, .user-dashboard, .user-info');
-    if (userSection) {
-        userSection.appendChild(deleteButton);
-    } else {
-        // إذا لم يوجد قسم محدد، أضف الزر في نهاية body
-        document.body.appendChild(deleteButton);
+// دالة لتسجيل دخول المستخدم الموجود
+function loginExistingUser(existingUser) {
+    try {
+        // تحديث البيانات في localStorage
+        localStorage.setItem("userData", JSON.stringify(existingUser));
+        
+        // إظهار واجهة المستخدم
+        showWelcomeSection(existingUser.name);
+        displayUserData(existingUser);
+        
+        // إخفاء overlay
+        const overlay = document.getElementById("overlay");
+        overlay.style.display = "none";
+        
+        // إضافة زر حذف الحساب
+        addDeleteAccountButton();
+        
+        // إظهار رسالة ترحيب
+        showSuccessMessage(`مرحباً بعودتك ${existingUser.name}!`);
+        
+    } catch (error) {
+        console.error("خطأ في تسجيل دخول المستخدم الموجود:", error);
+        showError("خطأ في تسجيل الدخول");
     }
 }
 
-// إعدادات JSONBin
-const JSONBIN_CONFIG = {
-    API_KEY: "$2a$10$xAWjC3zelpDKCd6zdOdUg.D0bwtEURjcR5sEiYdonjBmP5lHuqzq2",
-    BIN_ID: "6848177e8960c979a5a77f85"
-};
+// دالة لإظهار رسالة النجاح
+function showSuccessMessage(message) {
+    const successDiv = document.createElement("div");
+    successDiv.innerHTML = `
+        <div style="
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #28a745;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 5px;
+            z-index: 10000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        ">
+            ${message}
+        </div>
+    `;
+    
+    document.body.appendChild(successDiv);
+    
+    // إزالة الرسالة بعد 3 ثوان
+    setTimeout(() => {
+        if (successDiv.parentNode) {
+            successDiv.parentNode.removeChild(successDiv);
+        }
+    }, 3000);
+}
 
-// دالة لإرسال البيانات إلى JSONBin.io
+// دالة لإظهار رسالة الخطأ
+function showError(message) {
+    const errorDiv = document.createElement("div");
+    errorDiv.innerHTML = `
+        <div style="
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: #dc3545;
+            color: white;
+            padding: 15px 20px;
+            border-radius: 5px;
+            z-index: 10000;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        ">
+            ${message}
+        </div>
+    `;
+    
+    document.body.appendChild(errorDiv);
+    
+    // إزالة الرسالة بعد 5 ثوان
+    setTimeout(() => {
+        if (errorDiv.parentNode) {
+            errorDiv.parentNode.removeChild(errorDiv);
+        }
+    }, 5000);
+}
+
+// دالة محسنة لإرسال البيانات إلى JSONBin مع التحقق المضاعف
 async function sendToJSONBin(userData) {
     try {
-        // أولاً، جرب الحصول على البيانات الموجودة
+        // التحقق مرة أخرى قبل الإرسال (للتأكد المضاعف)
+        const finalCheck = await checkUserExists(userData.email, userData.phone);
+        
+        if (finalCheck.exists) {
+            return { 
+                success: false, 
+                error: "المستخدم موجود مسبقاً", 
+                duplicate: true 
+            };
+        }
+        
+        // الحصول على البيانات الموجودة
         const existingData = await getExistingJSONBinData();
         
         // إضافة المستخدم الجديد إلى القائمة
@@ -203,377 +368,29 @@ async function sendToJSONBin(userData) {
     }
 }
 
-// دالة لإرسال البيانات إلى Google Sheets
-async function sendToGoogleSheets(formData) {
-    try {
-        const response = await fetch("https://script.google.com/macros/s/AKfycbzDPcLwO1U091L_W1Ha-M-_GjL5z6V7aFh6RxTberNq8tsYLIkkI1BtdF5ufA8qpSmvag/exec", {
-            method: "POST",
-            body: formData
-        });
-        
-        const result = await response.json();
-        
-        if (result.result === "success") {
-            console.log('تم حفظ البيانات في Google Sheets بنجاح:', result);
-            return { success: true, data: result };
-        } else {
-            console.error('خطأ في حفظ البيانات في Google Sheets:', result);
-            return { success: false, error: result };
-        }
-    } catch (error) {
-        console.error('خطأ في الاتصال بـ Google Sheets:', error);
-        return { success: false, error: error };
-    }
-}
-
-// دالة لإنشاء معرف فريد
-function generateUniqueId() {
-    return Date.now().toString(36) + Math.random().toString(36).substr(2);
-}
-
-// دالة لحذف حساب المستخدم
-async function deleteUserAccount(userIdentifier, identificationType = 'email') {
-    try {
-        // الخطوة 1: جلب البيانات الحالية من JSONBin
-        const existingData = await getExistingJSONBinData();
-        
-        if (!existingData.users || existingData.users.length === 0) {
-            console.log('لا توجد بيانات مستخدمين للحذف');
-            return { success: false, message: 'لا توجد بيانات للحذف' };
-        }
-        
-        // الخطوة 2: البحث عن المستخدم وحذفه
-        const originalLength = existingData.users.length;
-        let filteredUsers;
-        
-        switch (identificationType) {
-            case 'email':
-                filteredUsers = existingData.users.filter(user => user.email !== userIdentifier);
-                break;
-            case 'phone':
-                filteredUsers = existingData.users.filter(user => user.phone !== userIdentifier);
-                break;
-            case 'id':
-                filteredUsers = existingData.users.filter(user => user.id !== userIdentifier);
-                break;
-            default:
-                filteredUsers = existingData.users.filter(user => 
-                    user.email !== userIdentifier && 
-                    user.phone !== userIdentifier && 
-                    user.id !== userIdentifier
-                );
-        }
-        
-        // التحقق من حذف المستخدم
-        if (filteredUsers.length === originalLength) {
-            console.log('المستخدم غير موجود');
-            return { success: false, message: 'المستخدم غير موجود' };
-        }
-        
-        // الخطوة 3: تحديث البيانات في JSONBin
-        const updatedData = {
-            users: filteredUsers,
-            lastUpdated: new Date().toISOString(),
-            totalUsers: filteredUsers.length,
-            lastDeletedUser: userIdentifier,
-            deletedAt: new Date().toISOString()
-        };
-        
-        const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_CONFIG.BIN_ID}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-Master-Key': JSONBIN_CONFIG.API_KEY
-            },
-            body: JSON.stringify(updatedData)
-        });
-        
-        const result = await response.json();
-        
-        if (response.ok) {
-            // الخطوة 4: حذف البيانات من localStorage
-            clearUserLocalData();
-            
-            console.log('تم حذف المستخدم بنجاح من JSONBin:', result);
-            return { 
-                success: true, 
-                message: 'تم حذف الحساب بنجاح',
-                deletedUser: userIdentifier,
-                remainingUsers: filteredUsers.length
-            };
-        } else {
-            console.error('خطأ في حذف المستخدم من JSONBin:', result);
-            return { success: false, message: 'فشل في حذف الحساب من قاعدة البيانات' };
-        }
-        
-    } catch (error) {
-        console.error('خطأ في حذف حساب المستخدم:', error);
-        return { success: false, message: 'خطأ في حذف الحساب' };
-    }
-}
-
-// دالة لمسح بيانات المستخدم من localStorage
-function clearUserLocalData() {
-    try {
-        // حذف بيانات المستخدم
-        localStorage.removeItem("userData");
-        
-        // حذف أي بيانات أخرى متعلقة بالمستخدم (اضف المفاتيح حسب الحاجة)
-        localStorage.removeItem("userSession");
-        localStorage.removeItem("userPreferences");
-        localStorage.removeItem("userCart");
-        localStorage.removeItem("userFavorites");
-        
-        console.log('تم مسح بيانات المستخدم من localStorage');
-        
-        // إعادة تحميل الصفحة أو إعادة توجيه المستخدم
-        // window.location.reload(); // اختياري
-        
-    } catch (error) {
-        console.error('خطأ في مسح البيانات المحلية:', error);
-    }
-}
-
-// دالة لحذف الحساب الحالي (المستخدم المسجل حالياً)
-async function deleteCurrentUserAccount() {
-    try {
-        // جلب بيانات المستخدم الحالي
-        const currentUser = JSON.parse(localStorage.getItem("userData"));
-        
-        if (!currentUser) {
-            alert('لا يوجد مستخدم مسجل حالياً');
-            return;
-        }
-        
-        // تأكيد الحذف
-        const confirmation = confirm(`هل أنت متأكد من حذف حسابك؟\nالبريد الإلكتروني: ${currentUser.email}\nهذا الإجراء لا يمكن التراجع عنه.`);
-        
-        if (!confirmation) {
-            return;
-        }
-        
-        // حذف الحساب
-        const result = await deleteUserAccount(currentUser.email, 'email');
-        
-        if (result.success) {
-            alert('تم حذف حسابك بنجاح');
-            
-            // إخفاء واجهة المستخدم المسجل
-            hideUserInterface();
-            
-            // إظهار واجهة تسجيل الدخول
-            showLoginInterface();
-            
-        } else {
-            alert('فشل في حذف الحساب: ' + result.message);
-        }
-        
-    } catch (error) {
-        console.error('خطأ في حذف الحساب الحالي:', error);
-        alert('حدث خطأ أثناء حذف الحساب');
-    }
-}
-
-// دالة لإخفاء واجهة المستخدم
-function hideUserInterface() {
-    // إخفاء العناصر المتعلقة بالمستخدم المسجل
-    const userElements = document.querySelectorAll('.user-logged-in, .welcome-section, .user-dashboard');
-    userElements.forEach(element => {
-        element.style.display = 'none';
-    });
-}
-
-// دالة لإظهار واجهة تسجيل الدخول
-function showLoginInterface() {
-    // إظهار أزرار تسجيل الدخول
-    const loginElements = document.querySelectorAll('.login-buttons, .auth-section');
-    loginElements.forEach(element => {
-        element.style.display = 'block';
-    });
-}
-
-// دالة للتحقق من وجود المستخدم في قاعدة البيانات وتسجيل خروجه إذا لم يعد موجوداً
-async function checkUserExistenceAndLogout() {
-    try {
-        // جلب بيانات المستخدم الحالي من localStorage
-        const currentUser = JSON.parse(localStorage.getItem("userData"));
-        
-        if (!currentUser) {
-            // لا يوجد مستخدم مسجل
-            return;
-        }
-        
-        // البحث عن المستخدم في قاعدة البيانات
-        const userInDatabase = await findUserInDatabase(currentUser.email, 'email');
-        
-        if (!userInDatabase) {
-            // المستخدم غير موجود في قاعدة البيانات - تسجيل الخروج
-            console.log('تم حذف المستخدم من قاعدة البيانات - تسجيل خروج تلقائي');
-            
-            // مسح البيانات المحلية
-            clearUserLocalData();
-            
-            // إخفاء واجهة المستخدم
-            hideUserInterface();
-            
-            // إظهار واجهة تسجيل الدخول
-            showLoginInterface();
-            
-            // إظهار رسالة للمستخدم
-            alert('تم حذف حسابك من النظام. سيتم تسجيل خروجك تلقائياً.');
-            
-            // إعادة تحميل الصفحة (اختياري)
-            setTimeout(() => {
-                window.location.reload();
-            }, 2000);
-            
-            return false; // المستخدم غير موجود
-        }
-        
-        return true; // المستخدم موجود
-        
-    } catch (error) {
-        console.error('خطأ في التحقق من وجود المستخدم:', error);
-        return true; // في حالة الخطأ، نفترض أن المستخدم موجود
-    }
-}
-
-// دالة للتحقق الدوري من وجود المستخدم
-function startUserExistenceCheck() {
-    // التحقق كل 30 ثانية
-    setInterval(async () => {
-        await checkUserExistenceAndLogout();
-    }, 30000); // 30 ثانية
-}
-
-// دالة للتحقق من وجود المستخدم عند تحميل الصفحة
-async function checkUserOnPageLoad() {
-    // انتظار قليل للتأكد من تحميل البيانات
-    setTimeout(async () => {
-        const userExists = await checkUserExistenceAndLogout();
-        
-        if (userExists) {
-            console.log('المستخدم موجود في قاعدة البيانات');
-            // بدء التحقق الدوري
-            startUserExistenceCheck();
-        }
-    }, 1000);
-}
-
-// دالة للتحقق من وجود المستخدم عند النقر على أي زر أو تفاعل
-async function checkUserBeforeAction(callback) {
-    const userExists = await checkUserExistenceAndLogout();
+// دالة للتحقق من صحة البيانات قبل الإرسال
+function validateUserData(userData) {
+    const errors = [];
     
-    if (userExists && typeof callback === 'function') {
-        // إذا كان المستخدم موجود، تنفيذ الوظيفة المطلوبة
-        callback();
-    } else if (!userExists) {
-        // إذا لم يعد المستخدم موجود، منع التنفيذ
-        console.log('تم منع التنفيذ - المستخدم غير موجود في قاعدة البيانات');
+    if (!userData.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(userData.email)) {
+        errors.push("الإيميل غير صحيح");
     }
+    
+    if (!userData.phone || !/^0\d{10}$/.test(userData.phone)) {
+        errors.push("رقم الهاتف غير صحيح");
+    }
+    
+    if (!userData.name || userData.name.trim().length < 2) {
+        errors.push("الاسم قصير جداً");
+    }
+    
+    return {
+        isValid: errors.length === 0,
+        errors: errors
+    };
 }
 
-// دالة محسنة لتسجيل الخروج
-function forceLogout(reason = 'تم تسجيل الخروج') {
-    try {
-        // مسح جميع البيانات المحلية
-        clearUserLocalData();
-        
-        // إخفاء واجهة المستخدم
-        hideUserInterface();
-        
-        // إظهار واجهة تسجيل الدخول
-        showLoginInterface();
-        
-        // إظهار رسالة للمستخدم
-        if (reason !== 'silent') {
-            alert(reason);
-        }
-        
-        // إعادة تعيين الصفحة
-        setTimeout(() => {
-            window.location.reload();
-        }, 1000);
-        
-        console.log('تم تسجيل الخروج:', reason);
-        
-    } catch (error) {
-        console.error('خطأ في تسجيل الخروج:', error);
-    }
-}
-
-// دالة للتحقق من حالة الاتصال وقاعدة البيانات
-async function checkDatabaseConnection() {
-    try {
-        const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_CONFIG.BIN_ID}/latest`, {
-            method: 'GET',
-            headers: {
-                'X-Master-Key': JSONBIN_CONFIG.API_KEY
-            }
-        });
-        
-        if (!response.ok) {
-            throw new Error('فشل الاتصال بقاعدة البيانات');
-        }
-        
-        const result = await response.json();
-        
-        // التحقق من وجود البيانات
-        if (!result.record || !result.record.users) {
-            // إذا كانت قاعدة البيانات فارغة أو محذوفة
-            const currentUser = JSON.parse(localStorage.getItem("userData"));
-            if (currentUser) {
-                forceLogout('تم مسح جميع البيانات من النظام. سيتم تسجيل خروجك.');
-                return false;
-            }
-        }
-        
-        return true;
-        
-    } catch (error) {
-        console.error('خطأ في الاتصال بقاعدة البيانات:', error);
-        return true; // في حالة خطأ الشبكة، نفترض أن الاتصال سليم
-    }
-}
-
-// دالة بديلة لإرسال البيانات إلى JSONBin مع تحديث البيانات الموجودة
-async function sendToJSONBinWithUpdate(userData) {
-    try {
-        // أولاً، جرب الحصول على البيانات الموجودة
-        const existingData = await getExistingJSONBinData();
-        
-        // إضافة المستخدم الجديد إلى القائمة
-        const updatedData = {
-            users: existingData.users ? [...existingData.users, userData] : [userData],
-            lastUpdated: new Date().toISOString(),
-            totalUsers: existingData.users ? existingData.users.length + 1 : 1
-        };
-        
-        const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_CONFIG.BIN_ID}`, {
-            method: 'PUT',
-            headers: {
-                'Content-Type': 'application/json',
-                'X-Master-Key': JSONBIN_CONFIG.API_KEY
-            },
-            body: JSON.stringify(updatedData)
-        });
-        
-        const result = await response.json();
-        
-        if (response.ok) {
-            console.log('تم تحديث البيانات في JSONBin بنجاح:', result);
-            return { success: true, data: result };
-        } else {
-            console.error('خطأ في تحديث البيانات في JSONBin:', result);
-            return { success: false, error: result };
-        }
-    } catch (error) {
-        console.error('خطأ في تحديث البيانات في JSONBin:', error);
-        return { success: false, error: error };
-    }
-}
-
-// دالة للحصول على البيانات الموجودة من JSONBin
+// دالة محسنة للحصول على البيانات الموجودة من JSONBin
 async function getExistingJSONBinData() {
     try {
         const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_CONFIG.BIN_ID}/latest`, {
@@ -585,12 +402,98 @@ async function getExistingJSONBinData() {
         
         if (response.ok) {
             const result = await response.json();
-            return result.record;
+            return result.record || { users: [] };
         } else {
+            console.error('خطأ في جلب البيانات من JSONBin:', response.status);
             return { users: [] };
         }
     } catch (error) {
         console.error('خطأ في جلب البيانات من JSONBin:', error);
         return { users: [] };
+    }
+}
+
+// دالة للتحقق من تفرد البيانات في الوقت الفعلي
+async function realTimeUniqueCheck(email, phone) {
+    try {
+        // جلب أحدث البيانات
+        const latestData = await getExistingJSONBinData();
+        
+        if (!latestData.users || latestData.users.length === 0) {
+            return { isUnique: true };
+        }
+        
+        // البحث عن التكرارات
+        const emailMatch = latestData.users.find(user => user.email === email);
+        const phoneMatch = latestData.users.find(user => user.phone === phone);
+        
+        return {
+            isUnique: !emailMatch && !phoneMatch,
+            emailExists: !!emailMatch,
+            phoneExists: !!phoneMatch,
+            conflictingUsers: [emailMatch, phoneMatch].filter(Boolean)
+        };
+        
+    } catch (error) {
+        console.error('خطأ في التحقق من التفرد:', error);
+        // في حالة الخطأ، نفترض أن البيانات فريدة لتجنب منع التسجيل
+        return { isUnique: true, error: true };
+    }
+}
+
+// دالة لتنظيف البيانات المكررة (لاستخدامها في حالات الطوارئ)
+async function cleanupDuplicateUsers() {
+    try {
+        const existingData = await getExistingJSONBinData();
+        
+        if (!existingData.users || existingData.users.length === 0) {
+            return { success: true, message: "لا توجد بيانات للتنظيف" };
+        }
+        
+        const uniqueUsers = [];
+        const seenEmails = new Set();
+        const seenPhones = new Set();
+        
+        for (const user of existingData.users) {
+            if (!seenEmails.has(user.email) && !seenPhones.has(user.phone)) {
+                uniqueUsers.push(user);
+                seenEmails.add(user.email);
+                seenPhones.add(user.phone);
+            }
+        }
+        
+        const updatedData = {
+            users: uniqueUsers,
+            lastUpdated: new Date().toISOString(),
+            totalUsers: uniqueUsers.length,
+            cleanupPerformed: true,
+            originalCount: existingData.users.length,
+            removedDuplicates: existingData.users.length - uniqueUsers.length
+        };
+        
+        const response = await fetch(`https://api.jsonbin.io/v3/b/${JSONBIN_CONFIG.BIN_ID}`, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Master-Key': JSONBIN_CONFIG.API_KEY
+            },
+            body: JSON.stringify(updatedData)
+        });
+        
+        const result = await response.json();
+        
+        if (response.ok) {
+            return { 
+                success: true, 
+                message: `تم تنظيف ${updatedData.removedDuplicates} مستخدم مكرر`,
+                data: result 
+            };
+        } else {
+            return { success: false, error: result };
+        }
+        
+    } catch (error) {
+        console.error('خطأ في تنظيف البيانات المكررة:', error);
+        return { success: false, error: error };
     }
 }
