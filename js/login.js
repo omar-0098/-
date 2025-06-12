@@ -354,7 +354,7 @@ form.addEventListener("submit", async (e) => {
         }
 
         // إذا لم يكن هناك تكرار، تابع عملية التسجيل
-        showLoading("جاري إرسال البيانات...");
+        showLoading("  جاري انشاء حساب...");
 
     const userData = {
     name: userName,
