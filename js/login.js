@@ -821,16 +821,3 @@ document.addEventListener('DOMContentLoaded', updateUIBasedOnMan1);
 setInterval(updateUIBasedOnMan1, 500);
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
