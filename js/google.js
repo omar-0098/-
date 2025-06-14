@@ -95,9 +95,9 @@ function logineCallback(response) {
                 overlay.style.display = "none";
                 
                 // إعادة تحميل الصفحة بعد نجاح التسجيل
-                setTimeout(() => {
-                    location.reload();
-                }, 1000); // تأخير ثانية واحدة ليرى المستخدم رسالة النجاح
+                // setTimeout(() => {
+                //     location.reload();
+                // }, 1000); // تأخير ثانية واحدة ليرى المستخدم رسالة النجاح
                 
             } else {
                 showError("فشل تسجيل بيانات الدخول من Google");
