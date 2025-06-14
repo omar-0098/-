@@ -154,6 +154,7 @@ function logineCallback(response) {
                 showWelcomeSection(userData.name);
                 displayUserData(userData);
                 overlay.style.display = "none";
+                location.reload();
             }, 2000);
 
         } catch (error) {
