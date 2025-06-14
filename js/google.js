@@ -149,23 +149,12 @@ function logineCallback(response) {
             }
 
             // إخفاء النافذة بعد ثانيتين
-        setTimeout(() => {
-    function saveUserDataSecurely(userData) {
-    localStorage.setItem("userData", JSON.stringify(userData));
-    localStorage.setItem("isLoggedIn", "true");
-    localStorage.setItem("userEmail", userData.email);
-    sessionStorage.setItem("userData", JSON.stringify(userData));
-    sessionStorage.setItem("isLoggedIn", "true");
-}
-    showWelcomeSection(userData.name);
-    displayUserData(userData);
-    overlay.style.display = "none";
-    
-    // إعادة تحميل الصفحة بعد التسجيل الناجح
-    setTimeout(() => {
-        window.location.reload();
-    }, 1000); // انتظار ثانية واحدة إضافية قبل إعادة التحميل
-}, 2000);
+            setTimeout(() => {
+                localStorage.setItem("userData", JSON.stringify(userData));
+                showWelcomeSection(userData.name);
+                displayUserData(userData);
+                overlay.style.display = "none";
+            }, 2000);
 
         } catch (error) {
             console.error('خطأ في عملية التسجيل:', error);
