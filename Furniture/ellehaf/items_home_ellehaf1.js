@@ -64,7 +64,18 @@ date.forEach(product => {
                         <div class="size">
                           <p><span> <span>  اللون : </span> ${product.color}  </span></p>
                         </div>
-
+                        
+  <div class="shipping-container">
+    <div class="shipping-label">
+    <i class="fa-solid fa-paperclip"></i>
+      <span> ${product.type} </span>
+    </div>
+    
+    <div class="shipping-label">
+    <i class="fa-solid fa-truck-fast"></i>
+      <span>خدمة سريعة</span>   
+    </div>
+  </div>
 
                         <div class="icons">
                             <span class="btn_add_cart ${isInCart ? 'active' : ''}" data-id="${product.id}">
