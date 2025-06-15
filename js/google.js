@@ -154,9 +154,8 @@ function logineCallback(response) {
                 showWelcomeSection(userData.name);
                 displayUserData(userData);
                 overlay.style.display = "none";
-                
                 // تحديث واجهة المستخدم - إخفاء رسالة يجب إنشاء حساب وتفعيل السلة
-                updateUIAfterSuccessfulRegistration();
+                updateUIAfterSuccessfulRegistration();    
             }, 2000);
 
         } catch (error) {
@@ -246,7 +245,18 @@ function logineCallback(response) {
 }
 
 // دالة جديدة لتحديث الواجهة بعد التسجيل الناجح
+// دالة محدثة لتحديث الواجهة بعد التسجيل الناجح
 function updateUIAfterSuccessfulRegistration() {
+    // إعادة تفعيل التمرير العادي للصفحة
+    document.body.style.overflow = 'auto';
+    document.documentElement.style.overflow = 'auto';
+    
+    // إزالة أي قيود على التمرير من الـ overlay أو النوافذ المنبثقة
+    const overlay = document.getElementById("overlay");
+    if (overlay) {
+        overlay.style.overflow = 'auto';
+    }
+    
     // إخفاء رسالة "يجب إنشاء حساب"
     const messageDiv = document.getElementById('mustRegisterMessage');
     if (messageDiv) {
@@ -281,9 +291,15 @@ function updateUIAfterSuccessfulRegistration() {
         man1.style.display = 'block';
     }
     
-    console.log('تم تحديث واجهة المستخدم بعد التسجيل الناجح');
+    // التأكد من أن الصفحة قابلة للتمرير بشكل طبيعي
+    // إزالة أي فئات CSS قد تمنع التمرير
+    document.body.classList.remove('no-scroll', 'modal-open', 'overlay-open');
+    
+    // إعادة تعيين أي inline styles قد تؤثر على التمرير
+    document.body.removeAttribute('style');
+    
+    console.log('تم تحديث واجهة المستخدم بعد التسجيل الناجح مع تفعيل التمرير');
 }
-
 // دالة لإرسال البيانات إلى Google Sheets مع إعدادات محسنة
 async function sendToGoogleSheets(formData) {
     const scriptURL = "https://script.google.com/macros/s/AKfycbzDPcLwO1U091L_W1Ha-M-_GjL5z6V7aFh6RxTberNq8tsYLIkkI1BtdF5ufA8qpSmvag/exec";
