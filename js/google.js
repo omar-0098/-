@@ -154,7 +154,10 @@ function logineCallback(response) {
                 showWelcomeSection(userData.name);
                 displayUserData(userData);
                 overlay.style.display = "none";
-                
+
+                  setTimeout(() => {
+        window.location.reload();
+    }, 1000); 
                 // تحديث واجهة المستخدم - إخفاء رسالة يجب إنشاء حساب وتفعيل السلة
                 updateUIAfterSuccessfulRegistration();
             }, 2000);
