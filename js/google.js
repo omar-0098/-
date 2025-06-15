@@ -155,15 +155,8 @@ function logineCallback(response) {
                 displayUserData(userData);
                 overlay.style.display = "none";
 
-
                 // تحديث واجهة المستخدم - إخفاء رسالة يجب إنشاء حساب وتفعيل السلة
-                updateUIAfterSuccessfulRegistration();
-                  setTimeout(() => {
-        window.location.reload();
-    }, 1000); 
-
-
-                
+                updateUIAfterSuccessfulRegistration();    
             }, 2000);
 
         } catch (error) {
