@@ -1,9 +1,6 @@
 body{
     background: #fff4f4;
 }
-*{
-     user-select: none;
-}
 .all_formation .container{
     display: flex;
     flex-direction: row-reverse;
@@ -285,6 +282,7 @@ button.disabled:hover {
     align-items: center;
     margin: 22px 0px;
     border-radius: 10px;
+    padding: 30px;
 }
 .user .discount img{
     width: 40%;
@@ -520,7 +518,87 @@ z-index:9999;
     font-style: normal;
     font-variation-settings: "HEXP" 0; 
 }
-  
+.discount .copon1{
+    display: flex
+;
+    border: 2px solid #a3a3a3;
+    border-radius: 9px;
+    direction: rtl;
+}
+.discount .copon1 .discount1{
+   background: #fec853;   
+       padding: 25px;
+    display: flex
+;
+    align-items: center;
+}
+.discount .copon1 .discount1 p{
+        color: #ba001a;
+    line-height: 34px;
+    font-size: 25px;
+}
+    
+.coupan-details{
+  padding: 15px 12px;  
+}
+.coupan-details .coupan-meta{
+       display: flex;
+    flex-wrap: wrap; 
+}
+.coupan-details .coupan-meta .info{
+        width: 72%;
+}
+.coupan-details .coupan-meta .info h3{
+    font-family: "Readex Pro", serif;
+    font-optical-sizing: auto;
+    font-weight: 500;
+    font-style: normal;
+    font-variation-settings: "HEXP" 0;
+    font-size: 16px;
+    line-height: 28px;
+}
+.store-thumbnail{
+    width: 28%;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+.store-thumbnail img{
+        width: 65% !important;
+    filter: grayscale(0) !important;
+    opacity: 1 !important;
+}
+.coupan-btn{
+    width: 100%;
+    text-align: center;
+    background: #9c33ff;
+    padding: 13px;
+    margin: 35px 0px 0px;
+    border-radius: 7px;
+}
+.coupan-btn h4{
+    color: white;
+    font-size: 20px;
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
 
 
 @media (max-width:1000px) {
@@ -549,9 +627,54 @@ z-index:9999;
 @media (max-width:500px) {
     body {
     background: rgb(243, 244, 248);
-     padding: 240px 0px 0px;
-
+    padding: 240px 0px 0px;
 }
+
+
+
+
+
+
+
+.user .discount {
+    align-items: flex-start;
+    padding: 50px 5px 24px;
+}
+.discount .copon1 .discount1 p {
+    line-height: 23px;
+    font-size: 15px;
+    font-weight: bold;
+}
+.store-thumbnail {
+    width: 20%
+}
+.coupan-details .coupan-meta .info {
+    width: 80%;
+}
+.coupan-details .coupan-meta .info h3 {
+    font-weight: 600;
+    font-size: 12px;
+    line-height: 21px;
+}
+.store-thumbnail img {
+    width: 85% !important;
+}
+.coupan-btn h4 {
+    font-size: 18px;
+    letter-spacing: 2px;
+}
+#section{
+    width: 49%;
+}
+
+
+
+
+
+
+
+
+
     .all_formation .container {
     display: flex;
     flex-direction: column;
@@ -560,6 +683,9 @@ z-index:9999;
 }
     .formation {
     max-width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
 }
 .formation .section {
     display: flex;
@@ -568,7 +694,7 @@ z-index:9999;
     flex-direction: row-reverse;
     width: 100%;
     margin-bottom: 23px;
-    padding: 10px;
+    padding: 5px;
 }
 .formation .section a {
     margin: 0px 8px;
@@ -582,6 +708,7 @@ z-index:9999;
     font-size: 70px;
     cursor: pointer;
 }
+
 
 
 .all_formation .user {
@@ -650,12 +777,9 @@ z-index:9999;
 
 
 @media (max-width:400px) {
-          body {
+        body {
         padding: 225px 0px 0px;
     }
-    .formation .section div {
-    margin-bottom: 20px;
-}
     .formation .section h3 {
         height: 43px;
     }
@@ -690,12 +814,14 @@ z-index:9999;
         .info_user1 h5 {
         font-size: 16px;
     }
-
+.formation .section a h3 {
+    font-family: "Rubik", serif;
+    font-optical-sizing: auto;
+    font-weight: 700;
+    font-style: normal;
+    font-size: 13px;
 }
-
-
-
-
+}
 
 
 
