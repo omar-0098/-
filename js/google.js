@@ -148,12 +148,15 @@ function logineCallback(response) {
                 return;
             }
 
-            // إخفاء النافذة بعد ثانيتين
+            // إخفاء النافذة بعد ثانيتين وتحديث الواجهة
             setTimeout(() => {
                 localStorage.setItem("userData", JSON.stringify(userData));
                 showWelcomeSection(userData.name);
                 displayUserData(userData);
                 overlay.style.display = "none";
+                
+                // تحديث واجهة المستخدم - إخفاء رسالة يجب إنشاء حساب وتفعيل السلة
+                updateUIAfterSuccessfulRegistration();
             }, 2000);
 
         } catch (error) {
@@ -242,6 +245,45 @@ function logineCallback(response) {
     }
 }
 
+// دالة جديدة لتحديث الواجهة بعد التسجيل الناجح
+function updateUIAfterSuccessfulRegistration() {
+    // إخفاء رسالة "يجب إنشاء حساب"
+    const messageDiv = document.getElementById('mustRegisterMessage');
+    if (messageDiv) {
+        messageDiv.style.display = 'none';
+    }
+    
+    // إظهار زر الدفع/الخروج للسلة
+    const checkoutItem = document.querySelector('li.check');
+    if (checkoutItem) {
+        checkoutItem.style.display = 'list-item';
+    }
+    
+    // تفعيل أزرار إضافة للسلة
+    document.querySelectorAll('.btn_add_cart').forEach(function(button) {
+        // إعادة تفعيل الزر
+        button.style.opacity = '1';
+        button.style.cursor = 'pointer';
+        button.style.pointerEvents = 'auto';
+        
+        // إزالة معالج الأحداث المعطل والعودة للوظيفة العادية
+        const newButton = button.cloneNode(true);
+        button.parentNode.replaceChild(newButton, button);
+        
+        // إعادة تفعيل الوظيفة الأصلية للزر (إذا كانت موجودة)
+        // يمكنك إضافة معالج الأحداث الأصلي هنا حسب كودك
+    });
+    
+    // تحديث أي عناصر أخرى متعلقة بحالة تسجيل الدخول
+    const man1 = document.querySelector('.man1');
+    if (man1) {
+        // إظهار عنصر man1 إذا كان مخفياً
+        man1.style.display = 'block';
+    }
+    
+    console.log('تم تحديث واجهة المستخدم بعد التسجيل الناجح');
+}
+
 // دالة لإرسال البيانات إلى Google Sheets مع إعدادات محسنة
 async function sendToGoogleSheets(formData) {
     const scriptURL = "https://script.google.com/macros/s/AKfycbzDPcLwO1U091L_W1Ha-M-_GjL5z6V7aFh6RxTberNq8tsYLIkkI1BtdF5ufA8qpSmvag/exec";
@@ -323,7 +365,7 @@ async function sendToJSONBin(userData) {
             throw new Error('فشل في إرسال البيانات إلى JSONBin');
         }
     } catch (error) {
-        console.error('خطأ في إرسال البيانات إلى JSONBin:', error);
+        console.error('خطأ في إرसال البيانات إلى JSONBin:', error);
         return false;
     }
 }
