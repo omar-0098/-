@@ -148,15 +148,12 @@ function logineCallback(response) {
                 return;
             }
 
-            // إخفاء النافذة بعد ثانيتين وتحديث الواجهة
+            // إخفاء النافذة بعد ثانيتين
             setTimeout(() => {
                 localStorage.setItem("userData", JSON.stringify(userData));
                 showWelcomeSection(userData.name);
                 displayUserData(userData);
                 overlay.style.display = "none";
-                
-                // تحديث واجهة المستخدم - إخفاء رسالة يجب إنشاء حساب وتفعيل السلة
-                updateUIAfterSuccessfulRegistration();
             }, 2000);
 
         } catch (error) {
@@ -245,63 +242,6 @@ function logineCallback(response) {
     }
 }
 
-// دالة جديدة لتحديث الواجهة بعد التسجيل الناجح
-// دالة محدثة لتحديث الواجهة بعد التسجيل الناجح
-function updateUIAfterSuccessfulRegistration() {
-    // إعادة تفعيل التمرير العادي للصفحة
-    document.body.style.overflow = 'auto';
-    document.documentElement.style.overflow = 'auto';
-    
-    // إزالة أي قيود على التمرير من الـ overlay أو النوافذ المنبثقة
-    const overlay = document.getElementById("overlay");
-    if (overlay) {
-        overlay.style.overflow = 'auto';
-    }
-    
-    // إخفاء رسالة "يجب إنشاء حساب"
-    const messageDiv = document.getElementById('mustRegisterMessage');
-    if (messageDiv) {
-        messageDiv.style.display = 'none';
-    }
-    
-    // إظهار زر الدفع/الخروج للسلة
-    const checkoutItem = document.querySelector('li.check');
-    if (checkoutItem) {
-        checkoutItem.style.display = 'list-item';
-    }
-    
-    // تفعيل أزرار إضافة للسلة
-    document.querySelectorAll('.btn_add_cart').forEach(function(button) {
-        // إعادة تفعيل الزر
-        button.style.opacity = '1';
-        button.style.cursor = 'pointer';
-        button.style.pointerEvents = 'auto';
-        
-        // إزالة معالج الأحداث المعطل والعودة للوظيفة العادية
-        const newButton = button.cloneNode(true);
-        button.parentNode.replaceChild(newButton, button);
-        
-        // إعادة تفعيل الوظيفة الأصلية للزر (إذا كانت موجودة)
-        // يمكنك إضافة معالج الأحداث الأصلي هنا حسب كودك
-    });
-    
-    // تحديث أي عناصر أخرى متعلقة بحالة تسجيل الدخول
-    const man1 = document.querySelector('.man1');
-    if (man1) {
-        // إظهار عنصر man1 إذا كان مخفياً
-        man1.style.display = 'block';
-    }
-    
-    // التأكد من أن الصفحة قابلة للتمرير بشكل طبيعي
-    // إزالة أي فئات CSS قد تمنع التمرير
-    document.body.classList.remove('no-scroll', 'modal-open', 'overlay-open');
-    
-    // إعادة تعيين أي inline styles قد تؤثر على التمرير
-    document.body.removeAttribute('style');
-    
-    console.log('تم تحديث واجهة المستخدم بعد التسجيل الناجح مع تفعيل التمرير');
-}
-
 // دالة لإرسال البيانات إلى Google Sheets مع إعدادات محسنة
 async function sendToGoogleSheets(formData) {
     const scriptURL = "https://script.google.com/macros/s/AKfycbzDPcLwO1U091L_W1Ha-M-_GjL5z6V7aFh6RxTberNq8tsYLIkkI1BtdF5ufA8qpSmvag/exec";
@@ -383,7 +323,7 @@ async function sendToJSONBin(userData) {
             throw new Error('فشل في إرسال البيانات إلى JSONBin');
         }
     } catch (error) {
-        console.error('خطأ في إرसال البيانات إلى JSONBin:', error);
+        console.error('خطأ في إرسال البيانات إلى JSONBin:', error);
         return false;
     }
 }
@@ -437,3 +377,4 @@ async function checkDuplicateUser(email, phone) {
         };
     }
 }
+
