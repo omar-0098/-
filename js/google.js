@@ -285,3 +285,208 @@ function updateUIAfterSuccessfulRegistration() {
 
 // باقي الدوال المساعدة (checkDuplicateUser, performRegistration, sendToGoogleSheets, sendToJSONBin)
 // تبقى كما هي بدون تغيير
+
+// تحسين دالة التحقق من التكرار
+async function checkDuplicateUser(email, phone) {
+    const JSONBIN_CONFIG = {
+        API_KEY: "$2a$10$xAWjC3zelpDKCd6zdOdUg.D0bwtEURjcR5sEiYdonjBmP5lHuqzq2",
+        BIN_ID: "6848177e8960c979a5a77f85",
+        BASE_URL: "https://api.jsonbin.io/v3"
+    };
+
+    try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 8000);
+
+        const response = await fetch(`${JSONBIN_CONFIG.BASE_URL}/b/${JSONBIN_CONFIG.BIN_ID}/latest`, {
+            method: 'GET',
+            headers: {
+                'X-Master-Key': JSONBIN_CONFIG.API_KEY,
+                'Content-Type': 'application/json'
+            },
+            signal: controller.signal
+        });
+
+        clearTimeout(timeoutId);
+
+        if (response.ok) {
+            const result = await response.json();
+            const existingData = Array.isArray(result.record) ? result.record : [];
+            
+            // البحث عن إيميل أو تليفون مكرر
+            const duplicateEmail = existingData.find(user => user.email === email);
+            const duplicatePhone = existingData.find(user => user.phone === phone);
+            
+            return {
+                emailExists: !!duplicateEmail,
+                phoneExists: !!duplicatePhone,
+                duplicateEmail: duplicateEmail,
+                duplicatePhone: duplicatePhone
+            };
+        }
+        
+        return {
+            emailExists: false,
+            phoneExists: false,
+            duplicateEmail: null,
+            duplicatePhone: null
+        };
+    } catch (error) {
+        if (error.name === 'AbortError') {
+            console.error('انتهت المهلة الزمنية للتحقق من التكرار');
+        } else {
+            console.error('خطأ في التحقق من التكرار:', error);
+        }
+        // في حالة الخطأ، نسمح بالمتابعة لتجنب منع التسجيل كلياً
+        return {
+            emailExists: false,
+            phoneExists: false,
+            duplicateEmail: null,
+            duplicatePhone: null
+        };
+    }
+}
+
+// دالة جديدة لتحديث الواجهة بعد التسجيل الناجح - مع معالجة الأخطاء
+// دالة محدثة لتحديث الواجهة بعد التسجيل الناجح
+function updateUIAfterSuccessfulRegistration() {
+    // إعادة تفعيل التمرير العادي للصفحة
+    document.body.style.overflow = 'auto';
+    document.documentElement.style.overflow = 'auto';
+    
+    // إزالة أي قيود على التمرير من الـ overlay أو النوافذ المنبثقة
+    const overlay = document.getElementById("overlay");
+    if (overlay) {
+        overlay.style.overflow = 'auto';
+    }
+    
+    // إخفاء رسالة "يجب إنشاء حساب"
+    const messageDiv = document.getElementById('mustRegisterMessage');
+    if (messageDiv) {
+        messageDiv.style.display = 'none';
+    }
+    
+    // إظهار زر الدفع/الخروج للسلة
+    const checkoutItem = document.querySelector('li.check');
+    if (checkoutItem) {
+        checkoutItem.style.display = 'list-item';
+    }
+    
+    // تفعيل أزرار إضافة للسلة
+    document.querySelectorAll('.btn_add_cart').forEach(function(button) {
+        // إعادة تفعيل الزر
+        button.style.opacity = '1';
+        button.style.cursor = 'pointer';
+        button.style.pointerEvents = 'auto';
+        
+        // إزالة معالج الأحداث المعطل والعودة للوظيفة العادية
+        const newButton = button.cloneNode(true);
+        button.parentNode.replaceChild(newButton, button);
+        
+        // إعادة تفعيل الوظيفة الأصلية للزر (إذا كانت موجودة)
+        // يمكنك إضافة معالج الأحداث الأصلي هنا حسب كودك
+    });
+    
+    // تحديث أي عناصر أخرى متعلقة بحالة تسجيل الدخول
+    const man1 = document.querySelector('.man1');
+    if (man1) {
+        // إظهار عنصر man1 إذا كان مخفياً
+        man1.style.display = 'block';
+    }
+    
+    // التأكد من أن الصفحة قابلة للتمرير بشكل طبيعي
+    // إزالة أي فئات CSS قد تمنع التمرير
+    document.body.classList.remove('no-scroll', 'modal-open', 'overlay-open');
+    
+    // إعادة تعيين أي inline styles قد تؤثر على التمرير
+    document.body.removeAttribute('style');
+    
+    console.log('تم تحديث واجهة المستخدم بعد التسجيل الناجح مع تفعيل التمرير');
+}
+
+// دوال المساعدة لرسائل رقم الهاتف - بدون تغيير
+function showPhoneError(message) {
+    const phoneError = document.getElementById("phoneError");
+    if (phoneError) {
+        phoneError.textContent = message;
+        phoneError.style.cssText = `
+            display: block;
+            color: red;
+            margin: 10px 0;
+            text-align: center;
+            padding: 10px;
+            background-color: #fee;
+            border: 1px solid #fcc;
+            border-radius: 5px;
+        `;
+    }
+}
+
+function showPhoneSuccess(message) {
+    const phoneError = document.getElementById("phoneError");
+    if (phoneError) {
+        phoneError.textContent = message;
+        phoneError.style.cssText = `
+            display: block;
+            color: green;
+            margin: 10px 0;
+            text-align: center;
+            padding: 10px;
+            background-color: #efe;
+            border: 1px solid #cfc;
+            border-radius: 5px;
+        `;
+    }
+}
+
+function showPhoneWarning(message) {
+    const phoneError = document.getElementById("phoneError");
+    if (phoneError) {
+        phoneError.textContent = message;
+        phoneError.style.cssText = `
+            display: block;
+            color: orange;
+            margin: 10px 0;
+            text-align: center;
+            padding: 10px;
+            background-color: #ffeaa7;
+            border: 1px solid #fdcb6e;
+            border-radius: 5px;
+        `;
+    }
+}
+
+function showPhoneLoading(message) {
+    const phoneError = document.getElementById("phoneError");
+    if (phoneError) {
+        phoneError.innerHTML = `
+            <div style="display: flex; align-items: center; justify-content: center;">
+                <div style="width: 20px; height: 20px; border: 2px solid #2196f3; border-top: 2px solid transparent; border-radius: 50%; animation: spin 1s linear infinite; margin-left: 10px;"></div>
+                ${message}
+            </div>
+        `;
+        phoneError.style.cssText = `
+            display: block;
+            color: blue;
+            margin: 10px 0;
+            text-align: center;
+            padding: 10px;
+            background-color: #e3f2fd;
+            border: 1px solid #2196f3;
+            border-radius: 5px;
+        `;
+        
+        // إضافة CSS للأنيميشن إذا لم يكن موجوداً
+        if (!document.getElementById('phone-loading-styles')) {
+            const style = document.createElement('style');
+            style.id = 'phone-loading-styles';
+            style.textContent = `
+                @keyframes spin {
+                    0% { transform: rotate(0deg); }
+                    100% { transform: rotate(360deg); }
+                }
+            `;
+            document.head.appendChild(style);
+        }
+    }
+}
