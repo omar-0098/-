@@ -10,8 +10,8 @@
     "catetory":"feyat_three",
     "old_price":1050,
     "size":"140 x 70",
-    "word":"الاكثر مبيعا"
-     "type":"فوط ثلاث قطع"
+    "word":"الاكثر مبيعا",
+    "type":"فوط ثلاث قطع"
   },
   {
     "link":"../../feyatimage/feyet-tree-slice/id-2/item.html",
@@ -20,7 +20,8 @@
     "name": " فوط ثلاث قطع قطن 100% من شركة (sigma) ",
     "price": 800,
     "catetory":"feyat_three",
-    "size":"120 x 60"
+    "size":"120 x 60",
+    "type":"فوط ثلاث قطع"
   },
   {
     "link":"../../feyatimage/feyet-tree-slice/id-3/item.html",
@@ -29,7 +30,8 @@
     "name": "طقم فوط ثلاث قطع بنقوش مميزة من شركة (ELrougy)",
     "price": 950,
     "catetory":"feyat_three",
-    "size":"140 x 70"
+    "size":"140 x 70",
+    "type":"فوط ثلاث قطع"
   },
   {
     "link":"../../feyatimage/feyet-tree-slice/id-4/item.html",
@@ -39,7 +41,8 @@
     "price": 750,
     "catetory":"feyat_three",
     "size":"140 x 70",
-    "word":"الاكثر مبيعا"
+    "word":"الاكثر مبيعا",
+    "type":"فوط ثلاث قطع"
   },
   {
     "link":"../../feyatimage/feyet-tree-slice/id-5/item.html",
@@ -49,7 +52,8 @@
     "price": 975,
     "catetory":"feyat_three",
     "size":"140 x 70",
-    "catetory1":"Ourproduct"
+    "catetory1":"Ourproduct",
+    "type":"فوط ثلاث قطع"
   },
   {
     "link":"../../feyatimage/feyet-tree-slice/id-6/item.html",
@@ -59,7 +63,8 @@
     "price": 850,
     "old_price":1050,
     "catetory":"feyat_three",
-    "size":"140 x 70"
+    "size":"140 x 70",
+    "type":"فوط ثلاث قطع"
   },
   
 
@@ -74,7 +79,8 @@
     "price": 750,
     "catetory":"feyat_four",
     "size":"120 x 60",
-    "word":"الاكثر مبيعا"
+    "word":"الاكثر مبيعا",
+    "type":"فوط اربع قطع"
   },  
   {
     "link":"../../feyatimage/feyet-four-slice/id-17/item.html",
@@ -83,7 +89,8 @@
     "name": "غيّر أجواء حمامك بفوط اربع قطع الفاخرة! من شركة (Panda).",
     "price": 850,
     "catetory":"feyat_four",
-    "size":"100 x 50"
+    "size":"100 x 50",
+    "type":"فوط اربع قطع"
   },
   {
     "link":"../../feyatimage/feyet-four-slice/id-18/item.html",
@@ -93,7 +100,8 @@
     "price": 900,
     "catetory":"feyat_four",
     "old_price":1000,
-    "size":"100 x 50"
+    "size":"100 x 50",
+    "type":"فوط اربع قطع"
   },
   {
     "link":"../../feyatimage/feyet-four-slice/id-19/item.html",
@@ -102,7 +110,8 @@
     "name": " طقم فوط اربع قطع من القطن 100% من شركة (Verdi) ",
     "price": 950,
     "catetory":"feyat_four",
-    "size":"120 x 60"
+    "size":"120 x 60",
+    "type":"فوط اربع قطع"
   },
   {
     "link":"../../feyatimage/feyet-four-slice/id-20/item.html",
@@ -111,7 +120,8 @@
     "name": " طقم فوط اربع قطع بنقوش ورد من شركة (istanbul) ",
     "price": 750,
     "catetory":"feyat_four",
-    "size":"100 x 50"
+    "size":"100 x 50",
+    "type":"فوط اربع قطع"
   },
   {
     "link":"../../feyatimage/feyet-four-slice/id-21/item.html",
@@ -121,7 +131,8 @@
     "price": 550,
     "catetory":"feyat_four",
     "size":"120 x 60",
-    "word":"الاكثر مبيعا"
+    "word":"الاكثر مبيعا",
+    "type":"فوط اربع قطع"
   },
   {
     "link":"../../feyatimage/feyet-four-slice/id-22/item.html",
@@ -131,7 +142,8 @@
     "price": 1100,
     "catetory":"feyat_four",
     "size":"120 x 60",
-    "catetory1":"Ourproduct"
+    "catetory1":"Ourproduct",
+    "type":"فوط اربع قطع"
 
   },
   {
@@ -142,7 +154,8 @@
     "price": 850,
     "catetory":"feyat_four",
     "old_price":960,
-    "size":"100 x 50"
+    "size":"100 x 50",
+    "type":"فوط اربع قطع"
   },
   
 
@@ -158,7 +171,8 @@
     "old_price":800,
     "catetory":"feyat_sex",
     "size":"100 x 50",
-    "word":"الاكثر مبيعا"
+    "word":"الاكثر مبيعا",
+    "type":"فوط سته قطع"
   },
   {
     "link":"../../feyatimage/feyet-sex-slice/id-27/item.html",
@@ -168,7 +182,8 @@
     "price": 750,
     "catetory":"feyat_sex",
     "size":"100 x 50",
-    "word":"الاكثر مبيعا"
+    "word":"الاكثر مبيعا",
+    "type":"فوط سته قطع"
   },
   {
     "link":"../../feyatimage/feyet-sex-slice/id-28/item.html",
@@ -177,7 +192,8 @@
     "name": "طقم فوط ستة قطع من شركة  (ELSROUGY)" ,
     "price": 950,
     "catetory":"feyat_sex",
-    "size":"100 x 50"
+    "size":"100 x 50",
+    "type":"فوط سته قطع"
   },
   {
     "link":"../../feyatimage/feyet-sex-slice/id-29/item.html",
@@ -186,7 +202,8 @@
     "name": "طقم فوط ستة قطع مع لمسة من الفخامة  الناقة من شركة (Belinda)" ,
     "price": 1450,
     "catetory":"feyat_sex",
-    "size":"100 x 50"
+    "size":"100 x 50",
+    "type":"فوط سته قطع"
   },
   {
     "link":"../../feyatimage/feyet-sex-slice/id-30/item.html",
@@ -205,7 +222,8 @@
     "price": 250,
     "catetory":"feyat_sex",
     "old_price":350,
-    "size":"35 x 35"
+    "size":"35 x 35",
+    "type":"فوط سته قطع"
   },
   {
     "link":"../../feyatimage/feyet-sex-slice/id-32/item.html",
@@ -214,7 +232,8 @@
     "name": "طقم فوط حمام (تواليت) ستة قطع من شركة (Belinda)" ,
     "price": 650,
     "catetory":"feyat_sex",
-    "size":"35 x 35"
+    "size":"35 x 35",
+    "type":"فوط سته قطع"
   },
   
 
@@ -228,8 +247,8 @@
     "price": 850,
     "catetory":"feyat_child",
     "size":"100 x 50",
-    "word":"الاكثر مبيعا"
-
+    "word":"الاكثر مبيعا",
+    "type":"فوط اطفال"
   },
   {
     "link":"../../feyatimage/feyat-child-slice/id-42/item.html",
@@ -239,7 +258,8 @@
     "price": 850,
     "catetory":"feyat_child",
     "size":"100 x 50",
-    "word":"الاكثر مبيعا"
+    "word":"الاكثر مبيعا",
+    "type":"فوط اطفال"
   },
   {
     "link":"../../feyatimage/feyat-child-slice/id-43/item.html",
@@ -248,7 +268,8 @@
     "name": " طقم فوط ستة قطع من شركة (episson) بنقوش مختلفة و جميلة" ,
     "price": 950,
     "catetory":"feyat_child",
-    "size":"100 x 50"
+    "size":"100 x 50",
+    "type":"فوط اطفال"
   },
   {
     "link":"../../feyatimage/feyat-child-slice/id-44/item.html",
@@ -258,7 +279,8 @@
     "price": 650,
     "catetory":"feyat_child",
     "size":"100 x 50",
-    "catetory1":"Ourproduct"
+    "catetory1":"Ourproduct",
+    "type":"فوط اطفال"
 
   },
   {
@@ -268,7 +290,8 @@
     "name": "طقم فواط اطفال خمس قطع من شركة (ELsrougy)" ,
     "price": 850,
     "catetory":"feyat_child",
-    "size":"100 x 50"
+    "size":"100 x 50",
+    "type":"فوط اطفال"
   },
   {
     "link":"../../feyatimage/feyat-child-slice/id-46/item.html",
@@ -277,7 +300,8 @@
     "name": "طقم فواط اطفال ستة قطع من شركة (episson)" ,
     "price": 950,
     "catetory":"feyat_child",
-    "size":"100 x 50"
+    "size":"100 x 50",
+    "type":"فوط اطفال"
   },
   {
     "link":"../../feyatimage/feyat-child-slice/id-47/item.html",
@@ -286,7 +310,8 @@
     "name": " طقم فوط اطفال ست قطع من شركة (Rebeka) " ,
     "price": 650,
     "catetory":"feyat_child",
-    "size":"100 x 50"
+    "size":"100 x 50",
+    "type":"فوط اطفال"
   },
   
 
@@ -312,7 +337,8 @@
     "name": " طقم برنس + 2 اسليبر + 2 فوطه  من شركة (EL FAYROUZ) ",
     "price": 1100,
     "catetory":"paranes",
-    "color":"رصاصي , جنزاري"
+    "color":"رصاصي , جنزاري",
+    "type":"قطع برانس"
   
   },
   {
@@ -322,7 +348,8 @@
     "name": "طقم برنس + 2 اسليبر + 2 فوطه  من شركة (EL FAYROUZ)",
     "price": 1100,
     "catetory":"paranes",
-    "color":"كشمير , ابيض"
+    "color":"كشمير , ابيض",
+    "type":"قطع برانس"
   },
   {
     "link":"../../paranesimag/id-503/item.html",
@@ -331,7 +358,8 @@
     "name": "طقم برنس مصنوع من القطن + 2 اسليبر + 2 فوطه  من شركة (SIGMA)",
     "price": 1700,
     "catetory":"paranes",
-    "color":"كافي , مسترده "
+    "color":"كافي , مسترده ",
+    "type":"قطع برانس"
   },
   {
     "link":"../../paranesimag/id-504/item.html",
@@ -340,7 +368,8 @@
     "name": "طقم برنس مصنوع من القطن + 2 اسليبر + 2 فوطه  من شركة (ZAHAR)",
     "price": 1850,
     "catetory":"paranes",
-    "color":"مينت , اوفوايت "
+    "color":"مينت , اوفوايت ",
+    "type":"قطع برانس"
   },
   {
     "link":"../../paranesimag/id-505/item.html",
@@ -349,7 +378,8 @@
     "name": "طقم برنس وش قطن و وش قطيفة + 2 اسليبر + 2 فوطه  من شركة (ELSROUGY)",
     "price": 3000,
     "catetory":"paranes",
-    "color":"بامبي , كافي "
+    "color":"بامبي , كافي ",
+    "type":"قطع برانس"
   },
   {
     "link":"../../paranesimag/id-506/item.html",
@@ -358,7 +388,8 @@
     "name": "طقم برنس وش قطن و وش قطيفة + 2 اسليبر + 2 فوطه  من شركة (VERDI)",
     "price": 2500,
     "catetory":"paranes",
-    "color":"جنزاري , كافي "
+    "color":"جنزاري , كافي ",
+    "type":"قطع برانس"
   },
 
 
@@ -384,7 +415,8 @@
     "name": " ملاية مشجرة المقاس الكبير مطرزات اوروبية من شركة (Home collection) ",
     "price": "450",
     "catetory":"mlayat_meshgar",
-    "color":" كشميري "
+    "color":" كشميري ",
+    "type":"ملايات مشجره"
   },
   {
     "link":"../../mlayatimag/melayat-meshgar-slice/id-302/item.html",
@@ -393,7 +425,8 @@
     "name": " ملاية مشجرة المقاس الكبير مطرزات اوروبية من شركة (Home collection) ",
     "price": "450",
     "catetory":"mlayat_meshgar",
-    "color":" كافي "
+    "color":" كافي ",
+    "type":"ملايات مشجره"
   },
   {
     "link":"../../mlayatimag/melayat-meshgar-slice/id-303/item.html",
@@ -402,7 +435,8 @@
     "name": " ملاية مشجرة المقاس الكبير مطرزات اوروبية من شركة (Home collection) ",
     "price": "450",
     "catetory":"mlayat_meshgar",
-    "color":"مينت"
+    "color":"مينت",
+    "type":"ملايات مشجره"
   },
   {
     "link":"../../mlayatimag/melayat-meshgar-slice/id-304/item.html",
@@ -412,7 +446,8 @@
     "price": "550",
     "catetory":"mlayat_meshgar",
     "color":" رصاصي ",
-    "catetory1":"Ourproduct"
+    "catetory1":"Ourproduct",
+    "type":"ملايات مشجره"
 
   },
   {
@@ -422,7 +457,8 @@
     "name": "  ملاية مشجرة مميزة المقاس الكبير من شركة (MORANO) ",
     "price": "550",
     "catetory":"mlayat_meshgar",
-    "color":" كشميري "
+    "color":" كشميري ",
+    "type":"ملايات مشجره"
   },
   {
     "link":"../../mlayatimag/melayat-meshgar-slice/id-306/item.html",
@@ -431,7 +467,8 @@
     "name": "  ملاية مشجرة مميزة المقاس الكبير من شركة (MORANO) ",
     "price": "550",
     "catetory":"mlayat_meshgar",
-    "color":" رصاصي , سكري "
+    "color":" رصاصي , سكري ",
+    "type":"ملايات مشجره"
   },
  
 
@@ -445,7 +482,8 @@
     "name": "ملاية سادة المقاس كبيرة مطرزات اوروبية مميزة من شركة (HOME COLLECTION)",
     "price": "750",
     "catetory":"mlayat_sada",
-    "color":"رصاصي في سيمون"
+    "color":"رصاصي في سيمون",
+    "type":"ملايات ساده"
   },
   {
     "link":"../../mlayatimag/melayat-sada-slice/id-332/item.html",
@@ -454,7 +492,8 @@
     "name": "ملاية سادة المقاس كبيرة مطرزات اوروبية مميزة من شركة (HOME COLLECTION)",
     "price": "750",
     "catetory":"mlayat_sada",
-    "color":"فسدقي في سيمون"
+    "color":"فسدقي في سيمون",
+    "type":"ملايات ساده"
   },
   {
     "link":"../../mlayatimag/melayat-sada-slice/id-333/item.html",
@@ -463,7 +502,8 @@
     "name": "ملاية سادة المقاس كبيرة مطرزات اوروبية مميزة من شركة (HOME COLLECTION)",
     "price": "750", 
     "catetory":"mlayat_sada",
-    "color":"كفافي"
+    "color":"كفافي",
+    "type":"ملايات ساده"
   },
   {
     "link":"../../mlayatimag/melayat-sada-slice/id-334/item.html",
@@ -472,7 +512,8 @@
     "name": "ملاية سادة المقاس كبيرة مصنوعة من القطن من شركة (ZARIR)",
     "price": "1100",
     "catetory":"mlayat_sada",
-    "color":"ابيض"
+    "color":"ابيض",
+    "type":"ملايات ساده"
   } ,
   {
     "link":"../../mlayatimag/melayat-sada-slice/id-335/item.html",
@@ -481,7 +522,8 @@
     "name": "ملاية سادة المقاس كبيرة مصنوعة من القطن من شركة (ZARIR)",
     "price": "1100",
     "catetory":"mlayat_sada",
-    "color":"كشميري"
+    "color":"كشميري",
+    "type":"ملايات ساده"
   },
   {
     "link":"../../mlayatimag/melayat-sada-slice/id-336/item.html",
@@ -490,7 +532,8 @@
     "name": "ملاية سادة المقاس كبيرة مودل vip.012 من شركة (LUXURY)",
     "price": "850",
     "catetory":"mlayat_sada",
-    "color":"سيمون"
+    "color":"سيمون",
+    "type":"ملايات ساده"
   },
   {
     "link":"../../mlayatimag/melayat-sada-slice/id-337/item.html",
@@ -499,7 +542,8 @@
     "name": "ملاية سادة المقاس كبيرة مودل vip.012 من شركة (LUXURY)",
     "price": "850",
     "catetory":"mlayat_sada",
-    "color":"زيتوني"
+    "color":"زيتوني",
+    "type":"ملايات ساده"
   },
   {
     "link":"../../mlayatimag/melayat-sada-slice/id-338/item.html",
@@ -508,7 +552,8 @@
     "name": "ملاية سادة المقاس كبيرة مودل vip.012 من شركة (LUXURY)",
     "price": "850",
     "catetory":"mlayat_sada",
-    "color":"سكري"
+    "color":"سكري",
+    "type":"ملايات ساده"
   },
   {
     "link":"../../mlayatimag/melayat-sada-slice/id-339/item.html",
@@ -517,7 +562,8 @@
     "name": " ملايات سادة + 2 خدادية +1 مخدة من شركة (Cotton pure)",
     "price": "750",
     "catetory":"mlayat_sada",
-    "color":"رصاصي"
+    "color":"رصاصي",
+    "type":"ملايات ساده"
   },
   {
     "link":"../../mlayatimag/melayat-sada-slice/id-340/item.html",
@@ -526,7 +572,8 @@
     "name": " ملايات سادة + 2 خدادية +1 مخدة من شركة (Cotton pure)",
     "price": "750",
     "catetory":"mlayat_sada",
-    "color":"لبني"
+    "color":"لبني",
+    "type":"ملايات ساده"
   },
   {
     "link":"../../mlayatimag/melayat-sada-slice/id-341/item.html",
@@ -535,7 +582,8 @@
     "name": "ملاية سادة المقاس كبيرة مودل vip.012 من شركة (LUXURY)",
     "price": "850",
     "catetory":"mlayat_sada",
-    "color":"رصاصي"
+    "color":"رصاصي",
+    "type":"ملايات ساده"
   },
   {
     "link":"../../mlayatimag/melayat-sada-slice/id-342/item.html",
@@ -544,7 +592,8 @@
     "name": "ملاية سادة المقاس كبيرة مودل vip.012 من شركة (LUXURY)",
     "price": "850",
     "catetory":"mlayat_sada",
-    "color":"ابيض سكري"
+    "color":"ابيض سكري",
+    "type":"ملايات ساده"
   },
   {
     "link":"../../mlayatimag/melayat-sada-slice/id-343/item.html",
@@ -553,7 +602,8 @@
     "name": "ملاية سادة المقاس كبيرة مودل vip.012 من شركة (LUXURY)",
     "price": "850",
     "catetory":"mlayat_sada",
-    "color":"رصاصي"
+    "color":"رصاصي",
+    "type":"ملايات ساده"
   },
   {
     "link":"../../mlayatimag/melayat-sada-slice/id-344/item.html",
@@ -562,7 +612,8 @@
     "name": "طقم ملاية سادة المقاس كبير من شركة (ZAHAR)",
     "price": "900",
     "catetory":"mlayat_sada",
-    "color":"مينت"
+    "color":"مينت",
+    "type":"ملايات ساده"
   },
 
 
@@ -575,7 +626,8 @@
     "name": "2 ملاية اطفال روسومات جذابة من شركة (SALMA)",
     "price": "850",
     "catetory":"mlayat_child",
-    "color":"كشمير"
+    "color":"كشمير",
+    "type":"ملايات اطفال"
   },
   {
     "link":"../../mlayatimag/melayat-child-slice/id-362/item.html",
@@ -585,7 +637,8 @@
     "price": "850",
     "catetory":"mlayat_child",
     "color":"لبني",
-    "catetory1":"Ourproduct"
+    "catetory1":"Ourproduct",
+    "type":"ملايات اطفال"
 
   },
   {
@@ -595,7 +648,8 @@
     "name": " 2 ملاية اطفال رسومات مميزة من شركة (IMPERIAL) ",
     "price": "1100",
     "catetory":"mlayat_child",
-    "color":"لبني"
+    "color":"لبني",
+    "type":"ملايات اطفال"
   },
   {
     "link":"../../mlayatimag/melayat-child-slice/id-364/item.html",
@@ -604,7 +658,8 @@
     "name": " 2 ملاية اطفال رسومات مميزة من شركة (IMPERIAL) ",
     "price": "1100",
     "catetory":"mlayat_child",
-    "color":"رصاصي"
+    "color":"رصاصي",
+    "type":"ملايات اطفال"
   },
   {
     "link":"../../mlayatimag/melayat-child-slice/id-365/item.html",
@@ -613,7 +668,8 @@
     "name": " 2 ملاية اطفال رسومات مميزة من شركة (IMPERIAL) ",
     "price": "1100",
     "catetory":"mlayat_child",
-    "color":"موف"
+    "color":"موف",
+    "type":"ملايات اطفال"
   },
   {
     "link":"../../mlayatimag/melayat-child-slice/id-366/item.html",
@@ -622,7 +678,8 @@
     "name": "2 ملاية اطفال رسومات بارزة من شركة (ARYA)",
     "price": "1100",
     "catetory":"mlayat_child",
-    "color":"كافي"
+    "color":"كافي",
+    "type":"ملايات اطفال"
   },
   {
     "link":"../../mlayatimag/melayat-child-slice/id-367/item.html",
@@ -631,7 +688,8 @@
     "name": "2 ملاية اطفال رسومات بارزة من شركة (ARYA)",
     "price": "1100",
     "catetory":"mlayat_child",
-    "color":"كشمير"
+    "color":"كشمير",
+    "type":"ملايات اطفال"
   },
   {
     "link":"../../mlayatimag/melayat-child-slice/id-368/item.html",
@@ -640,7 +698,8 @@
     "name": " 2 ملاية اطفال برسومات جذابة من شركة (ELbait  ELhadis) ",
     "price": "850",
     "catetory":"mlayat_child",
-    "color":"كافي"
+    "color":"كافي",
+    "type":"ملايات اطفال"
   },
   {
     "link":"../../mlayatimag/melayat-child-slice/id-369/item.html",
@@ -649,7 +708,8 @@
     "name": " 2 ملاية اطفال برسومات جذابة من شركة (ELbait  ELhadis) ",
     "price": "850",
     "catetory":"mlayat_child",
-    "color":"سيمون"
+    "color":"سيمون",
+    "type":"ملايات اطفال"
   },
   {
     "link":"../../mlayatimag/melayat-child-slice/id-370/item.html",
@@ -658,7 +718,8 @@
     "name": " 2 ملاية اطفال برسومات بترزة من شركة (ARYA) ",
     "price": "1100",
     "catetory":"mlayat_child",
-    "color":"كافي"
+    "color":"كافي",
+    "type":"ملايات اطفال"
   },
   {
     "link":"../../mlayatimag/melayat-child-slice/id-371/item.html",
@@ -667,7 +728,8 @@
     "name": " 2 ملاية اطفال برسومات جذابة من شركة (ELbait  ELhadis) ",
     "price": "850",
     "catetory":"mlayat_child",
-    "color":"موف"
+    "color":"موف",
+    "type":"ملايات اطفال"
   },
   {
     "link":"../../mlayatimag/melayat-child-slice/id-372/item.html",
@@ -676,7 +738,8 @@
     "name": " 2 ملاية مشجرة اطفال + 2 خدادية + 2 مخدة من شركة (guzel)5 ",
     "price": "450",
     "catetory":"mlayat_child",
-    "size":"235 x 180"
+    "size":"235 x 180",
+    "type":"ملايات اطفال"
   },
   {
     "link":"../../mlayatimag/melayat-child-slice/id-373/item.html",
@@ -685,7 +748,8 @@
     "name": " 2 ملاية مشجرة اطفال + 2 خدادية + 2 مخدة من شركة (guzel) 1",
     "price": "450",
     "catetory":"mlayat_child",
-    "size":"235 x 180"
+    "size":"235 x 180",
+    "type":"ملايات اطفال"
   },
   {
     "link":"../../mlayatimag/melayat-child-slice/id-374/item.html",
@@ -694,7 +758,8 @@
     "name": " 2 ملاية مشجرة اطفال + 2 خدادية + 2 مخدة من شركة (guzel) 2",
     "price": "450",
     "catetory":"mlayat_child",
-    "size":"235 x 180"
+    "size":"235 x 180",
+    "type":"ملايات اطفال"
   },
   {
     "link":"../../mlayatimag/melayat-child-slice/id-375/item.html",
@@ -704,7 +769,8 @@
     "price": "750",
     "catetory":"mlayat_child",
     "size":"235 x 180",
-    "catetory1":"Ourproduct"
+    "catetory1":"Ourproduct",
+    "type":"ملايات اطفال"
 
   },
   {
@@ -714,7 +780,8 @@
     "name": " 2 ملاية مشجرة اطفال + 2 مخدة + 2 خدادية من شركة (White house) 2",
     "price": "750",
     "catetory":"mlayat_child",
-    "size":"235 x 180"
+    "size":"235 x 180",
+    "type":"ملايات اطفال"
   },
   {
     "link":"../../mlayatimag/melayat-child-slice/id-377/item.html",
@@ -723,7 +790,8 @@
     "name": " 2 ملاية مشجرة اطفال + 2 مخدة + 2 خدادية من شركة (White house) 3",
     "price": "750",
     "catetory":"mlayat_child",
-    "size":"235 x 180"
+    "size":"235 x 180",
+    "type":"ملايات اطفال"
   },
 
 
@@ -748,7 +816,8 @@
     "name": " كوفرتى المقاس الكبير مع طقم ملاية + 2 خدادية +1 غطاء وسادة من شركة (KINZO)",
     "price": "2400",
     "catetory":"coferta_man",
-    "color":"كافي"
+    "color":"كافي",
+    "type":"كوفرتى كبيره"
   },
   {
     "link":"../../cofertaimage/coferta-man-slice/id-402/item.html",
@@ -758,7 +827,8 @@
     "price": "2700",
     "catetory":"coferta_man",
     "old_price":"3000",
-    "color":"لبني"
+    "color":"لبني",
+    "type":"كوفرتى كبيره"
   },
   {
     "link":"../../cofertaimage/coferta-man-slice/id-403/item.html",
@@ -767,7 +837,8 @@
     "name": " كوفرتى سادة شراشيب + 2 خدادية  + 1 غطاء وسادة المقاس الكبير من شركة (ZAHAR) ",
     "price": "1350",
     "catetory":"coferta_man",
-    "color":"مينت"
+    "color":"مينت",
+    "type":"كوفرتى كبيره"
   },
   {
     "link":"../../cofertaimage/coferta-man-slice/id-404/item.html",
@@ -776,7 +847,8 @@
     "name": " كوفرتى مع طقم ملاية + 2 خدادية  +1 غطاء وسادة المقاس الكبير من شركة  (VERDI) ",
     "price": "2600",
     "catetory":"coferta_man",
-    "color":"لبني"
+    "color":"لبني",
+    "type":"كوفرتى كبيره"
   },
   {
     "link":"../../cofertaimage/coferta-man-slice/id-405/item.html",
@@ -785,7 +857,8 @@
     "name": " كوفرتى المقاس الكبير مع طقم ملاية + 2 خدادية +1 غطاء وسادة من شركة (Verdi)",
     "price": "2600",
     "catetory":"coferta_man",
-    "color":"كافي"
+    "color":"كافي",
+    "type":"كوفرتى كبيره"
   },
   {
     "link":"../../cofertaimage/coferta-man-slice/id-406/item.html",
@@ -795,7 +868,8 @@
     "price": "2700",
     "catetory":"coferta_man",
     "old_price":"3000",
-    "color":"بيج "
+    "color":"بيج ",
+    "type":"كوفرتى كبيره"
   },
   {
     "link":"../../cofertaimage/coferta-man-slice/id-407/item.html",
@@ -804,7 +878,8 @@
     "name": " كوفرتي المقاس الكبير مع طقم ملاية + 2 خدادية  من شركة (EL srougy)",
     "price": "2900",
     "catetory":"coferta_man",
-    "color":"رصاصي"
+    "color":"رصاصي",
+    "type":"كوفرتى كبيره"
   },
 
 
@@ -816,7 +891,8 @@
     "name": " 2 كوفرتي اطفال +2 ملاية + 2 خدادية من شركة (ARISO) ",
     "price": "2900",
     "catetory":"coferta_child",
-    "color":"كشمير"
+    "color":"كشمير",
+    "type":"كوفرتى اطفال"
   },
   {
     "link":"../../cofertaimage/coferta-child-slice/id-461/item.html",
@@ -825,7 +901,8 @@
     "name": " 2 كوفرتي اطفال شراشيب + 2خدادية بدون ملايات من شركة (ZAHAR) ",
     "price": "1500",
     "catetory":"coferta_child",
-    "color":"كشمير"
+    "color":"كشمير",
+    "type":"كوفرتى اطفال"
   },
   {
     "link":"../../cofertaimage/coferta-child-slice/id-462/item.html",
@@ -834,7 +911,8 @@
     "name": "  2 كوفرتي مقاس اطفال مع 2 ملاية + 2 خدادية مطرزات اوروبية من شركة (HOME COLECTION)",
     "price": "1600",
     "catetory":"coferta_child",
-    "color":"مينت"
+    "color":"مينت",
+    "type":"كوفرتى اطفال"
   },
   {
     "link":"../../cofertaimage/coferta-child-slice/id-463/item.html",
@@ -843,7 +921,8 @@
     "name": " 2 كوفرتي اطفال شراشيب + 2خدادية بدون ملايات من شركة (ZAHAR) ",
     "price": "1500",
     "catetory":"coferta_child",
-    "color":"رمادي"
+    "color":"رمادي",
+    "type":"كوفرتى اطفال"
   },
   {
     "link":"../../cofertaimage/coferta-child-slice/id-464/item.html",
@@ -852,7 +931,8 @@
     "name": " 2 كوفرتي اطفال روعة مع  +2 ملاية + 2 خدادية من شركة (KINZO)  ",
     "price": "2800",
     "catetory":"coferta_child",
-    "color":"سيمون"
+    "color":"سيمون",
+    "type":"كوفرتى اطفال"
   },
   {
     "link":"../../cofertaimage/coferta-child-slice/id-465/item.html",
@@ -862,7 +942,8 @@
     "price": "2900",
     "catetory":"coferta_child",
     "color":"مينت جرين",
-    "catetory1":"Ourproduct"
+    "catetory1":"Ourproduct",
+    "type":"كوفرتى اطفال"
 
   },
 
@@ -892,7 +973,8 @@
     "name": " بطانية اسبانية المقاس الكبير حفر ليزر طبقة واحدة من شركة (MORA) ",
     "price": "5500",
     "catetory":"patatin_man",
-    "color":"رصاصي"
+    "color":"رصاصي",
+    "type":"بطانية كبيره"
   },
   {
     "link":"../../patatinimage/patatin-man-slice/id-102/item.html",
@@ -901,7 +983,8 @@
     "name": " بطانية اسبانية المقاس الكبير حفر ليزر طبقة واحدة من شركة (MORA) ",
     "price": "5500",
     "catetory":"patatin_man",
-    "color":"اسود"
+    "color":"اسود",
+    "type":"بطانية كبيره"
   },
   {
     "link":"../../patatinimage/patatin-man-slice/id-103/item.html",
@@ -910,7 +993,8 @@
     "name": " بطانية اسبانية فرو مشبح 85% اكليريك من اعلي درجة من الدفئ (MORA) ",
     "price": "6800",
     "catetory":"patatin_man",
-    "color":"رمادي"
+    "color":"رمادي",
+    "type":"بطانية كبيره"
   },
   {
     "link":"../../patatinimage/patatin-man-slice/id-104/item.html",
@@ -919,7 +1003,8 @@
     "name": " بطانية اسبانية فرو مشبح 85% اكليريك من اعلي درجة من الدفئ (MORA) ",
     "price": "6800",
     "catetory":"patatin_man",
-    "color":"كافي"
+    "color":"كافي",
+    "type":"بطانية كبيره"
   },
   {
     "link":"../../patatinimage/patatin-man-slice/id-105/item.html",
@@ -928,7 +1013,8 @@
     "name": " طقم بطانية حفر بارز سادة مع طقم ملاية قطن من شركة (White House) ",
     "price": "1900",
     "catetory":"patatin_man",
-    "color":" رمادي"
+    "color":" رمادي",
+    "type":"بطانية كبيره"
   },
   {
     "link":"../../patatinimage/patatin-man-slice/id-106/item.html",
@@ -937,7 +1023,8 @@
     "name": " بطانية فرو اسبانية مع + 2خدادية من شركة (Morano)  ",
     "price": "2050",
     "catetory":"patatin_man",
-    "color":"جراي"
+    "color":"جراي",
+    "type":"بطانية كبيره"
   },
   {
     "link":"../../patatinimage/patatin-man-slice/id-107/item.html",
@@ -946,7 +1033,8 @@
     "name": " بطانية فرو اسبانية مع + 2خدادية من شركة (Morano)  ",
     "price": "2050",
     "catetory":"patatin_man",
-    "color":"كافي"
+    "color":"كافي",
+    "type":"بطانية كبيره"
   },
   {
     "link":"../../patatinimage/patatin-man-slice/id-108/item.html",
@@ -955,7 +1043,8 @@
     "name": " بطانية فرو اسبانية مع + 2خدادية من شركة (Morano)  ",
     "price": "2050",
     "catetory":"patatin_man",
-    "color":"كشمير"
+    "color":"كشمير",
+    "type":"بطانية كبيره"
   },
   {
     "link":"../../patatinimage/patatin-man-slice/id-109/item.html",
@@ -964,7 +1053,8 @@
     "name": " بطانية راق واحد وزن 5 كيلوا برسمة ورده من شركة (كازابلانكا) ",
     "price": "1100",
     "catetory":"patatin_man",
-    "color":"كشميري"
+    "color":"كشميري",
+    "type":"بطانية كبيره"
   },
   {
     "link":"../../patatinimage/patatin-man-slice/id-110/item.html",
@@ -974,7 +1064,8 @@
     "price": "1100",
     "catetory":"patatin_man",
     "color":" اوفوايت و كافيه",
-    "catetory1":"Ourproduct"
+    "catetory1":"Ourproduct",
+    "type":"بطانية كبيره"
 
   },
   {
@@ -984,7 +1075,8 @@
     "name": " بطانية راق واحد وزن 5 كيلوا برسمة ورده من شركة (كازابلانكا) ",
     "price": "1100",
     "catetory":"patatin_man",
-    "color":"لبني"
+    "color":"لبني",
+    "type":"بطانية كبيره"
   },
   {
     "link":"../../patatinimage/patatin-man-slice/id-112/item.html",
@@ -993,7 +1085,8 @@
     "name": " بطانية راق واحد وزن 5 كيلوا برسمة ورده من شركة (كازابلانكا) ",
     "price": "1100",
     "catetory":"patatin_man",
-    "color":"كافي   "
+    "color":"كافي   ",
+    "type":"بطانية كبيره"
   },
  
 
@@ -1007,7 +1100,8 @@
     "name": " 2 بطانية اطفال مميزة مقاس 180 * 220 , حفر ليزر من شركة (Bb)   ",
     "price": "2750",
     "catetory":"patatin_child",
-    "color":"كافي"
+    "color":"كافي",
+    "type":"بطانية اطفال"
   },
   {
     "link":"../../patatinimage/patatin-child-slice/id-165/item.html",
@@ -1016,7 +1110,8 @@
     "name": " 2 بطانية اطفال مميزة مقاس 180 * 220 , حفر ليزر من شركة (Bb)   ",
     "price": "2750",
     "catetory":"patatin_child",
-    "color":"كشمير"
+    "color":"كشمير",
+    "type":"بطانية اطفال"
   },
   {
     "link":"../../patatinimage/patatin-child-slice/id-166/item.html",
@@ -1026,7 +1121,8 @@
     "price": "2750",
     "catetory":"patatin_child",
     "color":"كشمير غامق",
-    "catetory1":"Ourproduct"
+    "catetory1":"Ourproduct",
+    "type":"بطانية اطفال"
   },
 
 
@@ -1057,7 +1153,8 @@
     "name": " لحف دبل فيس المقاس الكبير 6 قطع وجه حفر و وجه طباعة المقاس 260* 240 ",
     "price": "3200",
     "catetory":"ellehaf_man",
-    "color":"نبيتي"
+    "color":"نبيتي",
+    "type":"لحاف كبير"
   },
   {
     "link":"../../ellehafimage/ellehaf-man-slice/id-205/item.html",
@@ -1066,7 +1163,8 @@
     "name": " لحف دبل فيس المقاس الكبير 6 قطع وجه حفر و وجه طباعة المقاس 260* 240 ",
     "price": "3200",
     "catetory":"ellehaf_man",
-    "color":"كافي"
+    "color":"كافي",
+    "type":"لحاف كبير"
   },
   {
     "link":"../../ellehafimage/ellehaf-man-slice/id-206/item.html",
@@ -1075,7 +1173,8 @@
     "name": " لحف دبل فيس المقاس الكبير 6 قطع وجه حفر و وجه طباعة المقاس 260* 240 ",
     "price": "3200",
     "catetory":"ellehaf_man",
-    "color":"كشمير"
+    "color":"كشمير",
+    "type":"لحاف كبير"
   },
   {
     "link":"../../ellehafimage/ellehaf-man-slice/id-207/item.html",
@@ -1084,7 +1183,8 @@
     "name": "  لحاف المقاس الكبير  7 قطع موديل سلسبيل من شركة (ELsorugy)   +1 كوشن+4 خدادية + 1 دفاية",
     "price": "3200",
     "catetory":"ellehaf_man",
-    "color":"موف"
+    "color":"موف",
+    "type":"لحاف كبير"
   },
   {
     "link":"../../ellehafimage/ellehaf-man-slice/id-208/item.html",
@@ -1093,7 +1193,8 @@
     "name": "  لحاف المقاس الكبير  7 قطع موديل سلسبيل من شركة (ELsorugy)   +1 كوشن+4 خدادية + 1 دفاية",
     "price": "3200",
     "catetory":"ellehaf_man",
-    "color":"جراي "
+    "color":"جراي ",
+    "type":"لحاف كبير"
   },
   {
     "link":"../../ellehafimage/ellehaf-man-slice/id-209/item.html",
@@ -1102,7 +1203,8 @@
     "name": "  لحاف المقاس الكبير  7 قطع موديل سلسبيل من شركة (ELsorugy)   +1 كوشن+4 خدادية + 1 دفاية",
     "price": "3200",
     "catetory":"ellehaf_man",
-    "color":" كشمير غامق "
+    "color":" كشمير غامق ",
+    "type":"لحاف كبير"
   },
   {
     "link":"../../ellehafimage/ellehaf-man-slice/id-210/item.html",
@@ -1111,7 +1213,8 @@
     "name": "  لحاف المقاس الكبير  7 قطع موديل سلسبيل من شركة (ELsorugy)   +1 كوشن+4 خدادية + 1 دفاية",
     "price": "3200",
     "catetory":"ellehaf_man",
-    "color":"سيمون"
+    "color":"سيمون",
+    "type":"لحاف كبير"
   },
   {
     "link":"../../ellehafimage/ellehaf-man-slice/id-211/item.html",
@@ -1120,7 +1223,8 @@
     "name": " لحاف فرو المقاس الكبير + 2 خدادية فايبر رول الاعلي تدفئة من شركة (Cpera) ",
     "price": "2500",
     "catetory":"ellehaf_man",
-    "color":"كشمير"
+    "color":"كشمير",
+    "type":"لحاف كبير"
   },
   {
     "link":"../../ellehafimage/ellehaf-man-slice/id-212/item.html",
@@ -1129,7 +1233,8 @@
     "name": " لحاف فرو المقاس الكبير + 2 خدادية فايبر رول الاعلي تدفئة من شركة (Cpera) ",
     "price": "2500",
     "catetory":"ellehaf_man",
-    "color":" كافي "
+    "color":" كافي ",
+    "type":"لحاف كبير"
   },
   {
     "link":"../../ellehafimage/ellehaf-man-slice/id-213/item.html",
@@ -1138,7 +1243,8 @@
     "name": " لحاف فرو المقاس الكبير + 2 خدادية فايبر رول الاعلي تدفئة من شركة (Cpera) ",
     "price": "2500",
     "catetory":"ellehaf_man",
-    "color":"جراي غامق"
+    "color":"جراي غامق",
+    "type":"لحاف كبير"
   },
   {
     "link":"../../ellehafimage/ellehaf-man-slice/id-214/item.html",
@@ -1148,7 +1254,8 @@
     "price": "1750",
     "catetory":"ellehaf_man",
     "color":" جراي غامق ",
-    "catetory1":"Ourproduct"
+    "catetory1":"Ourproduct",
+    "type":"لحاف كبير"
   },
 
 
@@ -1161,7 +1268,8 @@
     "name": " 2 لحاف اطفال كلاسيك , الوان رهيبة 6 قطع من شركة (Denzli) ",
     "price": "2600",
     "catetory":"ellehaf_child",
-    "color":"رصاصي "
+    "color":"رصاصي ",
+    "type":"لحاف اطفال"
   },
   {
     "link":"../../ellehafimage/ellehaf-child-slice/id-252/item.html",
@@ -1170,7 +1278,8 @@
     "name": " 2 لحاف اطفال كلاسيك , الوان رهيبة 6 قطع من شركة (Denzli) ",
     "price": "2600",
     "catetory":"ellehaf_child",
-    "color":"كشمير "
+    "color":"كشمير ",
+    "type":"لحاف اطفال"
   },
   {
     "link":"../../ellehafimage/ellehaf-child-slice/id-253/item.html",
@@ -1179,7 +1288,8 @@
     "name": " 2 لحاف اطفال كلاسيك , الوان رهيبة 6 قطع من شركة (Denzli) ",
     "price": "2600",
     "catetory":"ellehaf_child",
-    "color":"اخضر"
+    "color":"اخضر",
+    "type":"لحاف اطفال"
   },
   {
     "link":"../../ellehafimage/ellehaf-child-slice/id-254/item.html",
@@ -1188,7 +1298,8 @@
     "name": " 2 لحاف اطفال كلاسيك , الوان رهيبة 6 قطع من شركة (Denzli) ",
     "price": "2600",
     "catetory":"ellehaf_child",
-    "color":"كافي"
+    "color":"كافي",
+    "type":"لحاف اطفال"
   },
   {
     "link":"../../ellehafimage/ellehaf-child-slice/id-255/item.html",
@@ -1197,7 +1308,8 @@
     "name": " 2 لحاف اطفال كلاسيك , الوان رهيبة 6 قطع من شركة (Denzli) ",
     "price": "2600",
     "catetory":"ellehaf_child",
-    "color":"بامبي "
+    "color":"بامبي ",
+    "type":"لحاف اطفال"
   },
   {
     "link":"../../ellehafimage/ellehaf-child-slice/id-256/item.html",
@@ -1206,7 +1318,8 @@
     "name": " 2 لحاف اطفال اسباني دبل فيس + طقم دفاية + 2 خدادية من شركة (pavie) ",
     "price": "2950",
     "catetory":"ellehaf_child",
-    "color":"ازرق"
+    "color":"ازرق",
+    "type":"لحاف اطفال"
   },
   {
     "link":"../../ellehafimage/ellehaf-child-slice/id-257/item.html",
@@ -1215,7 +1328,8 @@
     "name": " 2 لحاف اطفال اسباني دبل فيس + طقم دفاية + 2 خدادية من شركة (pavie) ",
     "price": "2950",
     "catetory":"ellehaf_child",
-    "color":"كافي"
+    "color":"كافي",
+    "type":"لحاف اطفال"
   },
   {
     "link":"../../ellehafimage/ellehaf-child-slice/id-258/item.html",
@@ -1224,7 +1338,8 @@
     "name": " 2 لحاف اطفال فرو اربع قطع موديل نور  + 2 خدادية من شركة (Cpera) ",
     "price": "2950",
     "catetory":"ellehaf_child",
-    "color":"اسود"
+    "color":"اسود",
+    "type":"لحاف اطفال"
   },
   {
     "link":"../../ellehafimage/ellehaf-child-slice/id-259/item.html",
@@ -1233,7 +1348,8 @@
     "name": " 2 لحاف اطفال فرو اربع قطع موديل نور  + 2 خدادية من شركة (Cpera) ",
     "price": "2950",
     "catetory":"ellehaf_child",
-    "color":"برتقالي"
+    "color":"برتقالي",
+    "type":"لحاف اطفال"
   },
   {
     "link":"../../ellehafimage/ellehaf-child-slice/id-260/item.html",
@@ -1242,7 +1358,8 @@
     "name": " 2 لحاف اطفال فرو اربع قطع موديل نور  + 2 خدادية من شركة (Cpera) ",
     "price": "2950",
     "catetory":"ellehaf_child",
-    "color":"موف غامق"
+    "color":"موف غامق",
+    "type":"لحاف اطفال"
   },
   {
     "link":"../../ellehafimage/ellehaf-child-slice/id-261/item.html",
@@ -1251,7 +1368,8 @@
     "name": " 2 لحاف اطفال فرو اربع قطع موديل نور  + 2 خدادية من شركة (Cpera) ",
     "price": "2950",
     "catetory":"ellehaf_child",
-    "color":"اخضر "
+    "color":"اخضر ",
+    "type":"لحاف اطفال"
   },
   {
     "link":"../../ellehafimage/ellehaf-child-slice/id-262/item.html",
@@ -1261,7 +1379,8 @@
     "price": "2950",
     "catetory":"ellehaf_child",
     "color":"لبني",
-    "catetory1":"Ourproduct"
+    "catetory1":"Ourproduct",
+    "type":"لحاف اطفال"
   }
  
 
@@ -1272,7 +1391,5 @@
 
 
 ]
-
-
 
 
