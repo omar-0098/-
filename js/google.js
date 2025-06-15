@@ -1,4 +1,132 @@
-// إصلاح دالة logineCallback لمنع تجميد الصفحة
+// إضافة دالة لفحص وجود حساب محفوظ عند تحميل الصفحة
+function checkSavedAccount() {
+    try {
+        const savedUserData = localStorage.getItem("userData");
+        if (savedUserData) {
+            const userData = JSON.parse(savedUserData);
+            
+            // التحقق من صحة البيانات المحفوظة
+            if (userData.email && userData.name && userData.phone && userData.registered) {
+                console.log('تم العثور على حساب محفوظ:', userData.name);
+                
+                // إظهار الترحيب وتحديث الواجهة
+                showWelcomeSection(userData.name);
+                displayUserData(userData);
+                updateUIAfterSuccessfulRegistration();
+                
+                return true;
+            }
+        }
+    } catch (error) {
+        console.error('خطأ في قراءة البيانات المحفوظة:', error);
+        // إذا كانت البيانات تالفة، احذفها
+        localStorage.removeItem("userData");
+    }
+    return false;
+}
+
+// دالة لحفظ بيانات المستخدم بشكل آمن
+function saveUserData(userData) {
+    try {
+        // التأكد من وجود البيانات الأساسية
+        if (!userData.email || !userData.name || !userData.phone) {
+            console.error('بيانات المستخدم غير مكتملة');
+            return false;
+        }
+        
+        // إضافة طابع زمني لآخر تسجيل دخول
+        userData.lastLogin = new Date().toISOString();
+        userData.registered = true;
+        
+        // حفظ البيانات
+        localStorage.setItem("userData", JSON.stringify(userData));
+        console.log('تم حفظ بيانات المستخدم بنجاح');
+        return true;
+    } catch (error) {
+        console.error('خطأ في حفظ بيانات المستخدم:', error);
+        return false;
+    }
+}
+
+// دالة لتحديث بيانات المستخدم المحفوظة
+function updateSavedUserData(newData) {
+    try {
+        const savedUserData = localStorage.getItem("userData");
+        if (savedUserData) {
+            const userData = JSON.parse(savedUserData);
+            
+            // دمج البيانات الجديدة مع الموجودة
+            const updatedData = { ...userData, ...newData };
+            updatedData.lastUpdate = new Date().toISOString();
+            
+            localStorage.setItem("userData", JSON.stringify(updatedData));
+            return true;
+        }
+    } catch (error) {
+        console.error('خطأ في تحديث بيانات المستخدم:', error);
+    }
+    return false;
+}
+
+// دالة للحصول على بيانات المستخدم المحفوظة
+function getSavedUserData() {
+    try {
+        const savedUserData = localStorage.getItem("userData");
+        if (savedUserData) {
+            return JSON.parse(savedUserData);
+        }
+    } catch (error) {
+        console.error('خطأ في قراءة بيانات المستخدم:', error);
+        localStorage.removeItem("userData");
+    }
+    return null;
+}
+
+// دالة لتسجيل الخروج وحذف البيانات المحفوظة
+function logoutUser() {
+    try {
+        localStorage.removeItem("userData");
+        
+        // إعادة تعيين الواجهة
+        resetUIToDefaultState();
+        
+        console.log('تم تسجيل الخروج بنجاح');
+        return true;
+    } catch (error) {
+        console.error('خطأ في تسجيل الخروج:', error);
+        return false;
+    }
+}
+
+// دالة لإعادة تعيين الواجهة للحالة الافتراضية
+function resetUIToDefaultState() {
+    // إخفاء قسم الترحيب
+    const welcomeSection = document.getElementById('welcome-section');
+    if (welcomeSection) {
+        welcomeSection.style.display = 'none';
+    }
+    
+    // إظهار رسالة "يجب إنشاء حساب"
+    const messageDiv = document.getElementById('mustRegisterMessage');
+    if (messageDiv) {
+        messageDiv.style.display = 'block';
+    }
+    
+    // إخفاء زر الدفع/الخروج للسلة
+    const checkoutItem = document.querySelector('li.check');
+    if (checkoutItem) {
+        checkoutItem.style.display = 'none';
+    }
+    
+    // تعطيل أزرار إضافة للسلة
+    document.querySelectorAll('.btn_add_cart').forEach(function(button) {
+        button.style.opacity = '0.5';
+        button.style.cursor = 'not-allowed';
+        button.style.pointerEvents = 'none';
+    });
+}
+
+// تحديث دالة logineCallback لحفظ البيانات بشكل صحيح
 function logineCallback(response) {
     const decoded = jwt_decode(response.credential);
     
@@ -43,16 +171,15 @@ function logineCallback(response) {
         }
     });
     
-    // التعامل مع إرسال رقم الهاتف - تحسين لمنع التجميد
+    // التعامل مع إرسال رقم الهاتف
     document.getElementById("submitPhone").addEventListener("click", function() {
-        // استخدام setTimeout لتجنب blocking الـ UI thread
         setTimeout(async () => {
             await handlePhoneSubmission(decoded);
         }, 10);
     });
 }
 
-// فصل منطق التعامل مع إرسال الهاتف في دالة منفصلة
+// تحديث دالة handlePhoneSubmission لحفظ البيانات
 async function handlePhoneSubmission(decoded) {
     const phoneInput = document.getElementById("userPhone");
     const phoneError = document.getElementById("phoneError");
@@ -64,10 +191,9 @@ async function handlePhoneSubmission(decoded) {
     submitButton.textContent = "جاري المعالجة...";
     
     try {
-        // إخفاء رسالة الخطأ أولاً
+        // التحقق من الشروط (نفس الكود الموجود)
         phoneError.style.display = "none";
         
-        // التحقق من الشروط
         if (!phoneNumber) {
             showPhoneError("الرجاء إدخال رقم الهاتف");
             return;
@@ -88,10 +214,9 @@ async function handlePhoneSubmission(decoded) {
             return;
         }
         
-        // إظهار رسالة التحقق من التكرار
         showPhoneLoading("جاري التحقق من البيانات...");
 
-        // التحقق من تكرار الإيميل والتليفون مع timeout
+        // التحقق من تكرار الإيميل والتليفون
         const duplicateCheck = await Promise.race([
             checkDuplicateUser(decoded.email, phoneNumber),
             new Promise((_, reject) => 
@@ -110,10 +235,9 @@ async function handlePhoneSubmission(decoded) {
             return;
         }
 
-        // إذا لم يكن هناك تكرار، تابع عملية التسجيل
         showPhoneLoading("جاري إرسال البيانات...");
 
-        // إعداد بيانات المستخدم مع رقم الهاتف
+        // إعداد بيانات المستخدم
         const userData = {
             name: decoded.given_name || "غير معروف",
             family: decoded.family_name || "",
@@ -121,26 +245,34 @@ async function handlePhoneSubmission(decoded) {
             phone: phoneNumber,
             registered: true,
             copon1: "",
-            copon2: ""
+            copon2: "",
+            registrationDate: new Date().toISOString() // إضافة تاريخ التسجيل
         };
 
-        // إرسال البيانات مع معالجة أفضل للأخطاء
+        // إرسال البيانات
         const registrationResult = await performRegistration(userData);
         
         if (registrationResult.success) {
             showPhoneSuccess(registrationResult.message);
             
-            // إخفاء النافذة بعد ثانيتين وتحديث الواجهة
+            // حفظ البيانات بشكل آمن
+            const saveSuccess = saveUserData(userData);
+            
+            if (saveSuccess) {
+                console.log('تم حفظ بيانات المستخدم في localStorage');
+            } else {
+                console.warn('فشل في حفظ بيانات المستخدم محلياً');
+            }
+            
+            // تحديث الواجهة بعد ثانيتين
             setTimeout(() => {
                 try {
-                    localStorage.setItem("userData", JSON.stringify(userData));
                     showWelcomeSection(userData.name);
                     displayUserData(userData);
                     document.getElementById("overlay").style.display = "none";
                     updateUIAfterSuccessfulRegistration();
                 } catch (error) {
                     console.error('خطأ في تحديث الواجهة:', error);
-                    // حتى لو حدث خطأ في التحديث، اخفي النافذة
                     document.getElementById("overlay").style.display = "none";
                 }
             }, 2000);
@@ -156,389 +288,107 @@ async function handlePhoneSubmission(decoded) {
             showPhoneError("حدث خطأ أثناء التحقق من البيانات. يرجى المحاولة مرة أخرى.");
         }
     } finally {
-        // إعادة تفعيل الزر في جميع الحالات
         submitButton.disabled = false;
         submitButton.textContent = "تسجيل";
     }
 }
 
-// دالة منفصلة لمعالجة التسجيل
-async function performRegistration(userData) {
-    const formData = new FormData();
-    formData.append("Nameo", userData.name);
-    formData.append("FamilyName", userData.family);
-    formData.append("Emailo", userData.email);
-    formData.append("Phone", userData.phone);
-    formData.append("Passwordo", "google");
-    formData.append("copon1", "");
-    formData.append("copon2", "");
-
-    let googleSheetsSuccess = false;
-    let jsonBinSuccess = false;
-    let errors = [];
-
-    // إرسال إلى Google Sheets مع timeout
-    try {
-        const googleResponse = await Promise.race([
-            sendToGoogleSheets(formData),
-            new Promise((_, reject) => 
-                setTimeout(() => reject(new Error('Google Sheets Timeout')), 10000)
-            )
-        ]);
+// دالة لإنشاء زر تسجيل الخروج (اختيارية)
+function createLogoutButton() {
+    const userData = getSavedUserData();
+    if (userData) {
+        // إنشاء زر تسجيل الخروج
+        const logoutBtn = document.createElement('button');
+        logoutBtn.id = 'logoutBtn';
+        logoutBtn.textContent = 'تسجيل الخروج';
+        logoutBtn.style.cssText = `
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+            font-size: 14px;
+        `;
         
-        if (googleResponse && googleResponse.result === "success") {
-            googleSheetsSuccess = true;
-            console.log('تم إرسال البيانات إلى Google Sheets بنجاح');
-        }
-    } catch (error) {
-        console.error('خطأ في إرسال البيانات إلى Google Sheets:', error);
-        errors.push('Google Sheets');
-    }
-
-    // إرسال إلى JSONBin مع timeout
-    try {
-        jsonBinSuccess = await Promise.race([
-            sendToJSONBin(userData),
-            new Promise((_, reject) => 
-                setTimeout(() => reject(new Error('JSONBin Timeout')), 10000)
-            )
-        ]);
-    } catch (error) {
-        console.error('خطأ في إرسال البيانات إلى JSONBin:', error);
-        errors.push('JSONBin');
-    }
-
-    // تحديد نتيجة العملية
-    if (googleSheetsSuccess && jsonBinSuccess) {
-        return {
-            success: true,
-            message: "تم التسجيل بنجاح في جميع المنصات!"
-        };
-    } else if (googleSheetsSuccess || jsonBinSuccess) {
-        const platforms = [];
-        if (googleSheetsSuccess) platforms.push("Google Sheets");
-        if (jsonBinSuccess) platforms.push("JSONBin");
-        return {
-            success: true,
-            message: `تم التسجيل بنجاح في: ${platforms.join(', ')}`
-        };
-    } else {
-        return {
-            success: false,
-            message: "فشل في التسجيل. يرجى المحاولة مرة أخرى."
-        };
-    }
-}
-
-// تحسين دالة إرسال البيانات إلى Google Sheets
-async function sendToGoogleSheets(formData) {
-    const scriptURL = "https://script.google.com/macros/s/AKfycbzDPcLwO1U091L_W1Ha-M-_GjL5z6V7aFh6RxTberNq8tsYLIkkI1BtdF5ufA8qpSmvag/exec";
-    
-    try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 8000); // تقليل المهلة الزمنية
-
-        const response = await fetch(scriptURL, {
-            method: "POST",
-            body: formData,
-            signal: controller.signal,
-            // إضافة headers للتحسين
-            headers: {
-                'Accept': 'application/json'
+        logoutBtn.addEventListener('click', function() {
+            if (confirm('هل أنت متأكد من رغبتك في تسجيل الخروج؟')) {
+                logoutUser();
+                // إعادة تحميل الصفحة لإعادة تعيين كل شيء
+                location.reload();
             }
         });
-
-        clearTimeout(timeoutId);
-
-        if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
-        }
-
-        // التحقق من وجود محتوى قبل محاولة parsing
-        const contentType = response.headers.get('content-type');
-        if (contentType && contentType.includes('application/json')) {
-            const data = await response.json();
-            return data;
-        } else {
-            // إذا لم تكن النتيجة JSON، اعتبرها نجاح
-            return { result: "success" };
-        }
-    } catch (error) {
-        if (error.name === 'AbortError') {
-            throw new Error('انتهت المهلة الزمنية للطلب');
-        }
-        throw error;
-    }
-}
-
-// تحسين دالة إرسال البيانات إلى JSONBin
-async function sendToJSONBin(userData) {
-    const JSONBIN_CONFIG = {
-        API_KEY: "$2a$10$xAWjC3zelpDKCd6zdOdUg.D0bwtEURjcR5sEiYdonjBmP5lHuqzq2",
-        BIN_ID: "6848177e8960c979a5a77f85",
-        BASE_URL: "https://api.jsonbin.io/v3"
-    };
-
-    try {
-        // إنشاء controller للتحكم في الـ timeout
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 8000);
-
-        // أولاً، احصل على البيانات المحفوظة
-        const response = await fetch(`${JSONBIN_CONFIG.BASE_URL}/b/${JSONBIN_CONFIG.BIN_ID}/latest`, {
-            method: 'GET',
-            headers: {
-                'X-Master-Key': JSONBIN_CONFIG.API_KEY,
-                'Content-Type': 'application/json'
-            },
-            signal: controller.signal
-        });
-
-        let existingData = [];
-        if (response.ok) {
-            const result = await response.json();
-            existingData = Array.isArray(result.record) ? result.record : [];
-        }
-
-        // أضف البيانات الجديدة مع معرف فريد وتاريخ
-        const newEntry = {
-            id: Date.now(),
-            timestamp: new Date().toISOString(),
-            ...userData
-        };
         
-        existingData.push(newEntry);
-
-        // ارسل البيانات المحدثة
-        const updateResponse = await fetch(`${JSONBIN_CONFIG.BASE_URL}/b/${JSONBIN_CONFIG.BIN_ID}`, {
-            method: 'PUT',
-            headers: {
-                'X-Master-Key': JSONBIN_CONFIG.API_KEY,
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(existingData),
-            signal: controller.signal
-        });
-
-        clearTimeout(timeoutId);
-
-        if (updateResponse.ok) {
-            console.log('تم إرسال البيانات إلى JSONBin بنجاح');
-            return true;
-        } else {
-            throw new Error('فشل في إرسال البيانات إلى JSONBin');
+        // إضافة الزر لقسم الترحيب إذا كان موجوداً
+        const welcomeSection = document.getElementById('welcome-section');
+        if (welcomeSection && !document.getElementById('logoutBtn')) {
+            welcomeSection.appendChild(logoutBtn);
         }
-    } catch (error) {
-        if (error.name === 'AbortError') {
-            console.error('انتهت المهلة الزمنية لـ JSONBin');
-        } else {
-            console.error('خطأ في إرسال البيانات إلى JSONBin:', error);
-        }
-        return false;
     }
 }
 
-// تحسين دالة التحقق من التكرار
-async function checkDuplicateUser(email, phone) {
-    const JSONBIN_CONFIG = {
-        API_KEY: "$2a$10$xAWjC3zelpDKCd6zdOdUg.D0bwtEURjcR5sEiYdonjBmP5lHuqzq2",
-        BIN_ID: "6848177e8960c979a5a77f85",
-        BASE_URL: "https://api.jsonbin.io/v3"
-    };
+// دالة تعمل عند تحميل الصفحة - يجب استدعاؤها عند DOMContentLoaded
+function initializeApp() {
+    console.log('تهيئة التطبيق...');
+    
+    // تحقق من وجود حساب محفوظ
+    const hasAccount = checkSavedAccount();
+    
+    if (hasAccount) {
+        console.log('تم تسجيل الدخول تلقائياً');
+        // إنشاء زر تسجيل الخروج
+        createLogoutButton();
+    } else {
+        console.log('لا يوجد حساب محفوظ');
+        // إعادة تعيين الواجهة للحالة الافتراضية
+        resetUIToDefaultState();
+    }
+}
 
-    try {
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 8000);
+// إضافة event listener لتحميل الصفحة
+document.addEventListener('DOMContentLoaded', function() {
+    initializeApp();
+});
 
-        const response = await fetch(`${JSONBIN_CONFIG.BASE_URL}/b/${JSONBIN_CONFIG.BIN_ID}/latest`, {
-            method: 'GET',
-            headers: {
-                'X-Master-Key': JSONBIN_CONFIG.API_KEY,
-                'Content-Type': 'application/json'
-            },
-            signal: controller.signal
-        });
+// إضافة event listener للتأكد من العمل حتى لو تم تحميل الصفحة بالكامل
+window.addEventListener('load', function() {
+    // تأخير قصير للتأكد من تحميل كل العناصر
+    setTimeout(() => {
+        const hasAccount = checkSavedAccount();
+        if (hasAccount) {
+            createLogoutButton();
+        }
+    }, 500);
+});
 
-        clearTimeout(timeoutId);
+// دالة مساعدة للتحقق من حالة تسجيل الدخول
+function isUserLoggedIn() {
+    const userData = getSavedUserData();
+    return userData && userData.registered && userData.email && userData.phone;
+}
 
-        if (response.ok) {
-            const result = await response.json();
-            const existingData = Array.isArray(result.record) ? result.record : [];
+// دالة لإضافة رسالة ترحيب مخصصة
+function showCustomWelcomeMessage() {
+    const userData = getSavedUserData();
+    if (userData) {
+        const lastLogin = userData.lastLogin ? new Date(userData.lastLogin) : null;
+        const registrationDate = userData.registrationDate ? new Date(userData.registrationDate) : null;
+        
+        let welcomeMessage = `مرحباً بك ${userData.name}!`;
+        
+        if (lastLogin) {
+            const now = new Date();
+            const timeDiff = now - lastLogin;
+            const daysDiff = Math.floor(timeDiff / (1000 * 60 * 60 * 24));
             
-            // البحث عن إيميل أو تليفون مكرر
-            const duplicateEmail = existingData.find(user => user.email === email);
-            const duplicatePhone = existingData.find(user => user.phone === phone);
-            
-            return {
-                emailExists: !!duplicateEmail,
-                phoneExists: !!duplicatePhone,
-                duplicateEmail: duplicateEmail,
-                duplicatePhone: duplicatePhone
-            };
+            if (daysDiff > 0) {
+                welcomeMessage += ` لم نراك منذ ${daysDiff} ${daysDiff === 1 ? 'يوم' : 'أيام'}`;
+            }
         }
         
-        return {
-            emailExists: false,
-            phoneExists: false,
-            duplicateEmail: null,
-            duplicatePhone: null
-        };
-    } catch (error) {
-        if (error.name === 'AbortError') {
-            console.error('انتهت المهلة الزمنية للتحقق من التكرار');
-        } else {
-            console.error('خطأ في التحقق من التكرار:', error);
-        }
-        // في حالة الخطأ، نسمح بالمتابعة لتجنب منع التسجيل كلياً
-        return {
-            emailExists: false,
-            phoneExists: false,
-            duplicateEmail: null,
-            duplicatePhone: null
-        };
+        console.log(welcomeMessage);
+        return welcomeMessage;
     }
-}
-
-// دالة جديدة لتحديث الواجهة بعد التسجيل الناجح - مع معالجة الأخطاء
-// دالة محدثة لتحديث الواجهة بعد التسجيل الناجح
-function updateUIAfterSuccessfulRegistration() {
-    // إعادة تفعيل التمرير العادي للصفحة
-    document.body.style.overflow = 'auto';
-    document.documentElement.style.overflow = 'auto';
-    
-    // إزالة أي قيود على التمرير من الـ overlay أو النوافذ المنبثقة
-    const overlay = document.getElementById("overlay");
-    if (overlay) {
-        overlay.style.overflow = 'auto';
-    }
-    
-    // إخفاء رسالة "يجب إنشاء حساب"
-    const messageDiv = document.getElementById('mustRegisterMessage');
-    if (messageDiv) {
-        messageDiv.style.display = 'none';
-    }
-    
-    // إظهار زر الدفع/الخروج للسلة
-    const checkoutItem = document.querySelector('li.check');
-    if (checkoutItem) {
-        checkoutItem.style.display = 'list-item';
-    }
-    
-    // تفعيل أزرار إضافة للسلة
-    document.querySelectorAll('.btn_add_cart').forEach(function(button) {
-        // إعادة تفعيل الزر
-        button.style.opacity = '1';
-        button.style.cursor = 'pointer';
-        button.style.pointerEvents = 'auto';
-        
-        // إزالة معالج الأحداث المعطل والعودة للوظيفة العادية
-        const newButton = button.cloneNode(true);
-        button.parentNode.replaceChild(newButton, button);
-        
-        // إعادة تفعيل الوظيفة الأصلية للزر (إذا كانت موجودة)
-        // يمكنك إضافة معالج الأحداث الأصلي هنا حسب كودك
-    });
-    
-    // تحديث أي عناصر أخرى متعلقة بحالة تسجيل الدخول
-    const man1 = document.querySelector('.man1');
-    if (man1) {
-        // إظهار عنصر man1 إذا كان مخفياً
-        man1.style.display = 'block';
-    }
-    
-    // التأكد من أن الصفحة قابلة للتمرير بشكل طبيعي
-    // إزالة أي فئات CSS قد تمنع التمرير
-    document.body.classList.remove('no-scroll', 'modal-open', 'overlay-open');
-    
-    // إعادة تعيين أي inline styles قد تؤثر على التمرير
-    document.body.removeAttribute('style');
-    
-    console.log('تم تحديث واجهة المستخدم بعد التسجيل الناجح مع تفعيل التمرير');
-}
-
-// دوال المساعدة لرسائل رقم الهاتف - بدون تغيير
-function showPhoneError(message) {
-    const phoneError = document.getElementById("phoneError");
-    if (phoneError) {
-        phoneError.textContent = message;
-        phoneError.style.cssText = `
-            display: block;
-            color: red;
-            margin: 10px 0;
-            text-align: center;
-            padding: 10px;
-            background-color: #fee;
-            border: 1px solid #fcc;
-            border-radius: 5px;
-        `;
-    }
-}
-
-function showPhoneSuccess(message) {
-    const phoneError = document.getElementById("phoneError");
-    if (phoneError) {
-        phoneError.textContent = message;
-        phoneError.style.cssText = `
-            display: block;
-            color: green;
-            margin: 10px 0;
-            text-align: center;
-            padding: 10px;
-            background-color: #efe;
-            border: 1px solid #cfc;
-            border-radius: 5px;
-        `;
-    }
-}
-
-function showPhoneWarning(message) {
-    const phoneError = document.getElementById("phoneError");
-    if (phoneError) {
-        phoneError.textContent = message;
-        phoneError.style.cssText = `
-            display: block;
-            color: orange;
-            margin: 10px 0;
-            text-align: center;
-            padding: 10px;
-            background-color: #ffeaa7;
-            border: 1px solid #fdcb6e;
-            border-radius: 5px;
-        `;
-    }
-}
-
-function showPhoneLoading(message) {
-    const phoneError = document.getElementById("phoneError");
-    if (phoneError) {
-        phoneError.innerHTML = `
-            <div style="display: flex; align-items: center; justify-content: center;">
-                <div style="width: 20px; height: 20px; border: 2px solid #2196f3; border-top: 2px solid transparent; border-radius: 50%; animation: spin 1s linear infinite; margin-left: 10px;"></div>
-                ${message}
-            </div>
-        `;
-        phoneError.style.cssText = `
-            display: block;
-            color: blue;
-            margin: 10px 0;
-            text-align: center;
-            padding: 10px;
-            background-color: #e3f2fd;
-            border: 1px solid #2196f3;
-            border-radius: 5px;
-        `;
-        
-        // إضافة CSS للأنيميشن إذا لم يكن موجوداً
-        if (!document.getElementById('phone-loading-styles')) {
-            const style = document.createElement('style');
-            style.id = 'phone-loading-styles';
-            style.textContent = `
-                @keyframes spin {
-                    0% { transform: rotate(0deg); }
-                    100% { transform: rotate(360deg); }
-                }
-            `;
-            document.head.appendChild(style);
-        }
-    }
+    return null;
 }
