@@ -134,7 +134,7 @@ hr{
     border-radius: 5px;
     position: relative;
     width: 238px !important;
-    height: 457px !important;
+    height: 480px !important;
     border: 1.4px solid rgb(224, 224, 224);
     position: relative;
     overflow: hidden;
@@ -233,9 +233,14 @@ hr{
     body {
         padding-top: 320px;
     }
+    .shipping-container {
+    bottom: 51px;
+    width: 91%;
+}
+
     .product{
         width: 49% !important;
-        height: 440px !important;
+        height: 470px !important;
         position: relative;
         margin: 0px 1px 5px;
         padding: 17px 9px;
@@ -349,12 +354,20 @@ hr{
 
 
 @media (max-width:400px) {
+    .shipping-container .shipping-label i {
+    font-size: 12px;
+}
+.shipping-container {
+        bottom: 47px;
+        width: 89%;
+    }
+
     .product .name_product {
         font-size: 13px;
     }
     .product{
         padding: 10px;
-        height: 425px !important;
+        height: 445px !important;
     }
     .product .img_product {
         position: relative;
