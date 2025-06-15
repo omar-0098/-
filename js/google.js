@@ -1,63 +1,5 @@
-// عند تحميل الصفحة، تحقق من وجود مستخدم مسجل بالفعل
-document.addEventListener('DOMContentLoaded', function() {
-    checkAndUpdateLoginStatus();
-});
 
-// دالة للتحقق من حالة تسجيل الدخول وتحديث الواجهة
-function checkAndUpdateLoginStatus() {
-    const userData = getStoredUserData();
-    
-    if (userData && userData.registered) {
-        // إذا كان المستخدم مسجلاً، نحدث الواجهة
-        showWelcomeSection(userData.name);
-        displayUserData(userData);
-        updateUIAfterSuccessfulRegistration();
-        
-        // إخفاء نموذج تسجيل الدخول إذا كان ظاهراً
-        const overlay = document.getElementById("overlay");
-        if (overlay) overlay.style.display = "none";
-    } else {
-        // إذا لم يكن مسجلاً، نظهر أزرار التسجيل
-        const loginButtons = document.querySelectorAll('.login-button');
-        loginButtons.forEach(btn => btn.style.display = 'block');
-        
-        const logoutButtons = document.querySelectorAll('.logout-button');
-        logoutButtons.forEach(btn => btn.style.display = 'none');
-    }
-}
-
-// دالة للحصول على بيانات المستخدم المخزنة
-function getStoredUserData() {
-    const savedUserData = localStorage.getItem("userData");
-    if (!savedUserData) return null;
-    
-    try {
-        const userData = JSON.parse(savedUserData);
-        if (validateUserData(userData)) {
-            return userData;
-        }
-        return null;
-    } catch (error) {
-        console.error('Error parsing user data:', error);
-        return null;
-    }
-}
-
-// دالة للتحقق من صحة بيانات المستخدم
-function validateUserData(userData) {
-    if (!userData) return false;
-    
-    const requiredFields = ['name', 'email', 'phone', 'registered'];
-    for (const field of requiredFields) {
-        if (!userData[field]) {
-            return false;
-        }
-    }
-    
-    return true;
-}
-
-// دالة تسجيل الدخول المعدلة
+// إصلاح دالة logineCallback لمنع تجميد الصفحة
 function logineCallback(response) {
     const decoded = jwt_decode(response.credential);
     
@@ -65,7 +7,7 @@ function logineCallback(response) {
     const overlay = document.getElementById("overlay");
     const phoneForm = document.createElement("div");
     phoneForm.innerHTML = `
-        <div class="login-start2">
+        <div class="login-start2" >
             <div class="logine-img"><img src="login.png" alt="" style="width: 100%;"></div>
             <h3>الرجاء إدخال رقم الهاتف</h3>
             <input type="tel" id="userPhone" placeholder="رقم الهاتف" maxlength="11" inputmode="numeric">
@@ -75,47 +17,58 @@ function logineCallback(response) {
         </div>
     `;
     
+    // إضافة النموذج إلى الـ overlay
     overlay.innerHTML = "";
     overlay.appendChild(phoneForm);
     overlay.style.display = "flex";
     
     // التحقق من المدخلات أثناء الكتابة
     document.getElementById("userPhone").addEventListener("input", function(e) {
+        // السماح بالأرقام فقط
         this.value = this.value.replace(/[^0-9]/g, '');
         
+        // التحقق من أن الرقم يبدأ بصفر
         if (this.value.length > 0 && this.value[0] !== '0') {
             this.value = '0' + this.value.replace(/^0+/, '');
         }
         
+        // تحديد الطول الأقصى
         if (this.value.length > 11) {
             this.value = this.value.slice(0, 11);
         }
         
+        // إخفاء رسالة الخطأ عند بدء الكتابة
         const phoneError = document.getElementById("phoneError");
-        if (phoneError) phoneError.style.display = "none";
+        if (phoneError) {
+            phoneError.style.display = "none";
+        }
     });
     
-    // التعامل مع إرسال رقم الهاتف
+    // التعامل مع إرسال رقم الهاتف - تحسين لمنع التجميد
     document.getElementById("submitPhone").addEventListener("click", function() {
+        // استخدام setTimeout لتجنب blocking الـ UI thread
         setTimeout(async () => {
             await handlePhoneSubmission(decoded);
         }, 10);
     });
 }
 
-// دالة معالجة إرسال رقم الهاتف المعدلة
+// فصل منطق التعامل مع إرسال الهاتف في دالة منفصلة
 async function handlePhoneSubmission(decoded) {
     const phoneInput = document.getElementById("userPhone");
     const phoneError = document.getElementById("phoneError");
     const submitButton = document.getElementById("submitPhone");
     const phoneNumber = phoneInput.value.trim();
     
+    // منع الضغط المتكرر على الزر
     submitButton.disabled = true;
     submitButton.textContent = "جاري المعالجة...";
     
     try {
+        // إخفاء رسالة الخطأ أولاً
         phoneError.style.display = "none";
         
+        // التحقق من الشروط
         if (!phoneNumber) {
             showPhoneError("الرجاء إدخال رقم الهاتف");
             return;
@@ -136,8 +89,10 @@ async function handlePhoneSubmission(decoded) {
             return;
         }
         
+        // إظهار رسالة التحقق من التكرار
         showPhoneLoading("جاري التحقق من البيانات...");
 
+        // التحقق من تكرار الإيميل والتليفون مع timeout
         const duplicateCheck = await Promise.race([
             checkDuplicateUser(decoded.email, phoneNumber),
             new Promise((_, reject) => 
@@ -146,18 +101,20 @@ async function handlePhoneSubmission(decoded) {
         ]);
         
         if (duplicateCheck.emailExists && duplicateCheck.phoneExists) {
-            showPhoneError("هذا الإيميل ورقم الهاتف مستخدمان بالفعل");
+            showPhoneError("هذا الإيميل ورقم الهاتف مستخدمان بالفعل. يرجى استخدام إيميل ورقم هاتف مختلفين.");
             return;
         } else if (duplicateCheck.emailExists) {
-            showPhoneError("هذا البريد الإلكتروني مستخدم بالفعل");
+            showPhoneError("هذا البريد الإلكتروني مستخدم بالفعل. يرجى استخدام بريد إلكتروني آخر.");
             return;
         } else if (duplicateCheck.phoneExists) {
-            showPhoneError("رقم الهاتف هذا مستخدم بالفعل");
+            showPhoneError("رقم الهاتف هذا مستخدم بالفعل. يرجى استخدام رقم هاتف آخر.");
             return;
         }
 
+        // إذا لم يكن هناك تكرار، تابع عملية التسجيل
         showPhoneLoading("جاري إرسال البيانات...");
 
+        // إعداد بيانات المستخدم مع رقم الهاتف
         const userData = {
             name: decoded.given_name || "غير معروف",
             family: decoded.family_name || "",
@@ -165,31 +122,26 @@ async function handlePhoneSubmission(decoded) {
             phone: phoneNumber,
             registered: true,
             copon1: "",
-            copon2: "",
-            sessionId: generateSessionId(),
-            lastLogin: new Date().toISOString()
+            copon2: ""
         };
 
+        // إرسال البيانات مع معالجة أفضل للأخطاء
         const registrationResult = await performRegistration(userData);
         
         if (registrationResult.success) {
             showPhoneSuccess(registrationResult.message);
             
+            // إخفاء النافذة بعد ثانيتين وتحديث الواجهة
             setTimeout(() => {
                 try {
-                    // حفظ البيانات في localStorage
                     localStorage.setItem("userData", JSON.stringify(userData));
-                    
-                    // تحديث الواجهة
                     showWelcomeSection(userData.name);
                     displayUserData(userData);
                     document.getElementById("overlay").style.display = "none";
                     updateUIAfterSuccessfulRegistration();
-                    
-                    // إرسال حدث لتحديث المكونات الأخرى
-                    document.dispatchEvent(new Event('userLoggedIn'));
                 } catch (error) {
-                    console.error('Error in updating UI:', error);
+                    console.error('خطأ في تحديث الواجهة:', error);
+                    // حتى لو حدث خطأ في التحديث، اخفي النافذة
                     document.getElementById("overlay").style.display = "none";
                 }
             }, 2000);
@@ -198,93 +150,194 @@ async function handlePhoneSubmission(decoded) {
         }
 
     } catch (error) {
-        console.error('Error in registration:', error);
-        showPhoneError("حدث خطأ أثناء التسجيل. يرجى المحاولة مرة أخرى.");
+        console.error('خطأ في عملية التسجيل:', error);
+        if (error.message === 'Timeout') {
+            showPhoneError("انتهت المهلة الزمنية. يرجى المحاولة مرة أخرى.");
+        } else {
+            showPhoneError("حدث خطأ أثناء التحقق من البيانات. يرجى المحاولة مرة أخرى.");
+        }
     } finally {
+        // إعادة تفعيل الزر في جميع الحالات
         submitButton.disabled = false;
         submitButton.textContent = "تسجيل";
     }
 }
 
-// دالة إنشاء معرف جلسة عمل
-function generateSessionId() {
-    return 'session_' + Math.random().toString(36).substr(2, 9) + '_' + Date.now();
+// دالة منفصلة لمعالجة التسجيل
+async function performRegistration(userData) {
+    const formData = new FormData();
+    formData.append("Nameo", userData.name);
+    formData.append("FamilyName", userData.family);
+    formData.append("Emailo", userData.email);
+    formData.append("Phone", userData.phone);
+    formData.append("Passwordo", "google");
+    formData.append("copon1", "");
+    formData.append("copon2", "");
+
+    let googleSheetsSuccess = false;
+    let jsonBinSuccess = false;
+    let errors = [];
+
+    // إرسال إلى Google Sheets مع timeout
+    try {
+        const googleResponse = await Promise.race([
+            sendToGoogleSheets(formData),
+            new Promise((_, reject) => 
+                setTimeout(() => reject(new Error('Google Sheets Timeout')), 10000)
+            )
+        ]);
+        
+        if (googleResponse && googleResponse.result === "success") {
+            googleSheetsSuccess = true;
+            console.log('تم إرسال البيانات إلى Google Sheets بنجاح');
+        }
+    } catch (error) {
+        console.error('خطأ في إرسال البيانات إلى Google Sheets:', error);
+        errors.push('Google Sheets');
+    }
+
+    // إرسال إلى JSONBin مع timeout
+    try {
+        jsonBinSuccess = await Promise.race([
+            sendToJSONBin(userData),
+            new Promise((_, reject) => 
+                setTimeout(() => reject(new Error('JSONBin Timeout')), 10000)
+            )
+        ]);
+    } catch (error) {
+        console.error('خطأ في إرسال البيانات إلى JSONBin:', error);
+        errors.push('JSONBin');
+    }
+
+    // تحديد نتيجة العملية
+    if (googleSheetsSuccess && jsonBinSuccess) {
+        return {
+            success: true,
+            message: "تم التسجيل بنجاح في جميع المنصات!"
+        };
+    } else if (googleSheetsSuccess || jsonBinSuccess) {
+        const platforms = [];
+        if (googleSheetsSuccess) platforms.push("Google Sheets");
+        if (jsonBinSuccess) platforms.push("JSONBin");
+        return {
+            success: true,
+            message: `تم التسجيل بنجاح في: ${platforms.join(', ')}`
+        };
+    } else {
+        return {
+            success: false,
+            message: "فشل في التسجيل. يرجى المحاولة مرة أخرى."
+        };
+    }
 }
 
-// دالة تسجيل الخروج
-function handleLogout() {
-    // مسح بيانات المستخدم
-    localStorage.removeItem("userData");
-    sessionStorage.removeItem("currentSession");
+// تحسين دالة إرسال البيانات إلى Google Sheets
+async function sendToGoogleSheets(formData) {
+    const scriptURL = "https://script.google.com/macros/s/AKfycbzDPcLwO1U091L_W1Ha-M-_GjL5z6V7aFh6RxTberNq8tsYLIkkI1BtdF5ufA8qpSmvag/exec";
     
-    // تحديث الواجهة
-    const welcomeElements = document.querySelectorAll('.welcome-user');
-    welcomeElements.forEach(el => el.style.display = 'none');
-    
-    const loginButtons = document.querySelectorAll('.login-button');
-    loginButtons.forEach(btn => btn.style.display = 'block');
-    
-    const logoutButtons = document.querySelectorAll('.logout-button');
-    logoutButtons.forEach(btn => btn.style.display = 'none');
-    
-    // إخفاء عناصر خاصة بالمستخدم المسجل
-    const userOnlyElements = document.querySelectorAll('.user-only');
-    userOnlyElements.forEach(el => el.style.display = 'none');
-    
-    // إرسال حدث لتحديث المكونات الأخرى
-    document.dispatchEvent(new Event('userLoggedOut'));
-    
-    // إعادة تحميل الصفحة لتطبيق التغييرات
-    window.location.reload();
+    try {
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 8000); // تقليل المهلة الزمنية
+
+        const response = await fetch(scriptURL, {
+            method: "POST",
+            body: formData,
+            signal: controller.signal,
+            // إضافة headers للتحسين
+            headers: {
+                'Accept': 'application/json'
+            }
+        });
+
+        clearTimeout(timeoutId);
+
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        // التحقق من وجود محتوى قبل محاولة parsing
+        const contentType = response.headers.get('content-type');
+        if (contentType && contentType.includes('application/json')) {
+            const data = await response.json();
+            return data;
+        } else {
+            // إذا لم تكن النتيجة JSON، اعتبرها نجاح
+            return { result: "success" };
+        }
+    } catch (error) {
+        if (error.name === 'AbortError') {
+            throw new Error('انتهت المهلة الزمنية للطلب');
+        }
+        throw error;
+    }
 }
 
-// ربط دالة تسجيل الخروج بالأزرار
-document.querySelectorAll('.logout-button').forEach(button => {
-    button.addEventListener('click', handleLogout);
-});
+// تحسين دالة إرسال البيانات إلى JSONBin
+async function sendToJSONBin(userData) {
+    const JSONBIN_CONFIG = {
+        API_KEY: "$2a$10$xAWjC3zelpDKCd6zdOdUg.D0bwtEURjcR5sEiYdonjBmP5lHuqzq2",
+        BIN_ID: "6848177e8960c979a5a77f85",
+        BASE_URL: "https://api.jsonbin.io/v3"
+    };
 
-// دالة عرض رسالة ترحيبية
-function showWelcomeSection(userName) {
-    const welcomeElements = document.querySelectorAll('.welcome-user');
-    welcomeElements.forEach(el => {
-        el.textContent = `مرحباً ${userName}`;
-        el.style.display = 'block';
-    });
-    
-    const loginButtons = document.querySelectorAll('.login-button');
-    loginButtons.forEach(btn => btn.style.display = 'none');
-    
-    const logoutButtons = document.querySelectorAll('.logout-button');
-    logoutButtons.forEach(btn => btn.style.display = 'block');
-    
-    const userOnlyElements = document.querySelectorAll('.user-only');
-    userOnlyElements.forEach(el => el.style.display = 'block');
+    try {
+        // إنشاء controller للتحكم في الـ timeout
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 8000);
+
+        // أولاً، احصل على البيانات المحفوظة
+        const response = await fetch(`${JSONBIN_CONFIG.BASE_URL}/b/${JSONBIN_CONFIG.BIN_ID}/latest`, {
+            method: 'GET',
+            headers: {
+                'X-Master-Key': JSONBIN_CONFIG.API_KEY,
+                'Content-Type': 'application/json'
+            },
+            signal: controller.signal
+        });
+
+        let existingData = [];
+        if (response.ok) {
+            const result = await response.json();
+            existingData = Array.isArray(result.record) ? result.record : [];
+        }
+
+        // أضف البيانات الجديدة مع معرف فريد وتاريخ
+        const newEntry = {
+            id: Date.now(),
+            timestamp: new Date().toISOString(),
+            ...userData
+        };
+        
+        existingData.push(newEntry);
+
+        // ارسل البيانات المحدثة
+        const updateResponse = await fetch(`${JSONBIN_CONFIG.BASE_URL}/b/${JSONBIN_CONFIG.BIN_ID}`, {
+            method: 'PUT',
+            headers: {
+                'X-Master-Key': JSONBIN_CONFIG.API_KEY,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(existingData),
+            signal: controller.signal
+        });
+
+        clearTimeout(timeoutId);
+
+        if (updateResponse.ok) {
+            console.log('تم إرسال البيانات إلى JSONBin بنجاح');
+            return true;
+        } else {
+            throw new Error('فشل في إرسال البيانات إلى JSONBin');
+        }
+    } catch (error) {
+        if (error.name === 'AbortError') {
+            console.error('انتهت المهلة الزمنية لـ JSONBin');
+        } else {
+            console.error('خطأ في إرسال البيانات إلى JSONBin:', error);
+        }
+        return false;
+    }
 }
-
-// دالة تحديث واجهة المستخدم بعد التسجيل الناجح
-function updateUIAfterSuccessfulRegistration() {
-    // تمكين التمرير
-    document.body.style.overflow = 'auto';
-    document.documentElement.style.overflow = 'auto';
-    
-    // إخفاء رسائل "يجب التسجيل"
-    const mustRegisterMessages = document.querySelectorAll('.must-register');
-    mustRegisterMessages.forEach(msg => msg.style.display = 'none');
-    
-    // تمكين أزرار إضافة إلى السلة
-    document.querySelectorAll('.btn_add_cart').forEach(button => {
-        button.style.opacity = '1';
-        button.style.cursor = 'pointer';
-        button.style.pointerEvents = 'auto';
-    });
-    
-    // إظهار عناصر خاصة بالمستخدم المسجل
-    const userOnlyElements = document.querySelectorAll('.user-only');
-    userOnlyElements.forEach(el => el.style.display = 'block');
-}
-
-// باقي الدوال المساعدة (checkDuplicateUser, performRegistration, sendToGoogleSheets, sendToJSONBin)
-// تبقى كما هي بدون تغيير
 
 // تحسين دالة التحقق من التكرار
 async function checkDuplicateUser(email, phone) {
