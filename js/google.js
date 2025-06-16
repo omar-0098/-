@@ -151,6 +151,11 @@ function logineCallback(response) {
             // إخفاء النافذة بعد ثانيتين مع تنفيذ المطلوب
             setTimeout(() => {
                 localStorage.setItem("userData", JSON.stringify(userData));
+                
+                // تعيين علامة في localStorage تشير إلى أن المستخدم مسجل
+                localStorage.setItem("userLoggedIn", "true");
+                localStorage.setItem("loginTimestamp", Date.now().toString());
+                
                 showWelcomeSection(userData.name);
                 displayUserData(userData);
                 overlay.style.display = "none";
@@ -166,13 +171,10 @@ function logineCallback(response) {
                     console.log('تم حذف العنصر person1');
                 }
                 
-                // تفعيل أزرار "أضف إلى السلة"
-                enableAddToCartButtons();
-                
-                // إعادة تحميل الصفحة
+                // إعادة تحميل الصفحة (الأزرار ستُفعل بعد إعادة التحميل)
                 setTimeout(() => {
                     window.location.reload();
-                }, 500); // تأخير قصير قبل إعادة تحميل الصفحة
+                }, 500);
                 
             }, 2000);
 
@@ -400,51 +402,109 @@ async function checkDuplicateUser(email, phone) {
 
 // دالة لتفعيل أزرار "أضف إلى السلة" بعد التسجيل
 function enableAddToCartButtons() {
-    // البحث عن جميع أزرار السلة في الصفحة
-    const addToCartButtons = document.querySelectorAll('.add-to-cart, .btn-cart, [data-action="add-to-cart"], button[onclick*="addToCart"]');
+    console.log('بدء تفعيل أزرار السلة...');
     
-    addToCartButtons.forEach(button => {
-        // إزالة الخاصية disabled إذا كانت موجودة
-        button.disabled = false;
-        
-        // إزالة الكلاسات التي تجعل الزر غير نشط
-        button.classList.remove('disabled', 'btn-disabled', 'inactive');
-        
-        // إضافة كلاس نشط إذا لم يكن موجوداً
-        button.classList.add('active', 'enabled');
-        
-        // تغيير النص إذا كان يحتوي على رسالة تسجيل دخول
-        if (button.textContent.includes('سجل') || button.textContent.includes('تسجيل')) {
-            button.textContent = 'أضف إلى السلة';
-        }
-        
-        // إزالة أي أحداث onclick تتطلب تسجيل دخول واستبدالها
-        if (button.onclick && button.onclick.toString().includes('login')) {
-            button.onclick = null;
-            // يمكنك إضافة دالة addToCart الخاصة بك هنا
-            button.addEventListener('click', function() {
-                // استدعاء دالة إضافة المنتج للسلة
-                // addToCart(productId, productName, productPrice); // مثال
-                console.log('تم النقر على زر أضف إلى السلة');
+    // قائمة شاملة بجميع أنواع أزرار السلة المحتملة
+    const buttonSelectors = [
+        '.add-to-cart',
+        '.btn-cart', 
+        '.cart-btn',
+        '.add-cart',
+        '.buy-now',
+        '.purchase-btn',
+        '.order-btn',
+        '[data-action="add-to-cart"]',
+        '[data-cart]',
+        'button[onclick*="addToCart"]',
+        'button[onclick*="buyNow"]',
+        'button[onclick*="purchase"]',
+        '#addToCartBtn',
+        '#buyNowBtn',
+        '#purchaseBtn',
+        '.btn[data-product-id]',
+        'button[data-product-id]',
+        '.product-btn',
+        '.shop-btn'
+    ];
+    
+    let enabledCount = 0;
+    
+    buttonSelectors.forEach(selector => {
+        try {
+            const buttons = document.querySelectorAll(selector);
+            buttons.forEach(button => {
+                // تفعيل الزر
+                button.disabled = false;
+                button.removeAttribute('disabled');
+                
+                // إزالة الكلاسات التي تجعل الزر غير نشط
+                const disabledClasses = ['disabled', 'btn-disabled', 'inactive', 'not-available', 'login-required'];
+                disabledClasses.forEach(cls => button.classList.remove(cls));
+                
+                // إضافة كلاسات التفعيل
+                button.classList.add('active', 'enabled', 'available');
+                
+                // تحديث النص
+                const currentText = button.textContent.trim();
+                if (currentText.includes('سجل') || currentText.includes('تسجيل') || 
+                    currentText.includes('دخول') || currentText.includes('login')) {
+                    button.textContent = 'أضف إلى السلة';
+                }
+                
+                // تحديث الأنماط
+                button.style.opacity = '1';
+                button.style.cursor = 'pointer';
+                button.style.pointerEvents = 'auto';
+                button.style.backgroundColor = button.style.backgroundColor || '#007bff';
+                button.style.color = button.style.color || '#fff';
+                
+                // إزالة أي تنبيهات تسجيل دخول
+                if (button.onclick) {
+                    const onclickStr = button.onclick.toString();
+                    if (onclickStr.includes('login') || onclickStr.includes('تسجيل')) {
+                        // الاحتفاظ بمعرف المنتج إن وجد
+                        const productId = button.getAttribute('data-product-id') || 
+                                        button.getAttribute('data-id') ||
+                                        button.getAttribute('product-id');
+                        
+                        button.onclick = function(e) {
+                            e.preventDefault();
+                            console.log('تم النقر على زر السلة للمنتج:', productId);
+                            
+                            // يمكنك استبدال هذا بدالة السلة الخاصة بك
+                            if (window.addToCart && productId) {
+                                window.addToCart(productId);
+                            } else if (window.buyNow && productId) {
+                                window.buyNow(productId);
+                            } else {
+                                alert('تم إضافة المنتج إلى السلة بنجاح!');
+                            }
+                        };
+                    }
+                }
+                
+                enabledCount++;
             });
+        } catch (error) {
+            console.warn('خطأ في معالجة المحدد:', selector, error);
         }
-        
-        // تحديث CSS للزر ليبدو نشطاً
-        button.style.opacity = '1';
-        button.style.cursor = 'pointer';
-        button.style.pointerEvents = 'auto';
     });
     
-    // البحث عن الأزرار بناءً على معرفات محددة (إذا كانت موجودة)
-    const specificButtons = document.querySelectorAll('#addToCartBtn, #buyNowBtn, .purchase-btn');
-    specificButtons.forEach(button => {
-        button.disabled = false;
-        button.classList.remove('disabled');
-        button.classList.add('enabled');
-        button.style.opacity = '1';
-        button.style.cursor = 'pointer';
-        button.style.pointerEvents = 'auto';
+    console.log(`تم تفعيل ${enabledCount} زر من أزرار السلة`);
+    
+    // البحث عن أي روابط تحتوي على كلمات السلة وتفعيلها
+    const cartLinks = document.querySelectorAll('a[href*="cart"], a[href*="buy"], a[href*="purchase"]');
+    cartLinks.forEach(link => {
+        link.style.pointerEvents = 'auto';
+        link.style.opacity = '1';
+        link.classList.remove('disabled');
     });
+    
+    // إرسال حدث مخصص
+    const event = new CustomEvent('cartButtonsEnabled', {
+        detail: { enabledCount: enabledCount }
+    });
+    document.dispatchEvent(event);
     
     console.log('تم تفعيل أزرار السلة بعد التسجيل الناجح');
     
@@ -453,4 +513,36 @@ function enableAddToCartButtons() {
         detail: { message: 'تم تسجيل الدخول بنجاح' }
     });
     document.dispatchEvent(userLoggedInEvent);
+}
+
+// دالة للتحقق من حالة تسجيل الدخول وتفعيل الأزرار عند تحميل الصفحة
+function checkLoginStatusAndEnableButtons() {
+    const userLoggedIn = localStorage.getItem("userLoggedIn");
+    const userData = localStorage.getItem("userData");
+    
+    if (userLoggedIn === "true" && userData) {
+        console.log('المستخدم مسجل دخول، جاري تفعيل أزرار السلة...');
+        enableAddToCartButtons();
+        
+        // إزالة العنصر person1 إذا كان موجوداً
+        const person1Element = document.getElementById("person1");
+        if (person1Element) {
+            person1Element.remove();
+            console.log('تم حذف العنصر person1');
+        }
+        
+        // التأكد من أن التمرير مفعل
+        document.body.style.overflow = "auto";
+        document.documentElement.style.overflow = "auto";
+    }
+}
+
+// تشغيل الدالة عند تحميل الصفحة
+document.addEventListener('DOMContentLoaded', checkLoginStatusAndEnableButtons);
+
+// تشغيل الدالة أيضاً إذا كان DOM محمل بالفعل
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', checkLoginStatusAndEnableButtons);
+} else {
+    checkLoginStatusAndEnableButtons();
 }
