@@ -2464,6 +2464,15 @@ body.no-scroll {
 margin: 0px 3em 16px 3em;
     display: flex
 ;
+        .hesp h1{
+    color: white;
+    font-family: "Rubik", serif;
+    font-optical-sizing: auto;
+    font-weight: 600;
+    font-style: normal;
+    font-size: 23px;
+    padding: 6px 0px;
+;
     justify-content: space-around;
     background: #404553;
     padding: 5px 5px;
