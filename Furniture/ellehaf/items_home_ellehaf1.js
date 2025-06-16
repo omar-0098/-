@@ -11,6 +11,7 @@ fetch("../../products-furniturre.json")
     const ellehaf_man=document.getElementById("ellehaf_man")
  
 
+    date.sort(() => 0.5 - Math.random());
 
 
 
