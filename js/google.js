@@ -151,11 +151,6 @@ function logineCallback(response) {
             // إخفاء النافذة بعد ثانيتين مع تنفيذ المطلوب
             setTimeout(() => {
                 localStorage.setItem("userData", JSON.stringify(userData));
-                
-                // تعيين علامة في localStorage تشير إلى أن المستخدم مسجل
-                localStorage.setItem("userLoggedIn", "true");
-                localStorage.setItem("loginTimestamp", Date.now().toString());
-                
                 showWelcomeSection(userData.name);
                 displayUserData(userData);
                 overlay.style.display = "none";
@@ -165,16 +160,16 @@ function logineCallback(response) {
                 document.documentElement.style.overflow = "auto";
                 
                 // حذف العنصر person1 إذا كان موجوداً
-                const person1Element = document.getElementById("person1");
+                const person1Element = document.getElementById("registerSection");
                 if (person1Element) {
                     person1Element.remove();
                     console.log('تم حذف العنصر person1');
                 }
                 
-                // إعادة تحميل الصفحة (الأزرار ستُفعل بعد إعادة التحميل)
+                // إعادة تحميل الصفحة
                 setTimeout(() => {
                     window.location.reload();
-                }, 500);
+                }, 500); // تأخير قصير قبل إعادة تحميل الصفحة
                 
             }, 2000);
 
@@ -398,151 +393,4 @@ async function checkDuplicateUser(email, phone) {
             duplicatePhone: null
         };
     }
-}
-
-// دالة لتفعيل أزرار "أضف إلى السلة" بعد التسجيل
-function enableAddToCartButtons() {
-    console.log('بدء تفعيل أزرار السلة...');
-    
-    // قائمة شاملة بجميع أنواع أزرار السلة المحتملة
-    const buttonSelectors = [
-        '.add-to-cart',
-        '.btn-cart', 
-        '.cart-btn',
-        '.add-cart',
-        '.buy-now',
-        '.purchase-btn',
-        '.order-btn',
-        '[data-action="add-to-cart"]',
-        '[data-cart]',
-        'button[onclick*="addToCart"]',
-        'button[onclick*="buyNow"]',
-        'button[onclick*="purchase"]',
-        '#addToCartBtn',
-        '#buyNowBtn',
-        '#purchaseBtn',
-        '.btn[data-product-id]',
-        'button[data-product-id]',
-        '.product-btn',
-        '.shop-btn'
-    ];
-    
-    let enabledCount = 0;
-    
-    buttonSelectors.forEach(selector => {
-        try {
-            const buttons = document.querySelectorAll(selector);
-            buttons.forEach(button => {
-                // تفعيل الزر
-                button.disabled = false;
-                button.removeAttribute('disabled');
-                
-                // إزالة الكلاسات التي تجعل الزر غير نشط
-                const disabledClasses = ['disabled', 'btn-disabled', 'inactive', 'not-available', 'login-required'];
-                disabledClasses.forEach(cls => button.classList.remove(cls));
-                
-                // إضافة كلاسات التفعيل
-                button.classList.add('active', 'enabled', 'available');
-                
-                // تحديث النص
-                const currentText = button.textContent.trim();
-                if (currentText.includes('سجل') || currentText.includes('تسجيل') || 
-                    currentText.includes('دخول') || currentText.includes('login')) {
-                    button.textContent = 'أضف إلى السلة';
-                }
-                
-                // تحديث الأنماط
-                button.style.opacity = '1';
-                button.style.cursor = 'pointer';
-                button.style.pointerEvents = 'auto';
-                button.style.backgroundColor = button.style.backgroundColor || '#007bff';
-                button.style.color = button.style.color || '#fff';
-                
-                // إزالة أي تنبيهات تسجيل دخول
-                if (button.onclick) {
-                    const onclickStr = button.onclick.toString();
-                    if (onclickStr.includes('login') || onclickStr.includes('تسجيل')) {
-                        // الاحتفاظ بمعرف المنتج إن وجد
-                        const productId = button.getAttribute('data-product-id') || 
-                                        button.getAttribute('data-id') ||
-                                        button.getAttribute('product-id');
-                        
-                        button.onclick = function(e) {
-                            e.preventDefault();
-                            console.log('تم النقر على زر السلة للمنتج:', productId);
-                            
-                            // يمكنك استبدال هذا بدالة السلة الخاصة بك
-                            if (window.addToCart && productId) {
-                                window.addToCart(productId);
-                            } else if (window.buyNow && productId) {
-                                window.buyNow(productId);
-                            } else {
-                                alert('تم إضافة المنتج إلى السلة بنجاح!');
-                            }
-                        };
-                    }
-                }
-                
-                enabledCount++;
-            });
-        } catch (error) {
-            console.warn('خطأ في معالجة المحدد:', selector, error);
-        }
-    });
-    
-    console.log(`تم تفعيل ${enabledCount} زر من أزرار السلة`);
-    
-    // البحث عن أي روابط تحتوي على كلمات السلة وتفعيلها
-    const cartLinks = document.querySelectorAll('a[href*="cart"], a[href*="buy"], a[href*="purchase"]');
-    cartLinks.forEach(link => {
-        link.style.pointerEvents = 'auto';
-        link.style.opacity = '1';
-        link.classList.remove('disabled');
-    });
-    
-    // إرسال حدث مخصص
-    const event = new CustomEvent('cartButtonsEnabled', {
-        detail: { enabledCount: enabledCount }
-    });
-    document.dispatchEvent(event);
-    
-    console.log('تم تفعيل أزرار السلة بعد التسجيل الناجح');
-    
-    // إرسال حدث مخصص للإشارة إلى أن المستخدم سجل دخوله
-    const userLoggedInEvent = new CustomEvent('userLoggedIn', {
-        detail: { message: 'تم تسجيل الدخول بنجاح' }
-    });
-    document.dispatchEvent(userLoggedInEvent);
-}
-
-// دالة للتحقق من حالة تسجيل الدخول وتفعيل الأزرار عند تحميل الصفحة
-function checkLoginStatusAndEnableButtons() {
-    const userLoggedIn = localStorage.getItem("userLoggedIn");
-    const userData = localStorage.getItem("userData");
-    
-    if (userLoggedIn === "true" && userData) {
-        console.log('المستخدم مسجل دخول، جاري تفعيل أزرار السلة...');
-        enableAddToCartButtons();
-        
-        // إزالة العنصر person1 إذا كان موجوداً
-        const person1Element = document.getElementById("person1");
-        if (person1Element) {
-            person1Element.remove();
-            console.log('تم حذف العنصر person1');
-        }
-        
-        // التأكد من أن التمرير مفعل
-        document.body.style.overflow = "auto";
-        document.documentElement.style.overflow = "auto";
-    }
-}
-
-// تشغيل الدالة عند تحميل الصفحة
-document.addEventListener('DOMContentLoaded', checkLoginStatusAndEnableButtons);
-
-// تشغيل الدالة أيضاً إذا كان DOM محمل بالفعل
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', checkLoginStatusAndEnableButtons);
-} else {
-    checkLoginStatusAndEnableButtons();
 }
