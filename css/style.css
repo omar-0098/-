@@ -1714,7 +1714,11 @@ footer .bottom_footer .payment_img{
 
 
 @media (max-width:500px) {
-
+.shipping-container {
+  width: 80%;
+  direction: rtl;
+  bottom: 51px;
+}
 #welcomeMessage {
     display: flex;
     flex-direction: column;
@@ -2008,7 +2012,10 @@ footer .bottom_footer .payment_img{
 
 
 @media (max-width:400px) {
-
+    .shipping-container {
+        bottom: 47px;
+        width: 89%;
+    }
     #welcomeMessage {
     font-size: 13px !important;
     display: flex;
