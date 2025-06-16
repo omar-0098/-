@@ -849,8 +849,8 @@ header .bottom_header .nav_links li.active a{
     border: 1px var(--border_color);
     border-radius: 5px;
     position: relative;
-    width: 238px !important;
-    height: 457px !important;
+     width: 238px !important;
+    height: 480px !important;
     border: 1.4px solid rgb(224, 224, 224);
     position: relative;
     overflow: hidden;
@@ -1815,9 +1815,9 @@ footer .bottom_footer .payment_img{
         font-size: 12px !important;
     }
     .product{
-        width: 49% !important;
-        height: 450px !important;
-        position: relative;
+       width: 49% !important;
+        height: 470px !important;
+        position: relative;;
         margin: 0px 1px;
     }
     .product .img_product{
@@ -2316,8 +2316,8 @@ padding:  1em 0.5em 0em !important;
     }
 
     .product {
-        padding: 10px;
-      height:   413px !important;   
+            padding: 10px;
+        height: 445px !important;
      }
     .product .img_product {
         height: 200px;
