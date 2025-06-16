@@ -160,11 +160,14 @@ function logineCallback(response) {
                 document.documentElement.style.overflow = "auto";
                 
                 // حذف العنصر person1 إذا كان موجوداً
-                const person1Element = document.querySelector(".person1");
+                const person1Element = document.getElementById("person1");
                 if (person1Element) {
                     person1Element.remove();
                     console.log('تم حذف العنصر person1');
                 }
+                
+                // تفعيل أزرار "أضف إلى السلة"
+                enableAddToCartButtons();
                 
                 // إعادة تحميل الصفحة
                 setTimeout(() => {
@@ -393,4 +396,61 @@ async function checkDuplicateUser(email, phone) {
             duplicatePhone: null
         };
     }
+}
+
+// دالة لتفعيل أزرار "أضف إلى السلة" بعد التسجيل
+function enableAddToCartButtons() {
+    // البحث عن جميع أزرار السلة في الصفحة
+    const addToCartButtons = document.querySelectorAll('.add-to-cart, .btn-cart, [data-action="add-to-cart"], button[onclick*="addToCart"]');
+    
+    addToCartButtons.forEach(button => {
+        // إزالة الخاصية disabled إذا كانت موجودة
+        button.disabled = false;
+        
+        // إزالة الكلاسات التي تجعل الزر غير نشط
+        button.classList.remove('disabled', 'btn-disabled', 'inactive');
+        
+        // إضافة كلاس نشط إذا لم يكن موجوداً
+        button.classList.add('active', 'enabled');
+        
+        // تغيير النص إذا كان يحتوي على رسالة تسجيل دخول
+        if (button.textContent.includes('سجل') || button.textContent.includes('تسجيل')) {
+            button.textContent = 'أضف إلى السلة';
+        }
+        
+        // إزالة أي أحداث onclick تتطلب تسجيل دخول واستبدالها
+        if (button.onclick && button.onclick.toString().includes('login')) {
+            button.onclick = null;
+            // يمكنك إضافة دالة addToCart الخاصة بك هنا
+            button.addEventListener('click', function() {
+                // استدعاء دالة إضافة المنتج للسلة
+                // addToCart(productId, productName, productPrice); // مثال
+                console.log('تم النقر على زر أضف إلى السلة');
+            });
+        }
+        
+        // تحديث CSS للزر ليبدو نشطاً
+        button.style.opacity = '1';
+        button.style.cursor = 'pointer';
+        button.style.pointerEvents = 'auto';
+    });
+    
+    // البحث عن الأزرار بناءً على معرفات محددة (إذا كانت موجودة)
+    const specificButtons = document.querySelectorAll('#addToCartBtn, #buyNowBtn, .purchase-btn');
+    specificButtons.forEach(button => {
+        button.disabled = false;
+        button.classList.remove('disabled');
+        button.classList.add('enabled');
+        button.style.opacity = '1';
+        button.style.cursor = 'pointer';
+        button.style.pointerEvents = 'auto';
+    });
+    
+    console.log('تم تفعيل أزرار السلة بعد التسجيل الناجح');
+    
+    // إرسال حدث مخصص للإشارة إلى أن المستخدم سجل دخوله
+    const userLoggedInEvent = new CustomEvent('userLoggedIn', {
+        detail: { message: 'تم تسجيل الدخول بنجاح' }
+    });
+    document.dispatchEvent(userLoggedInEvent);
 }
