@@ -52,6 +52,13 @@
                                
                              </div>
 
+
+                       <div class="size">
+    ${product.color ? `<p><span><span>اللون :</span> ${product.color}</span></p>` : ''}
+    ${product.size ? `<p><span><span>${product.size}</span>: مقاس</span></p>` : ''}
+  </div>
+
+  
                         <div class="icons">
                             <span class="btn_add_cart ${isInCart ? 'active' : ''}" data-id="${product.id}">
                                     <i class="fa-solid fa-cart-plus"></i> ${isInCart ? 'تم اضافة الي السلة' : 'اضف الي السلة'}
@@ -155,6 +162,14 @@ date.forEach(product => {
             ${old_price_pragrahp}
             <p><span><span>${product.price}</span> جنيه</span></p>
           </div>
+
+                       <div class="size">
+    ${product.color ? `<p><span><span>اللون :</span> ${product.color}</span></p>` : ''}
+    ${product.size ? `<p><span><span>${product.size}</span>: مقاس</span></p>` : ''}
+  </div>
+
+
+          
           <div class="icons">
             <span class="btn_add_cart ${isInCart ? 'active' : ''}" data-id="${product.id}">
               <i class="fa-solid fa-cart-plus"></i> ${isInCart ? 'تم اضافة الي السلة' : 'اضف الي السلة'}
@@ -236,6 +251,10 @@ date.forEach(product => {
                         <p><span> <span>${product.price} </span> جنيه</span></p>
 
 
+                       <div class="size">
+    ${product.color ? `<p><span><span>اللون :</span> ${product.color}</span></p>` : ''}
+    ${product.size ? `<p><span><span>${product.size}</span>: مقاس</span></p>` : ''}
+  </div>
               
                         <div class="icons">
                             <span class="btn_add_cart ${isInCart ? 'active' : ''}" data-id="${product.id}">
