@@ -11,8 +11,6 @@
   }
   
 /* ////////////////////////////// */
-
-
 .shipping-container {
   position: absolute;
   height: 30px;
@@ -128,7 +126,7 @@
     font-family: sans-serif;
     color: var(--color_heading);
     scroll-behavior: smooth;
-    user-select: none;
+
 }
 .ooo{
     position: absolute;
@@ -851,7 +849,7 @@ header .bottom_header .nav_links li.active a{
     border-radius: 5px;
     position: relative;
     width: 238px !important;
-    height: 457px !important;
+    height: 480px !important;
     border: 1.4px solid rgb(224, 224, 224);
     position: relative;
     overflow: hidden;
@@ -1043,10 +1041,13 @@ header .bottom_header .nav_links li.active a{
 /* start-banner-2 */
 .banners{
     margin: 80px 0px;
+    background: #f9607f80;
 }
+
 .banners .banners_boxs{
     display: flex;
     justify-content: space-around;
+    padding: 60px 0px;
 }
 .banners .banners_boxs .box{
     width: 40%;
@@ -1716,6 +1717,28 @@ footer .bottom_footer .payment_img{
 
 @media (max-width:500px) {
 
+
+.banners .banners_boxs {
+            display: flex;
+        height: inherit;
+        height: inherit;
+        padding: 40px 0px;
+        align-content: center;
+    }
+    .banners .banners_boxs .box {
+     width: 100%;
+    margin: 15px 0px;  
+  }
+.banners {
+    margin: 30px 0px;
+    background: #f9607f80;
+    /* height: 600px; */
+}
+.banners .container{
+height: inherit;
+}
+
+
 #welcomeMessage {
     display: flex;
     flex-direction: column;
@@ -1816,10 +1839,11 @@ footer .bottom_footer .payment_img{
         font-size: 12px !important;
     }
     .product{
-        width: 49% !important;
-        height: 450px !important;
+       width: 49% !important;
+        height: 470px !important;
         position: relative;
-        margin: 0px 1px;
+        margin: 0px 1px 5px;
+        padding: 17px 9px;
     }
     .product .img_product{
         position: relative;
@@ -2318,7 +2342,7 @@ padding:  1em 0.5em 0em !important;
 
     .product {
         padding: 10px;
-      height:   413px !important;   
+        height: 445px !important;
      }
     .product .img_product {
         height: 200px;
@@ -2391,7 +2415,7 @@ padding:  1em 0.5em 0em !important;
     margin-right: 19px;
     margin-top: 17px;
 }
-.login {
+.login,.login2 {
     margin-top: 8px !important;
 }
        
@@ -2437,8 +2461,15 @@ body.no-scroll {
     padding: 0px 3em 0.6em 3em; 
   }
   .hesp{
-    padding: 0px 3em 0.6em 3em; 
-  }
+margin: 0px 3em 16px 3em;
+    display: flex
+;
+    justify-content: space-around;
+    background: #404553;
+    padding: 5px 5px;
+    border-radius: 10px;
+}
+  
   .button-login{
     padding: 0px 3em 0.6em 3em; 
   }
@@ -2517,7 +2548,7 @@ body.no-scroll {
   }
 
 
-  .login {
+  .login,.login2 {
 box-sizing: border-box;
     margin-top: 13px;
     outline: 0px;
@@ -2547,20 +2578,25 @@ box-sizing: border-box;
     background: transparent;
     color: black;
   }
-  form h1{
+  form button{
     text-align: center;
     background: #404553;
     color: white;
-    border-radius: 12px;
-    padding: 11px;
+    border-radius: 4px;
+    padding: 8px;
     font-family: "Readex Pro", serif;
     font-optical-sizing: auto;
     font-weight: 700;
     font-style: normal;
     font-variation-settings: "HEXP" 0;
-    font-size: 24px;
-    margin: 25px 0px;
+    font-size: 14px;
+    width: 48%;
   }
+  form .construction{
+    background: white ;
+    color: #404553;
+  }
+
     form h2{
     text-align: center;
     color: #404553;
@@ -2594,6 +2630,8 @@ box-sizing: border-box;
     font-size: 22px;
      margin-right: 20px;
     margin-top: 22px;  
+    display: flex;
+        align-items: center;
 }
 .ex{
     display: flex;
@@ -2608,8 +2646,16 @@ box-sizing: border-box;
     display: none;
 }    
 
-
-
+#registerForm2 .inputGroups {
+    width: 100%;
+    display: block;
+}
+#registerForm2 .inputGroups .inputGroup {
+    margin-bottom: 7px;
+    width: 100%;
+    display: inline-block;
+    padding: 0px 0em 0.6em 0em;
+}
 
 .masege-login h1{
      background-image: linear-gradient(45deg, #b4d7ff66, #0e68af, #f9607f);
@@ -2859,3 +2905,5 @@ box-sizing: border-box;
     padding: 0px;
 }
  
+
+
