@@ -148,12 +148,29 @@ function logineCallback(response) {
                 return;
             }
 
-            // إخفاء النافذة بعد ثانيتين
+            // إخفاء النافذة بعد ثانيتين مع تنفيذ المطلوب
             setTimeout(() => {
                 localStorage.setItem("userData", JSON.stringify(userData));
                 showWelcomeSection(userData.name);
                 displayUserData(userData);
                 overlay.style.display = "none";
+                
+                // إزالة منع التمرير من الصفحة
+                document.body.style.overflow = "auto";
+                document.documentElement.style.overflow = "auto";
+                
+                // حذف العنصر person1 إذا كان موجوداً
+                const person1Element = document.querySelector(".person1");
+                if (person1Element) {
+                    person1Element.remove();
+                    console.log('تم حذف العنصر person1');
+                }
+                
+                // إعادة تحميل الصفحة
+                setTimeout(() => {
+                    window.location.reload();
+                }, 500); // تأخير قصير قبل إعادة تحميل الصفحة
+                
             }, 2000);
 
         } catch (error) {
@@ -377,4 +394,3 @@ async function checkDuplicateUser(email, phone) {
         };
     }
 }
-
