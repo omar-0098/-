@@ -4,11 +4,11 @@
 const STORAGE_CONFIG = {
     // مفاتيح التخزين المتعددة
     KEYS: {
-        USER_DATA: 'userData_permanent',
-        USER_BACKUP_1: 'userData_backup_1',
-        USER_BACKUP_2: 'userData_backup_2',
-        USER_BACKUP_3: 'userData_backup_3',
-        LAST_SAVE: 'lastSaveTime'
+        userData: 'userData_permanent',
+        userData: 'userData_backup_1',
+        userData: 'userData_backup_2',
+        userData: 'userData_backup_3',
+        userData: 'lastSaveTime'
     },
     // فترة الحفظ التلقائي (كل 30 ثانية)
     AUTO_SAVE_INTERVAL: 30000,
