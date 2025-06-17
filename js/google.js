@@ -170,9 +170,9 @@ function logineCallback(response) {
                 reactivateCartButtons();
                 
                 // إعادة تحميل الصفحة بعد تأخير أطول للتأكد من تفعيل الأزرار
-                // setTimeout(() => {
-                //     window.location.reload();
-                // }, 2000); // تأخير أطول لضمان تفعيل الأزرار أولاً
+                setTimeout(() => {
+                    window.location.reload();
+                }, 4000); // تأخير أطول لضمان تفعيل الأزرار أولاً
                 
             }, 1500); // تقليل وقت الانتظار الأول
 
