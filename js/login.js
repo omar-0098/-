@@ -730,10 +730,8 @@ function showWelcomeSection(name) {
 
 
 
-
 // تشغيل عند تحميل الصفحة
-document.addEventListener('DOMContentLoaded', updateUIBasedOnMan1);
+document.addEventListener('DOMContentLoaded', );
 
 // مراقبة التغييرات باستمرار
-setInterval(updateUIBasedOnMan1, 500);
 
