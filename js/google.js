@@ -148,33 +148,135 @@ function logineCallback(response) {
                 return;
             }
 
-            // إخفاء النافذة بعد ثانيتين مع تنفيذ المطلوب
-            setTimeout(() => {
-                localStorage.setItem("userData", JSON.stringify(userData));
-                showWelcomeSection(userData.name);
-                displayUserData(userData);
-                overlay.style.display = "none";
-                
-                // إزالة منع التمرير من الصفحة
-                document.body.style.overflow = "auto";
-                document.documentElement.style.overflow = "auto";
-                
-                // حذف العنصر person1 إذا كان موجوداً
-                const person1Element = document.getElementById("registerSection");
-                if (person1Element) {
-                    person1Element.remove();
-                    console.log('تم حذف العنصر person1');
+   setTimeout(() => {
+    localStorage.setItem("userData", JSON.stringify(userData));
+    showWelcomeSection(userData.name);
+    displayUserData(userData);
+    overlay.style.display = "none";
+    
+    // إزالة منع التمرير من الصفحة
+    document.body.style.overflow = "auto";
+    document.documentElement.style.overflow = "auto";
+    
+    // حذف العنصر registerSection/person1 بطرق متعددة للتأكد
+    deleteRegisterSection();
+    
+    // إعادة تفعيل أزرار السلة فوراً
+    reactivateCartButtons();
+    
+    // إعادة تحميل الصفحة بعد تأخير أطول للتأكد من تفعيل الأزرار
+    setTimeout(() => {
+        window.location.reload();
+    }, 4000);
+    
+}, 1500);
+
+// دالة مخصصة لحذف عنصر التسجيل
+function deleteRegisterSection() {
+    console.log('محاولة حذف عنصر التسجيل...');
+    
+    // البحث بالـ ID أولاً
+    let registerElement = document.getElementById("registerSection");
+    
+    // إذا لم يتم العثور عليه بالـ ID، ابحث بالكلاس
+    if (!registerElement) {
+        registerElement = document.querySelector(".person1");
+    }
+    
+    // إذا لم يتم العثور عليه بعد، ابحث بكلاس person2 داخل person1
+    if (!registerElement) {
+        const person2Element = document.querySelector(".person2");
+        if (person2Element) {
+            registerElement = person2Element.closest(".person1");
+        }
+    }
+    
+    // إذا تم العثور على العنصر، احذفه
+    if (registerElement) {
+        // إضافة تأثير الاختفاء قبل الحذف
+        registerElement.style.transition = "opacity 0.5s ease-out, transform 0.5s ease-out";
+        registerElement.style.opacity = "0";
+        registerElement.style.transform = "scale(0.8)";
+        
+        // حذف العنصر بعد انتهاء التأثير
+        setTimeout(() => {
+            registerElement.remove();
+            console.log('✅ تم حذف عنصر التسجيل بنجاح');
+            
+            // إطلاق حدث مخصص للإشارة إلى حذف العنصر
+            const elementDeletedEvent = new CustomEvent('registerSectionDeleted', {
+                detail: { 
+                    deletedAt: Date.now(),
+                    elementType: 'registerSection'
                 }
+            });
+            document.dispatchEvent(elementDeletedEvent);
+            
+        }, 500);
+        
+    } else {
+        console.log('⚠️ لم يتم العثور على عنصر التسجيل للحذف');
+        
+        // محاولة أخيرة للبحث عن العنصر بكل الطرق الممكنة
+        const allPossibleElements = [
+            document.querySelector('[id="registerSection"]'),
+            document.querySelector('.person1'),
+            document.querySelector('.person2')?.parentElement,
+            ...document.querySelectorAll('div').filter(div => 
+                div.textContent.includes('انشاء حساب') || 
+                div.innerHTML.includes('fa-regular fa-user')
+            )
+        ].filter(Boolean);
+        
+        if (allPossibleElements.length > 0) {
+            console.log('🔍 تم العثور على عناصر محتملة:', allPossibleElements.length);
+            
+            allPossibleElements.forEach((element, index) => {
+                if (element && element.remove) {
+                    element.style.transition = "opacity 0.3s ease-out";
+                    element.style.opacity = "0";
+                    
+                    setTimeout(() => {
+                        element.remove();
+                        console.log(`✅ تم حذف العنصر المحتمل ${index + 1}`);
+                    }, 300);
+                }
+            });
+        }
+    }
+}
+
+// دالة إضافية لضمان الحذف عند تحميل الصفحة (في حالة وجود بيانات محفوظة)
+function checkAndDeleteRegisterSectionOnLoad() {
+    // التحقق من وجود بيانات مستخدم محفوظة
+    const savedUserData = localStorage.getItem("userData");
+    
+    if (savedUserData) {
+        try {
+            const userData = JSON.parse(savedUserData);
+            
+            // إذا كان المستخدم مسجلاً، احذف عنصر التسجيل
+            if (userData.registered === true) {
+                console.log('🔄 مستخدم مسجل موجود، حذف عنصر التسجيل...');
                 
-                // إعادة تفعيل أزرار السلة فوراً
-                reactivateCartButtons();
-                
-                // إعادة تحميل الصفحة بعد تأخير أطول للتأكد من تفعيل الأزرار
+                // انتظر قليلاً لضمان تحميل الصفحة كاملة
                 setTimeout(() => {
-                    window.location.reload();
-                }, 4000); // تأخير أطول لضمان تفعيل الأزرار أولاً
-                
-            }, 1500); // تقليل وقت الانتظار الأول
+                    deleteRegisterSection();
+                }, 1000);
+            }
+        } catch (error) {
+            console.error('خطأ في قراءة بيانات المستخدم المحفوظة:', error);
+        }
+    }
+}
+
+// تشغيل الفحص عند تحميל الصفحة
+document.addEventListener('DOMContentLoaded', checkAndDeleteRegisterSectionOnLoad);
+
+// تشغيل الفحص أيضاً عند تحميل النافذة (للتأكد)
+window.addEventListener('load', () => {
+    setTimeout(checkAndDeleteRegisterSectionOnLoad, 500);
+});
 
         } catch (error) {
             console.error('خطأ في عملية التسجيل:', error);
