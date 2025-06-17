@@ -638,3 +638,386 @@ async function checkDuplicateUser(email, phone) {
         };
     }
 }
+
+
+
+// === استراتيجية شاملة لحماية بيانات localStorage من الحذف ===
+
+// 1. دالة حفظ محسنة مع تشفير وتكرار
+function secureStorageSet(key, value, encrypt = true) {
+    try {
+        let dataToStore = value;
+        
+        // تشفير البيانات (اختياري)
+        if (encrypt && typeof value === 'object') {
+            dataToStore = btoa(JSON.stringify(value));
+        }
+        
+        // حفظ في localStorage
+        localStorage.setItem(key, typeof dataToStore === 'object' ? JSON.stringify(dataToStore) : dataToStore);
+        
+        // حفظ نسخة احتياطية في sessionStorage
+        sessionStorage.setItem(key + '_backup', typeof dataToStore === 'object' ? JSON.stringify(dataToStore) : dataToStore);
+        
+        // حفظ نسخة في cookies (للبيانات الصغيرة)
+        if (JSON.stringify(dataToStore).length < 4000) {
+            document.cookie = `${key}=${encodeURIComponent(typeof dataToStore === 'object' ? JSON.stringify(dataToStore) : dataToStore)}; expires=Fri, 31 Dec 9999 23:59:59 GMT; path=/`;
+        }
+        
+        // حفظ في IndexedDB للبيانات الكبيرة
+        saveToIndexedDB(key, dataToStore);
+        
+        console.log(`✅ تم حفظ ${key} في جميع وسائل التخزين`);
+        return true;
+    } catch (error) {
+        console.error('خطأ في حفظ البيانات:', error);
+        return false;
+    }
+}
+
+// 2. دالة استرجاع محسنة مع البحث في جميع المصادر
+function secureStorageGet(key, decrypt = true) {
+    let data = null;
+    
+    try {
+        // محاولة الحصول على البيانات من localStorage
+        data = localStorage.getItem(key);
+        
+        // إذا لم توجد، ابحث في sessionStorage
+        if (!data) {
+            data = sessionStorage.getItem(key + '_backup');
+            if (data) {
+                console.log(`🔄 تم استرجاع ${key} من sessionStorage`);
+                // إعادة حفظها في localStorage
+                localStorage.setItem(key, data);
+            }
+        }
+        
+        // إذا لم توجد، ابحث في cookies
+        if (!data) {
+            data = getCookieValue(key);
+            if (data) {
+                console.log(`🔄 تم استرجاع ${key} من cookies`);
+                // إعادة حفظها في localStorage
+                localStorage.setItem(key, data);
+            }
+        }
+        
+        // إذا لم توجد، ابحث في IndexedDB
+        if (!data) {
+            data = await getFromIndexedDB(key);
+            if (data) {
+                console.log(`🔄 تم استرجاع ${key} من IndexedDB`);
+                // إعادة حفظها في localStorage
+                localStorage.setItem(key, typeof data === 'object' ? JSON.stringify(data) : data);
+            }
+        }
+        
+        if (data) {
+            // فك التشفير إذا كان مطلوباً
+            if (decrypt && typeof data === 'string') {
+                try {
+                    // محاولة فك تشفير base64
+                    const decoded = atob(data);
+                    return JSON.parse(decoded);
+                } catch {
+                    // إذا فشل فك التشفير، ارجع البيانات كما هي
+                    try {
+                        return JSON.parse(data);
+                    } catch {
+                        return data;
+                    }
+                }
+            }
+            
+            try {
+                return JSON.parse(data);
+            } catch {
+                return data;
+            }
+        }
+        
+        return null;
+    } catch (error) {
+        console.error('خطأ في استرجاع البيانات:', error);
+        return null;
+    }
+}
+
+// 3. دوال مساعدة للتعامل مع IndexedDB
+function saveToIndexedDB(key, data) {
+    return new Promise((resolve, reject) => {
+        const request = indexedDB.open('PersistentStorage', 1);
+        
+        request.onerror = () => reject(request.error);
+        
+        request.onupgradeneeded = (event) => {
+            const db = event.target.result;
+            if (!db.objectStoreNames.contains('data')) {
+                db.createObjectStore('data', { keyPath: 'key' });
+            }
+        };
+        
+        request.onsuccess = (event) => {
+            const db = event.target.result;
+            const transaction = db.transaction(['data'], 'readwrite');
+            const store = transaction.objectStore('data');
+            
+            store.put({ key: key, value: data, timestamp: Date.now() });
+            
+            transaction.oncomplete = () => resolve(true);
+            transaction.onerror = () => reject(transaction.error);
+        };
+    });
+}
+
+function getFromIndexedDB(key) {
+    return new Promise((resolve, reject) => {
+        const request = indexedDB.open('PersistentStorage', 1);
+        
+        request.onerror = () => resolve(null);
+        
+        request.onsuccess = (event) => {
+            const db = event.target.result;
+            
+            if (!db.objectStoreNames.contains('data')) {
+                resolve(null);
+                return;
+            }
+            
+            const transaction = db.transaction(['data'], 'readonly');
+            const store = transaction.objectStore('data');
+            const getRequest = store.get(key);
+            
+            getRequest.onsuccess = () => {
+                resolve(getRequest.result ? getRequest.result.value : null);
+            };
+            
+            getRequest.onerror = () => resolve(null);
+        };
+    });
+}
+
+// 4. دالة مساعدة للحصول على قيمة من cookies
+function getCookieValue(name) {
+    const cookies = document.cookie.split(';');
+    for (let cookie of cookies) {
+        const [key, value] = cookie.trim().split('=');
+        if (key === name) {
+            return decodeURIComponent(value);
+        }
+    }
+    return null;
+}
+
+// 5. مراقبة localStorage وإعادة الحفظ التلقائي
+function monitorLocalStorage() {
+    const CRITICAL_KEYS = ['userData', 'userInfo', 'loginData']; // أضف المفاتيح المهمة هنا
+    
+    setInterval(() => {
+        CRITICAL_KEYS.forEach(key => {
+            const data = localStorage.getItem(key);
+            if (!data) {
+                console.warn(`⚠️ تم حذف ${key} من localStorage، جاري الاسترجاع...`);
+                
+                // محاولة الاسترجاع من المصادر البديلة
+                const recovered = secureStorageGet(key);
+                if (recovered) {
+                    localStorage.setItem(key, typeof recovered === 'object' ? JSON.stringify(recovered) : recovered);
+                    console.log(`✅ تم استرجاع ${key} بنجاح`);
+                }
+            }
+        });
+    }, 5000); // فحص كل 5 ثوانٍ
+}
+
+// 6. حماية من حذف localStorage برمجياً
+function protectLocalStorage() {
+    const originalClear = Storage.prototype.clear;
+    const originalRemoveItem = Storage.prototype.removeItem;
+    
+    const PROTECTED_KEYS = ['userData', 'userInfo', 'loginData'];
+    
+    // حماية من clear()
+    Storage.prototype.clear = function() {
+        console.warn('🛡️ محاولة حذف localStorage محظورة للبيانات المحمية');
+        
+        // حفظ البيانات المحمية
+        const protectedData = {};
+        PROTECTED_KEYS.forEach(key => {
+            const value = this.getItem(key);
+            if (value) {
+                protectedData[key] = value;
+            }
+        });
+        
+        // تنفيذ الحذف الأصلي
+        originalClear.call(this);
+        
+        // إعادة البيانات المحمية
+        Object.keys(protectedData).forEach(key => {
+            this.setItem(key, protectedData[key]);
+        });
+        
+        console.log('✅ تم الحفاظ على البيانات المحمية');
+    };
+    
+    // حماية من removeItem()
+    Storage.prototype.removeItem = function(key) {
+        if (PROTECTED_KEYS.includes(key)) {
+            console.warn(`🛡️ محاولة حذف ${key} محظورة - البيانات محمية`);
+            return;
+        }
+        
+        originalRemoveItem.call(this, key);
+    };
+}
+
+// 7. تطبيق Storage Persistence API
+async function requestPersistentStorage() {
+    if ('storage' in navigator && 'persist' in navigator.storage) {
+        try {
+            const isPersistent = await navigator.storage.persist();
+            if (isPersistent) {
+                console.log('✅ تم تفعيل التخزين الدائم');
+            } else {
+                console.log('⚠️ لم يتم منح إذن التخزين الدائم');
+            }
+        } catch (error) {
+            console.error('خطأ في طلب التخزين الدائم:', error);
+        }
+    }
+}
+
+// 8. نسخ احتياطي دوري للخادم
+function backupToServer(userData) {
+    if (!userData) return;
+    
+    try {
+        // إرسال نسخة احتياطية كل 10 دقائق
+        setInterval(async () => {
+            try {
+                await fetch('/api/backup-user-data', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        userId: userData.email,
+                        data: userData,
+                        timestamp: Date.now()
+                    })
+                });
+                console.log('✅ تم إرسال نسخة احتياطية للخادم');
+            } catch (error) {
+                console.error('خطأ في النسخ الاحتياطي:', error);
+            }
+        }, 10 * 60 * 1000); // كل 10 دقائق
+    } catch (error) {
+        console.error('خطأ في إعداد النسخ الاحتياطي:', error);
+    }
+}
+
+// 9. تطبيق الحماية على الكود الموجود
+function initializePersistentStorage() {
+    console.log('🚀 تهيئة نظام التخزين الدائم...');
+    
+    // تفعيل الحماية
+    protectLocalStorage();
+    
+    // بدء المراقبة
+    monitorLocalStorage();
+    
+    // طلب التخزين الدائم
+    requestPersistentStorage();
+    
+    console.log('✅ تم تفعيل نظام الحماية الشامل');
+}
+
+// 10. دالة محسنة لحفظ بيانات المستخدم (تحديث للكود الموجود)
+function saveUserDataPermanently(userData) {
+    console.log('💾 حفظ بيانات المستخدم بشكل دائم...');
+    
+    // حفظ في جميع وسائل التخزين
+    secureStorageSet('userData', userData);
+    secureStorageSet('userInfo', {
+        name: userData.name,
+        email: userData.email,
+        phone: userData.phone,
+        lastLogin: Date.now()
+    });
+    
+    // نسخ احتياطي للخادم
+    backupToServer(userData);
+    
+    console.log('✅ تم حفظ بيانات المستخدم في جميع المواقع');
+}
+
+// 11. دالة للتحقق من وجود البيانات واستعادتها
+async function checkAndRestoreUserData() {
+    console.log('🔍 البحث عن بيانات المستخدم...');
+    
+    let userData = secureStorageGet('userData');
+    
+    if (!userData) {
+        console.log('⚠️ لم يتم العثور على بيانات المستخدم، محاولة الاستعادة...');
+        
+        // محاولة الاستعادة من جميع المصادر
+        userData = await secureStorageGet('userData');
+        
+        if (userData) {
+            console.log('✅ تم استعادة بيانات المستخدم');
+            // إعادة حفظها في localStorage
+            saveUserDataPermanently(userData);
+        }
+    }
+    
+    return userData;
+}
+
+// === تطبيق التحسينات على الكود الموجود ===
+
+// تحديث دالة logineCallback لاستخدام النظام الجديد
+function enhancedLogineCallback(response) {
+    const decoded = jwt_decode(response.credential);
+    
+    // باقي الكود نفسه حتى وصول لحفظ userData
+    // استبدال السطر:
+    // localStorage.setItem("userData", JSON.stringify(userData));
+    // بـ:
+    saveUserDataPermanently(userData);
+    
+    // باقي الكود...
+}
+
+// === تشغيل النظام ===
+// تشغيل النظام عند تحميل الصفحة
+document.addEventListener('DOMContentLoaded', function() {
+    initializePersistentStorage();
+    
+    // فحص البيانات الموجودة
+    checkAndRestoreUserData().then(userData => {
+        if (userData) {
+            console.log('👤 تم العثور على بيانات المستخدم:', userData.name);
+            // تطبيق واجهة المستخدم المناسبة
+            showWelcomeSection(userData.name);
+            displayUserData(userData);
+        }
+    });
+});
+
+// === مثال للاستخدام ===
+/*
+// حفظ البيانات
+const userData = {
+    name: "أحمد محمد",
+    email: "ahmed@example.com",
+    phone: "01234567890"
+};
+
+saveUserDataPermanently(userData);
+
+// استرجاع البيانات
+const retrievedData = secureStorageGet('userData');
+console.log(retrievedData);
+*/
