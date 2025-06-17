@@ -166,15 +166,15 @@ function logineCallback(response) {
                     console.log('تم حذف العنصر person1');
                 }
                 
-                // إعادة تفعيل أزرار السلة بدلاً من إعادة تحميل الصفحة
+                // إعادة تفعيل أزرار السلة فوراً
                 reactivateCartButtons();
                 
-                // إعادة تحميل الصفحة بعد تأخير إضافي للتأكد من تفعيل الأزرار
+                // إعادة تحميل الصفحة بعد تأخير أطول للتأكد من تفعيل الأزرار
                 setTimeout(() => {
                     window.location.reload();
-                }, 1000); // تأخير أطول لضمان تفعيل الأزرار أولاً
+                }, 2000); // تأخير أطول لضمان تفعيل الأزرار أولاً
                 
-            }, 2000);
+            }, 1500); // تقليل وقت الانتظار الأول
 
         } catch (error) {
             console.error('خطأ في عملية التسجيل:', error);
@@ -266,53 +266,89 @@ function logineCallback(response) {
 function reactivateCartButtons() {
     console.log('إعادة تفعيل أزرار السلة...');
     
-    // انتظار قصير للتأكد من أن DOM جاهز
+    // تطبيق تفعيل فوري أولاً
+    activateButtons();
+    
+    // ثم إعادة تفعيل بعد 100ms
     setTimeout(() => {
-        const cartButtons = document.querySelectorAll('.btn_add_cart');
-        console.log(`تم العثور على ${cartButtons.length} زر سلة`);
-        
-        cartButtons.forEach((button, index) => {
-            // إزالة event listeners السابقة إذا كانت موجودة
-            const newButton = button.cloneNode(true);
-            button.parentNode.replaceChild(newButton, button);
-            
-            // إضافة event listener جديد
-            newButton.addEventListener('click', handleCartClick);
-            
-            // التأكد من أن الزر غير معطل
-            newButton.disabled = false;
-            newButton.style.pointerEvents = 'auto';
-            newButton.style.opacity = '1';
-            newButton.style.cursor = 'pointer';
-            
-            console.log(`تم تفعيل زر السلة رقم ${index + 1} للمنتج ${newButton.getAttribute('data-id')}`);
-        });
-        
-        // إعادة تحديث المتغير للأزرار الجديدة
-        const updatedCartButtons = document.querySelectorAll('.btn_add_cart');
-        
-        // إطلاق حدث مخصص للإشارة إلى أن الأزرار تم تفعيلها
-        const cartActivatedEvent = new CustomEvent('cartButtonsActivated', {
-            detail: { buttonCount: updatedCartButtons.length }
-        });
-        document.dispatchEvent(cartActivatedEvent);
-        
-        console.log('تم تفعيل جميع أزرار السلة بنجاح');
-        
+        activateButtons();
     }, 100);
+    
+    // وإعادة تفعيل مرة أخرى بعد 300ms للتأكد
+    setTimeout(() => {
+        activateButtons();
+    }, 300);
+    
+    // وإعادة تفعيل نهائية بعد 500ms
+    setTimeout(() => {
+        activateButtons();
+        console.log('تم الانتهاء من تفعيل أزرار السلة');
+    }, 500);
+}
+
+// دالة مساعدة لتفعيل الأزرار
+function activateButtons() {
+    const cartButtons = document.querySelectorAll('.btn_add_cart');
+    console.log(`تفعيل ${cartButtons.length} زر سلة`);
+    
+    cartButtons.forEach((button, index) => {
+        // إزالة event listeners السابقة
+        const newButton = button.cloneNode(true);
+        button.parentNode.replaceChild(newButton, button);
+        
+        // إضافة event listener جديد
+        newButton.addEventListener('click', handleCartClick);
+        
+        // التأكد من أن الزر نشط
+        newButton.disabled = false;
+        newButton.style.pointerEvents = 'auto';
+        newButton.style.opacity = '1';
+        newButton.style.cursor = 'pointer';
+        newButton.style.userSelect = 'none';
+        
+        // إضافة تأثير hover
+        newButton.addEventListener('mouseenter', function() {
+            this.style.transform = 'scale(1.05)';
+        });
+        
+        newButton.addEventListener('mouseleave', function() {
+            this.style.transform = 'scale(1)';
+        });
+        
+        console.log(`✓ تم تفعيل زر السلة ${index + 1} - المنتج: ${newButton.getAttribute('data-id')}`);
+    });
+    
+    // إطلاق حدث التفعيل
+    const cartActivatedEvent = new CustomEvent('cartButtonsActivated', {
+        detail: { 
+            buttonCount: cartButtons.length,
+            timestamp: Date.now()
+        }
+    });
+    document.dispatchEvent(cartActivatedEvent);
 }
 
 // دالة معالجة النقر على أزرار السلة
 function handleCartClick(event) {
-    console.log('تم النقر على زر السلة');
+    // منع السلوك الافتراضي
+    event.preventDefault();
+    event.stopPropagation();
+    
+    console.log('🛒 تم النقر على زر السلة');
     
     const button = event.target.closest('.btn_add_cart');
-    if (!button) return;
+    if (!button) {
+        console.log('❌ لم يتم العثور على زر السلة');
+        return;
+    }
+    
+    // تعطيل الزر مؤقتاً لمنع النقر المتكرر
+    button.style.pointerEvents = 'none';
     
     const productId = button.getAttribute('data-id');
     const isActive = button.classList.contains('active');
     
-    console.log(`معرف المنتج: ${productId}, في السلة: ${isActive}`);
+    console.log(`📦 معرف المنتج: ${productId}, في السلة: ${isActive}`);
     
     // إذا كانت لديك دالة خاصة لمعالجة إضافة المنتجات للسلة، استدعها هنا
     if (typeof addToCart === 'function') {
@@ -323,30 +359,46 @@ function handleCartClick(event) {
         toggleCart(productId, button);
     } else {
         // كود افتراضي لإضافة/إزالة من السلة
-        console.log('تنفيذ إضافة افتراضية للسلة');
+        console.log('🔄 تنفيذ إضافة افتراضية للسلة');
         
-        if (isActive) {
-            // إزالة من السلة
-            button.classList.remove('active');
-            button.innerHTML = '<i class="fa-solid fa-cart-plus"></i> اضف الي السلة';
-            console.log('تم إزالة المنتج من السلة');
-        } else {
-            // إضافة للسلة
-            button.classList.add('active');
-            button.innerHTML = '<i class="fa-solid fa-cart-plus"></i> تم اضافة الي السلة';
-            console.log('تم إضافة المنتج للسلة');
-        }
+        // إضافة تأثير بصري فوري
+        button.style.transform = 'scale(0.95)';
         
-        // إطلاق حدث مخصص للإشارة إلى تغيير السلة
-        const cartChangeEvent = new CustomEvent('cartChanged', {
-            detail: { 
-                productId: productId, 
-                added: !isActive,
-                button: button
+        setTimeout(() => {
+            if (isActive) {
+                // إزالة من السلة
+                button.classList.remove('active');
+                button.innerHTML = '<i class="fa-solid fa-cart-plus"></i> اضف الي السلة';
+                console.log('➖ تم إزالة المنتج من السلة');
+            } else {
+                // إضافة للسلة
+                button.classList.add('active');
+                button.innerHTML = '<i class="fa-solid fa-cart-plus"></i> تم اضافة الي السلة';
+                console.log('➕ تم إضافة المنتج للسلة');
             }
-        });
-        document.dispatchEvent(cartChangeEvent);
+            
+            // إعادة الزر لحالته الطبيعية
+            button.style.transform = 'scale(1)';
+            button.style.pointerEvents = 'auto';
+            
+            // إطلاق حدث مخصص للإشارة إلى تغيير السلة
+            const cartChangeEvent = new CustomEvent('cartChanged', {
+                detail: { 
+                    productId: productId, 
+                    added: !isActive,
+                    button: button,
+                    timestamp: Date.now()
+                }
+            });
+            document.dispatchEvent(cartChangeEvent);
+            
+        }, 150);
     }
+    
+    // إعادة تفعيل الزر بعد ثانية واحدة للأمان
+    setTimeout(() => {
+        button.style.pointerEvents = 'auto';
+    }, 1000);
 }
 
 // دالة لإرسال البيانات إلى Google Sheets مع إعدادات محسنة
