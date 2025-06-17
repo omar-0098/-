@@ -445,7 +445,7 @@ function logineCallback(response) {
                 setTimeout(() => {
                     // حفظ نهائي قبل إعادة التحميل
                     savePermanentData(userData);
-                    window.location.reload();
+                    // window.location.reload();
                 }, 4000);
                 
             }, 1500);
