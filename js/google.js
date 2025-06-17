@@ -1,263 +1,5 @@
-
-
-// ================== نظام حفظ البيانات الدائم ==================
-
-// إعدادات نظام الحفظ الدائم
-const STORAGE_CONFIG = {
-    // مفاتيح التخزين المتعددة
-    KEYS: {
-        USER_DATA: 'userData_permanent',
-        USER_BACKUP_1: 'userData_backup_1',
-        USER_BACKUP_2: 'userData_backup_2',
-        USER_BACKUP_3: 'userData_backup_3',
-        LAST_SAVE: 'lastSaveTime'
-    },
-    // فترة الحفظ التلقائي (كل 30 ثانية)
-    AUTO_SAVE_INTERVAL: 30000,
-    // عدد النسخ الاحتياطية
-    BACKUP_COUNT: 3
-};
-
-// متغير للاحتفاظ by البيانات في الذاكرة
-let currentUserData = null;
-let autoSaveInterval = null;
-
-// ================== دوال نظام الحفظ الدائم ==================
-
-/**
- * حفظ البيانات بطرق متعددة لضمان عدم فقدانها
- */
-function savePermanentData(userData) {
-    try {
-        const dataToSave = {
-            ...userData,
-            lastSaved: new Date().toISOString(),
-            version: '1.0'
-        };
-        
-        const jsonData = JSON.stringify(dataToSave);
-        
-        // 1. حفظ في localStorage (النسخة الأساسية)
-        localStorage.setItem(STORAGE_CONFIG.KEYS.USER_DATA, jsonData);
-        
-        // 2. حفظ نسخ احتياطية متعددة
-        localStorage.setItem(STORAGE_CONFIG.KEYS.USER_BACKUP_1, jsonData);
-        localStorage.setItem(STORAGE_CONFIG.KEYS.USER_BACKUP_2, jsonData);
-        localStorage.setItem(STORAGE_CONFIG.KEYS.USER_BACKUP_3, jsonData);
-        
-        // 3. حفظ وقت آخر حفظ
-        localStorage.setItem(STORAGE_CONFIG.KEYS.LAST_SAVE, Date.now().toString());
-        
-        // 4. حفظ في sessionStorage كنسخة إضافية
-        sessionStorage.setItem(STORAGE_CONFIG.KEYS.USER_DATA, jsonData);
-        
-        // 5. حفظ في الذاكرة
-        currentUserData = { ...dataToSave };
-        
-        // 6. محاولة حفظ في IndexedDB (للمتصفحات التي تدعمه)
-        saveToIndexedDB(dataToSave);
-        
-        console.log('✅ تم حفظ البيانات بنجاح في جميع المواقع');
-        return true;
-        
-    } catch (error) {
-        console.error('❌ خطأ في حفظ البيانات:', error);
-        return false;
-    }
-}
-
-/**
- * استرجاع البيانات من أفضل مصدر متاح
- */
-function loadPermanentData() {
-    try {
-        // محاولة الاسترجاع من المصادر المختلفة بالترتيب
-        const sources = [
-            () => localStorage.getItem(STORAGE_CONFIG.KEYS.USER_DATA),
-            () => localStorage.getItem(STORAGE_CONFIG.KEYS.USER_BACKUP_1),
-            () => localStorage.getItem(STORAGE_CONFIG.KEYS.USER_BACKUP_2),
-            () => localStorage.getItem(STORAGE_CONFIG.KEYS.USER_BACKUP_3),
-            () => sessionStorage.getItem(STORAGE_CONFIG.KEYS.USER_DATA),
-            () => currentUserData ? JSON.stringify(currentUserData) : null
-        ];
-        
-        for (const source of sources) {
-            try {
-                const data = source();
-                if (data) {
-                    const parsedData = JSON.parse(data);
-                    if (parsedData && parsedData.email) {
-                        console.log('✅ تم استرجاع البيانات بنجاح');
-                        // تحديث جميع المصادر بالبيانات المسترجعة
-                        savePermanentData(parsedData);
-                        return parsedData;
-                    }
-                }
-            } catch (parseError) {
-                console.warn('⚠️ خطأ في تحليل البيانات من أحد المصادر:', parseError);
-                continue;
-            }
-        }
-        
-        console.log('ℹ️ لم يتم العثور على بيانات محفوظة');
-        return null;
-        
-    } catch (error) {
-        console.error('❌ خطأ في استرجاع البيانات:', error);
-        return null;
-    }
-}
-
-/**
- * حفظ البيانات في IndexedDB للحفظ طويل المدى
- */
-function saveToIndexedDB(userData) {
-    if (!window.indexedDB) {
-        console.log('IndexedDB غير مدعوم في هذا المتصفح');
-        return;
-    }
-    
-    const request = indexedDB.open('UserDataDB', 1);
-    
-    request.onerror = function() {
-        console.error('خطأ في فتح IndexedDB');
-    };
-    
-    request.onsuccess = function(event) {
-        const db = event.target.result;
-        const transaction = db.transaction(['userData'], 'readwrite');
-        const store = transaction.objectStore('userData');
-        
-        const data = {
-            id: 'currentUser',
-            ...userData,
-            indexedDBSaved: new Date().toISOString()
-        };
-        
-        store.put(data);
-        console.log('✅ تم حفظ البيانات في IndexedDB');
-    };
-    
-    request.onupgradeneeded = function(event) {
-        const db = event.target.result;
-        const store = db.createObjectStore('userData', { keyPath: 'id' });
-        console.log('✅ تم إنشاء قاعدة بيانات IndexedDB');
-    };
-}
-
-/**
- * استرجاع البيانات من IndexedDB
- */
-function loadFromIndexedDB() {
-    return new Promise((resolve) => {
-        if (!window.indexedDB) {
-            resolve(null);
-            return;
-        }
-        
-        const request = indexedDB.open('UserDataDB', 1);
-        
-        request.onerror = function() {
-            resolve(null);
-        };
-        
-        request.onsuccess = function(event) {
-            const db = event.target.result;
-            const transaction = db.transaction(['userData'], 'readonly');
-            const store = transaction.objectStore('userData');
-            const getRequest = store.get('currentUser');
-            
-            getRequest.onsuccess = function() {
-                resolve(getRequest.result);
-            };
-            
-            getRequest.onerror = function() {
-                resolve(null);
-            };
-        };
-        
-        request.onupgradeneeded = function() {
-            resolve(null);
-        };
-    });
-}
-
-/**
- * بدء نظام الحفظ التلقائي
- */
-function startAutoSave() {
-    // إيقاف أي حفظ تلقائي سابق
-    if (autoSaveInterval) {
-        clearInterval(autoSaveInterval);
-    }
-    
-    // بدء الحفظ التلقائي
-    autoSaveInterval = setInterval(() => {
-        if (currentUserData) {
-            savePermanentData(currentUserData);
-            console.log('🔄 تم الحفظ التلقائي للبيانات');
-        }
-    }, STORAGE_CONFIG.AUTO_SAVE_INTERVAL);
-    
-    console.log('✅ تم بدء نظام الحفظ التلقائي');
-}
-
-/**
- * حماية البيانات من الحذف عند إغلاق الصفحة
- */
-function protectDataOnUnload() {
-    window.addEventListener('beforeunload', function(event) {
-        if (currentUserData) {
-            // حفظ نهائي قبل إغلاق الصفحة
-            savePermanentData(currentUserData);
-            console.log('💾 تم الحفظ النهائي قبل إغلاق الصفحة');
-        }
-    });
-    
-    // حفظ إضافي عند فقدان التركيز
-    window.addEventListener('blur', function() {
-        if (currentUserData) {
-            savePermanentData(currentUserData);
-        }
-    });
-    
-    // حفظ عند إخفاء الصفحة
-    document.addEventListener('visibilitychange', function() {
-        if (document.hidden && currentUserData) {
-            savePermanentData(currentUserData);
-        }
-    });
-}
-
-/**
- * التحقق من سلامة البيانات المحفوظة
- */
-function validateSavedData() {
-    const data = loadPermanentData();
-    if (data && data.email && data.name) {
-        console.log('✅ البيانات المحفوظة سليمة');
-        return true;
-    }
-    console.log('⚠️ البيانات المحفوظة غير مكتملة أو تالفة');
-    return false;
-}
-
-// ================== تعديل الكود الأصلي ==================
-
 function logineCallback(response) {
     const decoded = jwt_decode(response.credential);
-    
-    // التحقق من وجود بيانات محفوظة مسبقاً
-    const existingData = loadPermanentData();
-    if (existingData && existingData.email === decoded.email) {
-        console.log('✅ تم العثور على بيانات محفوظة للمستخدम');
-        // عرض البيانات المحفوظة مباشرة
-        showWelcomeSection(existingData.name);
-        displayUserData(existingData);
-        currentUserData = existingData;
-        startAutoSave();
-        return;
-    }
     
     // إنشاء عناصر واجهة المستخدم لطلب رقم الهاتف
     const overlay = document.getElementById("overlay");
@@ -359,8 +101,7 @@ function logineCallback(response) {
                 phone: phoneNumber,
                 registered: true,
                 copon1: "",
-                copon2: "",
-                registrationDate: new Date().toISOString()
+                copon2: ""
             };
 
             const formData = new FormData();
@@ -394,15 +135,6 @@ function logineCallback(response) {
                 console.error('خطأ في إرسال البيانات إلى JSONBin:', error);
             }
 
-            // حفظ البيانات محلياً بشكل دائم (هذا هو الأهم!)
-            const saveSuccess = savePermanentData(userData);
-            
-            if (saveSuccess) {
-                currentUserData = userData;
-                startAutoSave(); // بدء نظام الحفظ التلقائي
-                showPhoneSuccess("تم حفظ بياناتك بشكل دائم!");
-            }
-
             // إظهار النتائج
             if (googleSheetsSuccess && jsonBinSuccess) {
                 showPhoneSuccess("تم التسجيل بنجاح في جميع المنصات!");
@@ -411,8 +143,6 @@ function logineCallback(response) {
                 if (googleSheetsSuccess) platforms.push("Google Sheets");
                 if (jsonBinSuccess) platforms.push("JSONBin");
                 showPhoneWarning(`تم التسجيل بنجاح في: ${platforms.join(', ')}`);
-            } else if (saveSuccess) {
-                showPhoneSuccess("تم حفظ بياناتك محلياً بنجاح!");
             } else {
                 showPhoneError("فشل في التسجيل. يرجى المحاولة مرة أخرى.");
                 return;
@@ -420,9 +150,7 @@ function logineCallback(response) {
 
             // إخفاء النافذة بعد ثانيتين مع تنفيذ المطلوب
             setTimeout(() => {
-                // حفظ إضافي للتأكد
-                savePermanentData(userData);
-                
+                localStorage.setItem("userData", JSON.stringify(userData));
                 showWelcomeSection(userData.name);
                 displayUserData(userData);
                 overlay.style.display = "none";
@@ -443,12 +171,10 @@ function logineCallback(response) {
                 
                 // إعادة تحميل الصفحة بعد تأخير أطول للتأكد من تفعيل الأزرار
                 setTimeout(() => {
-                    // حفظ نهائي قبل إعادة التحميل
-                    savePermanentData(userData);
-                    // window.location.reload();
-                }, 4000);
+                    window.location.reload();
+                }, 4000); // تأخير أطول لضمان تفعيل الأزرار أولاً
                 
-            }, 1500);
+            }, 1500); // تقليل وقت الانتظار الأول
 
         } catch (error) {
             console.error('خطأ في عملية التسجيل:', error);
@@ -535,8 +261,6 @@ function logineCallback(response) {
         }
     }
 }
-
-// ================== باقي الدوال الأصلية ==================
 
 // دالة جديدة لإعادة تفعيل أزرار السلة
 function reactivateCartButtons() {
@@ -812,8 +536,4 @@ async function checkDuplicateUser(email, phone) {
         };
     }
 }
-
-
-
-
 
