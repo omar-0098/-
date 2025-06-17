@@ -731,93 +731,9 @@ function showWelcomeSection(name) {
 
 
 
-
-
-
-
-
-
-
-
-function updateUIBasedOnMan1() {
-    const man1 = document.querySelector('.man1');
-    const checkoutItem = document.querySelector('li.check');
-    const messageDiv = document.getElementById('mustRegisterMessage');
-    const masegeLoginDiv = document.querySelector('.masege-login');
-
-    if (man1) {
-        const isMan1Hidden = window.getComputedStyle(man1).display === 'none';
-
-        if (isMan1Hidden) {
-            // إخفاء زر الدفع
-            if (checkoutItem) {
-                checkoutItem.style.display = 'none';
-            }
-
-            // إظهار رسالة يجب إنشاء حساب
-            if (messageDiv) {
-                messageDiv.style.display = 'block';
-            }
-
-            // تعطيل زر السلة تماماً
-            document.querySelectorAll('.btn_add_cart').forEach(function(button) {
-                // منع جميع الأحداث
-                button.style.pointerEvents = 'auto';
-                button.style.opacity = '0.6';
-                button.style.cursor = 'not-allowed';
-                
-                // إزالة جميع معالجات الأحداث الموجودة
-                const newButton = button.cloneNode(true);
-                button.parentNode.replaceChild(newButton, button);
-                
-                // إضافة معالج حدث جديد يمنع التنفيذ ويعرض الرسالة فقط
-                newButton.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    e.stopImmediatePropagation();
-                    
-                    //  إظهار الرسالة المؤقتة
-                     if (masegeLoginDiv) {
-                         masegeLoginDiv.style.display = 'block';
-
-                         setTimeout(() => {
-                             masegeLoginDiv.style.display = 'none';
-
-                        }, 2000);
-                    }
-
-
-
-
-                 return false;
-                });
-            });
-        } else {
-
-            // إظهار زر الدفع عند تسجيل الدخول
-            if (checkoutItem) {
-                checkoutItem.style.display = 'list-item';
-            }
-
-            // إخفاء الرسالة
-            if (messageDiv) {
-                messageDiv.style.display = 'none';
-            }
-
-            // إعادة تفعيل زر السلة
-            document.querySelectorAll('.btn_add_cart').forEach(function(button) {
-                button.style.opacity = '1';
-                button.style.cursor = 'pointer';
-                button.onclick = null;
-            });
-        }
-    }
-}
-
 // تشغيل عند تحميل الصفحة
 document.addEventListener('DOMContentLoaded', updateUIBasedOnMan1);
 
 // مراقبة التغييرات باستمرار
 setInterval(updateUIBasedOnMan1, 500);
-
 
