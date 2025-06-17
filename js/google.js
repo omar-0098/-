@@ -273,44 +273,79 @@ function reactivateCartButtons() {
         
         cartButtons.forEach((button, index) => {
             // إزالة event listeners السابقة إذا كانت موجودة
-            button.removeEventListener('click', handleCartClick);
+            const newButton = button.cloneNode(true);
+            button.parentNode.replaceChild(newButton, button);
             
             // إضافة event listener جديد
-            button.addEventListener('click', handleCartClick);
+            newButton.addEventListener('click', handleCartClick);
             
             // التأكد من أن الزر غير معطل
-            button.disabled = false;
-            button.style.pointerEvents = 'auto';
-            button.style.opacity = '1';
+            newButton.disabled = false;
+            newButton.style.pointerEvents = 'auto';
+            newButton.style.opacity = '1';
+            newButton.style.cursor = 'pointer';
             
-            console.log(`تم تفعيل زر السلة رقم ${index + 1}`);
+            console.log(`تم تفعيل زر السلة رقم ${index + 1} للمنتج ${newButton.getAttribute('data-id')}`);
         });
+        
+        // إعادة تحديث المتغير للأزرار الجديدة
+        const updatedCartButtons = document.querySelectorAll('.btn_add_cart');
         
         // إطلاق حدث مخصص للإشارة إلى أن الأزرار تم تفعيلها
         const cartActivatedEvent = new CustomEvent('cartButtonsActivated', {
-            detail: { buttonCount: cartButtons.length }
+            detail: { buttonCount: updatedCartButtons.length }
         });
         document.dispatchEvent(cartActivatedEvent);
+        
+        console.log('تم تفعيل جميع أزرار السلة بنجاح');
         
     }, 100);
 }
 
-// دالة معالجة النقر على أزرار السلة (يجب أن تكون موجودة في كودك الأصلي)
+// دالة معالجة النقر على أزرار السلة
 function handleCartClick(event) {
     console.log('تم النقر على زر السلة');
     
-    // إذا كانت لديك دالة خاصة لمعالجة إضافة المنتجات للسلة، استدعها هنا
-    // مثال:
-    // addToCart(this);
+    const button = event.target.closest('.btn_add_cart');
+    if (!button) return;
     
-    // أو يمكنك إطلاق الحدث الأصلي إذا كان موجوداً
+    const productId = button.getAttribute('data-id');
+    const isActive = button.classList.contains('active');
+    
+    console.log(`معرف المنتج: ${productId}, في السلة: ${isActive}`);
+    
+    // إذا كانت لديك دالة خاصة لمعالجة إضافة المنتجات للسلة، استدعها هنا
     if (typeof addToCart === 'function') {
-        addToCart(event.target);
+        addToCart(productId, button);
     } else if (typeof handleAddToCart === 'function') {
-        handleAddToCart(event);
+        handleAddToCart(productId, button);
+    } else if (typeof toggleCart === 'function') {
+        toggleCart(productId, button);
     } else {
-        // إذا لم تكن متأكداً من اسم الدالة، يمكنك إضافة كود افتراضي هنا
-        console.warn('لم يتم العثور على دالة معالجة السلة. يجب تحديد الدالة المناسبة.');
+        // كود افتراضي لإضافة/إزالة من السلة
+        console.log('تنفيذ إضافة افتراضية للسلة');
+        
+        if (isActive) {
+            // إزالة من السلة
+            button.classList.remove('active');
+            button.innerHTML = '<i class="fa-solid fa-cart-plus"></i> اضف الي السلة';
+            console.log('تم إزالة المنتج من السلة');
+        } else {
+            // إضافة للسلة
+            button.classList.add('active');
+            button.innerHTML = '<i class="fa-solid fa-cart-plus"></i> تم اضافة الي السلة';
+            console.log('تم إضافة المنتج للسلة');
+        }
+        
+        // إطلاق حدث مخصص للإشارة إلى تغيير السلة
+        const cartChangeEvent = new CustomEvent('cartChanged', {
+            detail: { 
+                productId: productId, 
+                added: !isActive,
+                button: button
+            }
+        });
+        document.dispatchEvent(cartChangeEvent);
     }
 }
 
