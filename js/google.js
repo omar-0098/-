@@ -166,10 +166,13 @@ function logineCallback(response) {
                     console.log('تم حذف العنصر person1');
                 }
                 
-                // إعادة تحميل الصفحة
+                // إعادة تفعيل أزرار السلة بدلاً من إعادة تحميل الصفحة
+                reactivateCartButtons();
+                
+                // إعادة تحميل الصفحة بعد تأخير إضافي للتأكد من تفعيل الأزرار
                 setTimeout(() => {
                     window.location.reload();
-                }, 500); // تأخير قصير قبل إعادة تحميل الصفحة
+                }, 1000); // تأخير أطول لضمان تفعيل الأزرار أولاً
                 
             }, 2000);
 
@@ -256,6 +259,58 @@ function logineCallback(response) {
             `;
             document.head.appendChild(style);
         }
+    }
+}
+
+// دالة جديدة لإعادة تفعيل أزرار السلة
+function reactivateCartButtons() {
+    console.log('إعادة تفعيل أزرار السلة...');
+    
+    // انتظار قصير للتأكد من أن DOM جاهز
+    setTimeout(() => {
+        const cartButtons = document.querySelectorAll('.btn_add_cart');
+        console.log(`تم العثور على ${cartButtons.length} زر سلة`);
+        
+        cartButtons.forEach((button, index) => {
+            // إزالة event listeners السابقة إذا كانت موجودة
+            button.removeEventListener('click', handleCartClick);
+            
+            // إضافة event listener جديد
+            button.addEventListener('click', handleCartClick);
+            
+            // التأكد من أن الزر غير معطل
+            button.disabled = false;
+            button.style.pointerEvents = 'auto';
+            button.style.opacity = '1';
+            
+            console.log(`تم تفعيل زر السلة رقم ${index + 1}`);
+        });
+        
+        // إطلاق حدث مخصص للإشارة إلى أن الأزرار تم تفعيلها
+        const cartActivatedEvent = new CustomEvent('cartButtonsActivated', {
+            detail: { buttonCount: cartButtons.length }
+        });
+        document.dispatchEvent(cartActivatedEvent);
+        
+    }, 100);
+}
+
+// دالة معالجة النقر على أزرار السلة (يجب أن تكون موجودة في كودك الأصلي)
+function handleCartClick(event) {
+    console.log('تم النقر على زر السلة');
+    
+    // إذا كانت لديك دالة خاصة لمعالجة إضافة المنتجات للسلة، استدعها هنا
+    // مثال:
+    // addToCart(this);
+    
+    // أو يمكنك إطلاق الحدث الأصلي إذا كان موجوداً
+    if (typeof addToCart === 'function') {
+        addToCart(event.target);
+    } else if (typeof handleAddToCart === 'function') {
+        handleAddToCart(event);
+    } else {
+        // إذا لم تكن متأكداً من اسم الدالة، يمكنك إضافة كود افتراضي هنا
+        console.warn('لم يتم العثور على دالة معالجة السلة. يجب تحديد الدالة المناسبة.');
     }
 }
 
