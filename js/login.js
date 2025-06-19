@@ -734,4 +734,3 @@ function showWelcomeSection(name) {
 document.addEventListener('DOMContentLoaded', );
 
 // مراقبة التغييرات باستمرار
-
