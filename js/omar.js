@@ -1,4 +1,93 @@
-    window.addEventListener( "pageshow", function ( event ) {
+document.addEventListener('DOMContentLoaded', function() {
+    const registerSection = document.getElementById('registerSection');
+    const buyButton = document.getElementById('btn_said');
+    const check = document.querySelector('.check');
+    const message = document.querySelector('.message-login');
+    
+    // دالة التحقق من ظهور العنصر
+    function checkVisibility() {
+        if (registerSection && registerSection.offsetParent !== null) {
+            // إذا كان العنصر ظاهرًا، أخفي الزر
+            if (buyButton) {
+                buyButton.style.pointerEvents = 'none';
+                buyButton.style.background = '#a6a6a6';
+                buyButton.style.borderColor = '#5e5e5e';
+                check.style.display = 'none';
+            }
+            
+            // بدء عرض الرسالة كل دقيقة
+            startMessageInterval();
+        } else {
+            // إذا كان العنصر غير ظاهر، أظهر الزر
+            if (buyButton) {
+                buyButton.style.pointerEvents = 'all';
+                buyButton.style.background = '#f9607f';
+                buyButton.style.borderColor = '#f9607f';
+                check.style.display = 'block';
+            }
+            
+            // إيقاف عرض الرسالة إذا كان يعمل
+            stopMessageInterval();
+        }
+    }
+    
+    // متغيرات للتحكم في interval الرسالة
+    let messageInterval;
+    
+    // دالة بدء عرض الرسالة
+    function startMessageInterval() {
+        // تأكد من عدم وجود interval يعمل بالفعل
+        stopMessageInterval();
+        
+        // عرض الرسالة فورًا عند التحميل إذا كان العنصر ظاهرًا
+        showMessage();
+        
+        // عرض الرسالة كل دقيقة (60000 مللي ثانية)
+        messageInterval = setInterval(showMessage, 60000);
+    }
+    
+    // دالة إيقاف عرض الرسالة
+    function stopMessageInterval() {
+        if (messageInterval) {
+            clearInterval(messageInterval);
+            messageInterval = null;
+        }
+    }
+    
+    // دالة عرض الرسالة
+    function showMessage() {
+        if (message) {
+            // عرض الرسالة
+            message.style.display = 'block';
+            
+            // إخفاء الرسالة بعد ثانيتين (2000 مللي ثانية)
+            setTimeout(function() {
+                if (message) {
+                    message.style.display = 'none';
+                }
+            }, 3000);
+        }
+    }
+    
+    // التحقق الأولي عند تحميل الصفحة
+    checkVisibility();
+    
+    // إذا كنت تتوقع تغييرات ديناميكية، يمكنك إضافة مراقب للتحقق
+    const observer = new MutationObserver(checkVisibility);
+    
+    if (registerSection) {
+        observer.observe(registerSection.parentNode, {
+            childList: true,
+            subtree: true,
+            attributes: true,
+            attributeFilter: ['style', 'class']
+        });
+    }
+});
+
+/////////////////////////
+
+window.addEventListener( "pageshow", function ( event ) {
         if (event.persisted) {
             window.location.reload();
         }
