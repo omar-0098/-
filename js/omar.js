@@ -2,40 +2,37 @@ document.addEventListener('DOMContentLoaded', function() {
     const registerSection = document.getElementById('registerSection');
     const buyButton = document.getElementById('btn_said');
     const check = document.querySelector('.check');
-    const message = document.querySelector('.message-login'); // تأكد من أن هذا هو الصحيح
+    const message = document.querySelector('.message-login');
     
-    if (!registerSection || !buyButton || !check || !message) {
-        console.error('One or more elements are missing from the page');
-        return;
-    }
-
-    // متغيرات للتحكم في interval الرسالة
-    let messageInterval = null;
-
     // دالة التحقق من ظهور العنصر
     function checkVisibility() {
-        const isVisible = registerSection.offsetParent !== null;
-        
-        if (isVisible) {
+        if (registerSection && registerSection.offsetParent !== null) {
             // إذا كان العنصر ظاهرًا، أخفي الزر
-            buyButton.style.pointerEvents = 'none';
-            buyButton.style.background = '#a6a6a6';
-            buyButton.style.borderColor = '#5e5e5e';
-            check.style.display = 'none';
+            if (buyButton) {
+                buyButton.style.pointerEvents = 'none';
+                buyButton.style.background = '#a6a6a6';
+                buyButton.style.borderColor = '#5e5e5e';
+                check.style.display = 'none';
+            }
             
             // بدء عرض الرسالة كل دقيقة
             startMessageInterval();
         } else {
             // إذا كان العنصر غير ظاهر، أظهر الزر
-            buyButton.style.pointerEvents = 'auto';
-            buyButton.style.background = '#f9607f';
-            buyButton.style.borderColor = '#f9607f';
-            check.style.display = 'block';
+            if (buyButton) {
+                buyButton.style.pointerEvents = 'all';
+                buyButton.style.background = '#f9607f';
+                buyButton.style.borderColor = '#f9607f';
+                check.style.display = 'block';
+            }
             
             // إيقاف عرض الرسالة إذا كان يعمل
             stopMessageInterval();
         }
     }
+    
+    // متغيرات للتحكم في interval الرسالة
+    let messageInterval;
     
     // دالة بدء عرض الرسالة
     function startMessageInterval() {
@@ -59,29 +56,34 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // دالة عرض الرسالة
     function showMessage() {
-        // عرض الرسالة
-        message.style.display = 'block';
-        
-        // إخفاء الرسالة بعد 3 ثواني (3000 مللي ثانية)
-        setTimeout(function() {
-            message.style.display = 'none';
-        }, 3000);
+        if (message) {
+            // عرض الرسالة
+            message.style.display = 'block';
+            
+            // إخفاء الرسالة بعد ثانيتين (2000 مللي ثانية)
+            setTimeout(function() {
+                if (message) {
+                    message.style.display = 'none';
+                }
+            }, 3000);
+        }
     }
     
     // التحقق الأولي عند تحميل الصفحة
     checkVisibility();
     
-    // مراقبة التغييرات في العنصر
+    // إذا كنت تتوقع تغييرات ديناميكية، يمكنك إضافة مراقب للتحقق
     const observer = new MutationObserver(checkVisibility);
     
-    observer.observe(registerSection.parentNode, {
-        childList: true,
-        subtree: true,
-        attributes: true,
-        attributeFilter: ['style', 'class']
-    });
+    if (registerSection) {
+        observer.observe(registerSection.parentNode, {
+            childList: true,
+            subtree: true,
+            attributes: true,
+            attributeFilter: ['style', 'class']
+        });
+    }
 });
-
 /////////////////////////
 
 window.addEventListener( "pageshow", function ( event ) {
