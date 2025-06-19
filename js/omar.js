@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const buyButton = document.getElementById('btn_said');
     const check = document.querySelector('.check');
     const message = document.querySelector('.message-login');
-    
+    console.log(check)
     // دالة التحقق من ظهور العنصر
     function checkVisibility() {
         if (registerSection && registerSection.offsetParent !== null) {
