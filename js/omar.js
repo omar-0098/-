@@ -1,6 +1,6 @@
 document.addEventListener('DOMContentLoaded', function() {
     const registerSection = document.getElementById('registerSection');
-    const buyButton = document.getElementById('btn_said');
+    const buyButton = document.querySelectorAll('.btn_cart')[0];
     const check = document.querySelector('.check');
     const message = document.querySelector('.message-login');
     
