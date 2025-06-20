@@ -2,7 +2,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const registerSection = document.getElementById('registerSection');
     const buyButton = document.querySelectorAll('.btn_cart')[0];
     const check = document.querySelector('.check');
-    const message = document.querySelector('.message-login');
     
     // دالة التحقق من ظهور العنصر
     function checkVisibility() {
@@ -33,41 +32,6 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // متغيرات للتحكم في interval الرسالة
     let messageInterval;
-    
-    // دالة بدء عرض الرسالة
-    function startMessageInterval() {
-        // تأكد من عدم وجود interval يعمل بالفعل
-        stopMessageInterval();
-        
-        // عرض الرسالة فورًا عند التحميل إذا كان العنصر ظاهرًا
-        showMessage();
-        
-        // عرض الرسالة كل دقيقة (60000 مللي ثانية)
-        messageInterval = setInterval(showMessage, 60000);
-    }
-    
-    // دالة إيقاف عرض الرسالة
-    function stopMessageInterval() {
-        if (messageInterval) {
-            clearInterval(messageInterval);
-            messageInterval = null;
-        }
-    }
-    
-    // دالة عرض الرسالة
-    function showMessage() {
-        if (message) {
-            // عرض الرسالة
-            message.style.display = 'block';
-            
-            // إخفاء الرسالة بعد ثانيتين (2000 مللي ثانية)
-            setTimeout(function() {
-                if (message) {
-                    message.style.display = 'none';
-                }
-            }, 3000);
-        }
-    }
     
     // التحقق الأولي عند تحميل الصفحة
     checkVisibility();
