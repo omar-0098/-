@@ -49,24 +49,6 @@ document.addEventListener('DOMContentLoaded', function() {
 /////////////////////////
 
 
-  // جلب بيانات المستخدم من localStorage
-  const userData = JSON.parse(localStorage.getItem('userData'));
-  
-  if (userData && userData.profileImage) {
-    // استبدال العنصر <i> بعنصر <img> يعرض الصورة
-    const iconElement = document.getElementById('icon_person');
-    const parentElement = iconElement.parentNode;
-    
-    const imgElement = document.createElement('img');
-    imgElement.src = userData.profileImage;
-    imgElement.alt = 'Profile Image';
-    imgElement.style.width = '40px'; // يمكنك تعديل الحجم حسب الحاجة
-    imgElement.style.height = '40px';
-    imgElement.style.borderRadius = '50%'; // لجعل الصورة دائرية
-    
-    parentElement.replaceChild(imgElement, iconElement);
-  }
-
 
 /////////////////////////
 
