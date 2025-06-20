@@ -2482,7 +2482,7 @@ body.no-scroll {
     width: 100%;
     display: inline-block; /* هنا التعديل */
     padding: 0px 3em 0.6em 3em;
-
+    display: none;
   }
   .inputGroups{
        width: 100%;
