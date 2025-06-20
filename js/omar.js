@@ -49,28 +49,45 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 /////////////////////////
 
-  // جلب بيانات المستخدم من localStorage
-  const userData = JSON.parse(localStorage.getItem('userData'));
-  
-  if (userData && userData.profileImage) {
-    // استبدال العنصر <i> بعنصر <img> يعرض الصورة
-    const iconElement = document.getElementById('icon_person');
-    const parentElement = iconElement.parentNode;
-    
-    const imgElement = document.createElement('img');
-    imgElement.src = userData.profileImage;
-    imgElement.alt = 'Profile Image';
-    imgElement.style.width = '40px'; // يمكنك تعديل الحجم حسب الحاجة
-    imgElement.style.height = '40px';
-    imgElement.style.borderRadius = '50%'; // لجعل الصورة دائرية
-    
-    parentElement.replaceChild(imgElement, iconElement);
-//////////////////////
-window.addEventListener( "pageshow", function ( event ) {
-        if (event.persisted) {
-            window.location.reload();
-        }
-    });
+  document.addEventListener('DOMContentLoaded', function() {
+    try {
+      const userDataString = localStorage.getItem('userData');
+      
+      if (!userDataString) {
+        console.log("لا يوجد بيانات مستخدم في localStorage");
+        return; // الخروج إذا لم تكن البيانات موجودة
+      }
+
+      const userData = JSON.parse(userDataString);
+      
+      if (!userData || !userData.profileImage) {
+        console.log("لا يوجد رابط للصورة في بيانات المستخدم");
+        return; // الخروج إذا لم يكن هناك profileImage
+      }
+
+      const iconElement = document.getElementById('icon_person');
+      
+      if (!iconElement) {
+        console.log("عنصر الأيقونة غير موجود في الصفحة");
+        return; // الخروج إذا لم يتم العثور على العنصر
+      }
+
+      // إنشاء عنصر الصورة
+      const imgElement = document.createElement('img');
+      imgElement.src = userData.profileImage;
+      imgElement.alt = 'صورة المستخدم';
+      imgElement.style.width = '24px';
+      imgElement.style.height = '24px';
+      imgElement.style.borderRadius = '50%';
+      imgElement.style.objectFit = 'cover'; // لضمان ظهور الصورة بشكل صحيح
+
+      // استبدال الأيقونة بالصورة
+      iconElement.replaceWith(imgElement);
+      
+    } catch (error) {
+      console.error("حدث خطأ أثناء تحميل الصورة:", error);
+    }
+  });
 
 /////////////////////////
 
