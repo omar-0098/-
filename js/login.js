@@ -731,6 +731,5 @@ function showWelcomeSection(name) {
 
 
 // تشغيل عند تحميل الصفحة
-document.addEventListener('DOMContentLoaded', );
 
 // مراقبة التغييرات باستمرار
