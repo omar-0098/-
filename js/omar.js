@@ -26,7 +26,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             // إيقاف عرض الرسالة إذا كان يعمل
-            stopMessageInterval();
         }
     }
     
