@@ -15,7 +15,6 @@ document.addEventListener('DOMContentLoaded', function() {
             }
             
             // بدء عرض الرسالة كل دقيقة
-            startMessageInterval();
         } else {
             // إذا كان العنصر غير ظاهر، أظهر الزر
             if (buyButton) {
