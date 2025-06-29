@@ -206,19 +206,14 @@
             <!--  -->
             <div class="container">
 
-              
+              <div class="top_checkout">
+                <h3> راجع علي منتجاتك و تأكد منها و التزم <a href="Privacy.html">السياسة و الخصوصية</a> </h3>
+              </div>
                     
 
                 <div class="ordersummary">
 
-                        <div class="copon_main">
-                            <label for="">ادخل الكوبون</label>
-                            <div>
-                            <input type="text" class="copon_input" placeholder="ادخل الكوبون...">
-                         <button class="copon">خصم</button>
-                     </div>
-                    </div>
-
+                 
 
 
                     <h2>المشتريات</h2>
@@ -232,6 +227,14 @@
 
 
                     <div class="bottom_summary">
+                               <div class="copon_main">
+                            <label for="">ادخل الكوبون</label>
+                            <div>
+                            <input type="text" class="copon_input" placeholder="ادخل الكوبون...">
+                         <button class="copon">خصم</button>
+                     </div>
+                    </div>
+
 
                         <div class="shop_table">
                             <p>السعر :</p>
@@ -248,7 +251,7 @@
                             <span class="discount_percent">%</span>
                           </div>
 
-
+<hr>
 
                         <div class="shop_table">
                             <p>الشحن  اختر المحافظتك:</p>
@@ -257,20 +260,20 @@
 
 
 
-
-
-                        <div class="shop_table">
-                            <p>السعر الاجمالي : </p>
-                            <span class="total_checkout"> ج</span>
-                        </div>
-
-
                           <div class="shop_table">
                           <label class="shop">
                             <input type="checkbox" id="pickup_from_store">
                             الاستلام من المحل (بدون مصاريف شحن)
                           </label>
                         </div>
+
+<hr>
+
+                        <div class="shop_table">
+                            <p>السعر الاجمالي : </p>
+                            <span class="total_checkout"> ج</span>
+                        </div>
+
 
 
                      
@@ -284,28 +287,47 @@
 
                 <div class="input_info">
                     <div class="adress">
-                        <h2>ملف التعريفي</h2>
+                        <h2> تفاصيل الفواتير </h2>
 
                         <div class="inputs">
                           <!--  -->
                              <!-- name -->
-                            <label for="">الاسم</label>
-                            <h5>يجب ان تكتب الاسم رباعي</h5>
-                            <input type="text" id="name"  placeholder="الاسم رباعي ..." name="Name" required pattern=".{12,30}" >
-                             
-                            <!-- email -->
-                            <label for="">الاميل</label>
-                            <input type="email" id="email"  placeholder="الايميل ..." name="Email" required readonly>
+                              <div class="div_input">
+                            <label for="">الاسم
+                                <span class="text-danger">*</span>
+                            </label>
                             
+                            <input type="text" id="name"  placeholder="الاسم رباعي ..." name="Name" required pattern=".{12,30}" >
+                             </div>
+
+                            <!-- email -->
+                             <div class="div_input">
+                            <label for="">الاميل
+                                <span class="text-danger">*</span>
+                            </label>
+                            <input type="email" id="email"  placeholder="الايميل ..." name="Email" required readonly>
+                             </div>
+
                             <!-- phone -->
-                            <label for="">تليفون الاساسي</label>
+                            <div class="div_input">
+                            <label for="">تليفون الاساسي
+                               <span class="text-danger">*</span>
+                            </label>
                             <input type="text" id="phone" placeholder="التليفون الاساسي ..." name="PhoneMain" readonly pattern=".{11,11}">
+                            </div>
+
                             <!-- phone -->
-                            <label for=""> التليفون الاحتياطي</label>
+                             <div class="div_input">
+                            <label for=""> التليفون الاحتياطي 
+                                <span class="text-danger">*</span>
+                            </label>
                             <input type="text" placeholder="التليفون الاحتياطي ..." name="PhoneReserve" pattern=".{11,11}">
+                             </div>
 
                             <!-- address -->
-                            <label for="governorates">اختر المحافظة:</label>
+                            <label for="governorates">اختر المحافظة: 
+                                <span class="text-danger">*</span>
+                            </label>
                             <select id="governorates" name="Governorates" required>
                                 <option value="" disabled selected>اختر المحافظة</option>
                                 <option value="cairo">القاهرة</option>
@@ -336,15 +358,46 @@
                                 <option value="south_sinai">جنوب سيناء</option>
                                 <option value="suez">السويس</option>
                             </select>
+
                             <!-- markaz -->
-                            <label for="">المركز</label>
+                            <div class="div_input">
+                            <label for="">المركز 
+                                <span class="text-danger">*</span>
+                            </label>
                             <input type="text" placeholder="المركز ..." name="Center" required>
+                            </div>
+
                             <!-- karia -->
-                            <label for="">القرية  </label>
+                            <div class="div_input">
+                            <label for="">القرية  
+                                <span class="text-danger">*</span>
+                            </label>
                             <input type="text" placeholder=" القرية / الحي" name="Village" required>
+                            </div>
+
                             <!-- streat -->
-                            <label for="">الشارع / الحي</label>
+                            <div class="div_input">
+                            <label for="">الشارع / الحي 
+                                <span class="text-danger">*</span>
+                            </label>
                             <input type="text" placeholder=" اسم الشارع " name="streat" required>
+                            </div>
+
+                              <!-- name-home -->
+                            <div class="div_input">
+                            <label for=""> اسم المنزل 
+                                <span class="text-danger">*</span>
+                            </label>
+                            <input type="text" placeholder=" اسم المنزل " name="Home" required>
+                            </div>
+
+                            <!-- notes -->
+                            <div class="div_input" id="div_input">
+                            <label for="">   
+                                ملاحظة
+                            </label>
+                            <textarea name="" id="" cols="30" rows="10" placeholder="كتاية ملاحظة"></textarea>
+                            </div>
 
 
 
