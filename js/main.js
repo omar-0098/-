@@ -417,7 +417,8 @@ if (governorateSelect) {
 //////////////////////////////
 
 function setupCartEvents() {
-  const cartIcon = document.querySelector(".fa-cart-shopping");
+   const cartIcon = document.querySelector(".fa-bag-shopping");
+
 
   document.addEventListener("click", function(e) {
     const btn = e.target.closest(".btn_add_cart");
