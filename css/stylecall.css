@@ -249,7 +249,6 @@ iframe{
     }
     .open_menu i{
         color: var(--main_color);
-        border: 1px solid var(--main_color);
         height: 40px;
         width: 40px;
         text-align: center;
