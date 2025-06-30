@@ -395,6 +395,7 @@ header .top_header .search_box button i{
     width: 40%;
 justify-content: space-evenly;
 margin-right: 114px;
+	flex-direction: row-reverse;
 }
 
 header .top_header .header_icons{
