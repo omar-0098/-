@@ -65,10 +65,9 @@
 
 
 
-
-          <!-- start-header  -->
-    <header>
-        <div class="top_top_header">
+     <!-- start-header -->
+     <header>
+             <div class="top_top_header">
             <div class="container">
             <div class="help">
                 <a href="callme.html"> الدعم </a>
@@ -90,14 +89,16 @@
         </div>
 
 
-
         <div class="top_header">
             <div class="container">
+                <a href="" class="logo"><img src="../img/logo.png"></a>
 
 
 
 
-                <a href="" class="logo"><img src="../img/logo.png" alt="صورة الرئيسية"></a>
+
+
+
 
 
                 <div>
@@ -113,12 +114,12 @@
 
 
                         <div class="categoru_nav_list">
-                            <a href="../Furniture/feyat/feyat1.html" >الفوط</a>
-                            <a href="../Furniture/mlayat/mlayat1.html">الملايات</a>
-                            <a href="../Furniture/paranes/paranes.html">البرانس</a>
-                            <a href="../Furniture/patatin/patatin1.html">البطاطين</a>
-                            <a href="../Furniture/ellehaf/ellehaf1.html">اللحاف</a>
-                            <a href="../Furniture/coferta/coferta1.html">كوفرتا</a>
+                            <a href="../../Furniture/feyat/feyat1.html" >الفوط</a>
+                            <a href="../../Furniture/mlayat/mlayat1.html">الملايات</a>
+                            <a href="../../Furniture/paranes/paranes.html">البرانس</a>
+                            <a href="../../Furniture/patatin/patatin1.html">البطاطين</a>
+                            <a href="../../Furniture/ellehaf/ellehaf1.html">اللحاف</a>
+                            <a href="../../Furniture/coferta/coferta1.html">كوفرتا</a>
                             <!-- <a href="">omar omar</a> -->
 
 
@@ -129,10 +130,9 @@
 
                     </div>
                                             <span onclick="open_Menu()" class="close_menu"><i class="fa-regular fa-circle-xmark"></i></span>
-
-                     
                         <li ><a href="../index.html">الرئيسية</a></li>
-                        <li ><a href="../chexkout.html">الدفع</a></li>
+
+                        <li class="check"><a href="../chexkout.html">الدفع</a></li>
                         <li><a href="../callme.html">المساعدة </a></li>
                         <li><a href="../Privacy.html">السياسة و الخصوصية</a></li>
 
@@ -141,31 +141,39 @@
 
 </div>
 
+
+
+
+
+
+
+
+
+
+
+
                 <form action="" class="search_box">
+
+                    <!-- <div class="select_box">
+                        <select id="category" name="category">
+                            <option value="omar">omar</option>
+                            <option value="omar">omar</option>
+                            <option value="omar">omar</option>
+                            <option value="omar">omar</option>
+                            <option value="omar">omar</option>
+                            <option value="omar">omar</option>
+
+     
+                        </select>
+                    </div> -->
+
+                    
                     <input type="text" id="search" name="search" placeholder=" ابدأ البحث..." required>
-                    <button type="submit" aria-label="بحث">
-                    <i class="fa-solid fa-magnifying-glass"></i>
+                    <button type="submit">
+                        <i class="fa-solid fa-magnifying-glass"></i>
                     </button>
+
                 </form>
-
-<span onclick="open_Menu()" class="open_menu"><i class="fa-solid fa-bars"></i></span>
-
-<!-- قسم إنشاء الحساب -->
-<div class="person1" id="registerSection">
-    <div class="person2">
-        <i id="person" class="fa-regular fa-user"></i>
-        <h1>انشاء حساب</h1>
-    </div>
-</div>
-
-
-                   <!-- قسم الترحيب (مخفي في البداية) -->
-       <div class="man1" id="welcomeSection" style="display: none;">
-            <div class="man2">
-                <h1 id="welcomeMessage">مرحباً <span id="userName"></span></h1>
-                <a href="user/accoun.html"><i id="icon_person" class="fa-solid fa-circle-user"></i></a> 
-            </div>
-        </div> 
 
                 <div class="header_icons">
                     <div class="icon">
@@ -176,7 +184,6 @@
                     </div>
 
                     <div onclick="open_close_cart()" class="icon">
-                        <!-- <i class="fa-solid fa-cart-shopping"></i> -->
                          <i class="fa-solid fa-bag-shopping"></i>
                         <span class="count count_item_header">0</span>
                     </div>
@@ -187,10 +194,7 @@
         </div>
 
 
-
-
-
-        
+     
 
     </header>
     <!-- end-header -->
