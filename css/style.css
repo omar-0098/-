@@ -1839,6 +1839,16 @@ header .top_header .logo {
 
 
 @media (max-width:500px) {
+    #welcomeMessage {
+font-size: 13px !important;
+}
+.man2 {
+    gap: 3px !important;
+}
+.man1 {
+    margin: 0px 10px 0px 15px ;
+}
+
     .slide {
     margin-bottom: 50px;
 }
@@ -2197,7 +2207,7 @@ header .top_header .logo {
         width: 89%;
     }
     #welcomeMessage {
-    font-size: 13px !important;
+    font-size: 12px !important;
     display: flex;
     flex-direction: column;
     align-items: flex-end;
@@ -2370,7 +2380,7 @@ padding:  1em 0.5em 0em !important;
     width: fit-content;
 }
     #icon_person {
-        font-size: 45px !important;
+        font-size: 33px  !important;
     }
         .person1 .person2 h1 {
         font-size: 14px;
