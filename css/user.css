@@ -1,6 +1,9 @@
 body{
     background: #fff4f4;
 }
+header .top_header .header_icons {
+    margin-left: 15px;
+}
 .all_formation .container{
     display: flex;
     flex-direction: row-reverse;
