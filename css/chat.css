@@ -488,9 +488,11 @@ border-radius: 10px 0px 0px 10px;
 @media (max-width:400px) {
     #chat-widget {
         position: fixed;
-        bottom: 25px;
-        right: 12px;
+        bottom: 7px;
+                right: 12px;
         width: 325px;
+        z-index: 99999;
+      height: 586px;
     }
     .bot {
     max-width: 87%;
@@ -523,6 +525,9 @@ border-radius: 10px 0px 0px 10px;
       #chat-widget {
         right: 11px;
         width: 280px;
+                z-index: 99999;
+                        bottom: 7px;
+
     }
     .bot {
         max-width: 94%;
