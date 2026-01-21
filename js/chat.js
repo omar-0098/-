@@ -8,8 +8,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
     <!-- منطقة الحذف -->
     <div id="trash-zone">
-      <i class="fa-solid fa-trash"></i>
-      <p>اسحب هنا للحذف</p>
+    <div id="trash-zone">✖</div>
     </div>
 
     <!-- نافذة الشات الرئيسية -->
@@ -440,3 +439,4 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById('btn-old').addEventListener('click', () => showSection('old'));
   document.getElementById('btn-private').addEventListener('click', () => showSection('private'));
 });
+
