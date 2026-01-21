@@ -7,9 +7,7 @@ document.addEventListener("DOMContentLoaded", () => {
     <div id="chat-toggle">💬</div>
 
     <!-- منطقة الحذف -->
-    <div id="trash-zone">
-    <div id="trash-zone">✖</div>
-    </div>
+  <div id="trash-zone">✖</div>
 
     <!-- نافذة الشات الرئيسية -->
     <div id="chat-widget">
@@ -95,10 +93,8 @@ document.addEventListener("DOMContentLoaded", () => {
     </div>
 
     <!-- صوت الإشعار -->
-    <audio id="sound" src="notification.mp3"></audio>
+    <audio id="sound" src="sounds/notification.mp3"></audio>
   `;
-
-
 
   // إضافة HTML للصفحة
   document.body.insertAdjacentHTML('beforeend', chatHTML);
@@ -215,21 +211,34 @@ document.addEventListener("DOMContentLoaded", () => {
   document.addEventListener("touchend", () => {
     endDrag();
     
-    // فتح الشات إذا لم يتم السحب
-    if (!moved && !isOverTrash) {
-      chatWidget.style.display = "flex";
-      startNewChat();
-      loadOldChats();
+    // فتح الشات إذا لم يتم السحب - مع تأخير وأنيميشن
+    if (!moved && !isOverTrash && chatWidget.style.display !== "flex") {
+      openChatWithAnimation();
     }
   });
 
-  /* فتح الشات بالضغط (للكمبيوتر) */
+  /* فتح الشات بالضغط (للكمبيوتر) - مع تأخير وأنيميشن */
   chatToggle.addEventListener("click", () => {
-    if (moved) return;
-    chatWidget.style.display = "flex";
-    startNewChat();
-    loadOldChats();
+    if (moved || chatWidget.style.display === "flex") return;
+    openChatWithAnimation();
   });
+
+  /* دالة فتح الشات مع الأنيميشن */
+  function openChatWithAnimation() {
+    // إضافة كلاس للأنيميشن
+    chatWidget.classList.add('opening');
+    
+    setTimeout(() => {
+      chatWidget.style.display = "flex";
+      startNewChat();
+      loadOldChats();
+      
+      // إزالة كلاس الأنيميشن بعد الانتهاء
+      setTimeout(() => {
+        chatWidget.classList.remove('opening');
+      }, 500);
+    }, 1000); // تأخير ثانية واحدة
+  }
 
   /* غلق الشات */
   closeChat.onclick = () => {
@@ -250,7 +259,8 @@ document.addEventListener("DOMContentLoaded", () => {
   /* رسائل */
   function botMsg(text) {
     chatBody.innerHTML += `<div class="bot">${text}</div>`;
-    sound.play().catch(() => {}); // تجنب أخطاء الصوت
+    // تشغيل الصوت فقط عند ظهور رسالة من البوت
+    sound.play().catch(() => {});
     chatBody.scrollTop = chatBody.scrollHeight;
   }
 
@@ -439,4 +449,3 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById('btn-old').addEventListener('click', () => showSection('old'));
   document.getElementById('btn-private').addEventListener('click', () => showSection('private'));
 });
-
