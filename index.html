@@ -697,97 +697,6 @@
 
 
 
-
-
-
-<div id="chat-toggle">💬</div>
-
-<!-- منطقة الحذف -->
-<div id="trash-zone">✖</div>
-
-
-<div id="chat-widget">
-  <div id="chat-header">
-    <div class="chat-header-main">
-    <img src="img/chat.svg" alt="">
-    <div>
-         <h2>كشميرووو</h2>
-        <h3>` شات كشمير هوم</h3>
-    </div>
-</div>
-    <button id="close-chat">✕</button>
-  </div>
-
-  <div class="chat-all show">
-  <div id="chat-body"></div>
-
-  <div id="chat-options"></div>
-
-  <div id="chat-input">
-    <input type="text" id="message" placeholder="اكتب رسالتك..." />
-    <button id="send">➤</button>
-  </div>
-</div>
-
-<div class="chat-acient hide" >
-
-<div id="old-chats"></div>
-</div>
-
-<div class="chat-pivet hide">
-        <div class="section">
-        <div class="container">
-        <h1> الشروط و الاحكام :</h1>
-        <p>مرحبا بك في <span>كشمير هوم</span> باستخدامك لهذا الموقع فإنك توافق على الشروط التالية :</p> 
-        <ul>
-        <li>يُستخدم الموقع  <span> للتسوق الالكتروني</span> فقط ولا يُسمح باستخدامه لأي نشاط غير مشروع.</li>
-          <li>نحتفظ بالحق في تعديل أو إلغاء الطلبات في حال حدوث أي خلل أو مخالفة.</li>
-          <li>الأسعار قابلة<span>للتغيير</span> دون إشعار مسبق.</li>
-          <li>جميع المحتويات محمية بموجب حقوق الملكية الفكرية.</li>
-          <ul>الاسترجاع مسموح خلال  <span> 7 ايام</span> من الاستلام بشرط أن يكون المنتج في حالته الأصلية.</li>
-        </li>
-      </div>
-    </div>
-    <!-- <li>لا نشارك معلوماتك مع أي طرف ثالث إلا للضرورة <span>(مثل شركات الشحن)</span>.</li> -->
-
-    <hr>
-
-      <div class="section">
-        <div class="container">
-        <h1> السياسة و الخصوصية :</h1>
-        <p>نحن نقدر خصوصيتك وملتزمون  <span>بحمايتها</span> فيما يلي كيف نتعامل مع بياناتك:</p>      
-          <ul>
-            <li> عند الدفع سوف يتواصل معك احد من كشمير هوم وتأكد انه من كشمير هوم بواسطة هذا الرقم   <span>01028604523</span> يتواصل معك لاستكمال <span>عملة الشراء نقدا</span></li>
-            <li>لا نشارك معلوماتك مع أي طرف ثالث إلا للضرورة <span>(مثل شركات الشحن)</span>.</li>
-          <li>نحمي معلوماتك بوسائل أمان متقدمة.</li>
-        </ul>
-        <p>باستخدامك لهذا الموقع، فإنك توافق على سياسة الخصوصية المذكورة أعلاه.</p>
-      </div>
-</div>
-</div>
-
-<div class="sect">
-  <div class="now" id="btn-all">
-    <p><i class="fa-solid fa-house"></i></p>
-    <h1>شات</h1>
-  </div>
-
-  <div class="old" id="btn-old">
-    <p><i class="fa-regular fa-comment"></i></p>
-    <h1>محادثات قديمة</h1>
-  </div>
-
-  <div class="private" id="btn-private">
-    <p><i class="fa-solid fa-book"></i></p>
-    <h1>الخصوصية</h1>
-  </div>
-</div>
-
-
-
-  <!-- المحادثات القديمة -->
-  
-</div>
 <audio id="sound" src="new-notification-07-210334.mp3"></audio>
 
 
@@ -830,45 +739,7 @@
 <script src="js/omar.js"></script>
 <script src="js/chat.js"></script>
 
-<script>
-  const sections = {
-    all: document.querySelector('.chat-all'),
-    old: document.querySelector('.chat-acient'),
-    private: document.querySelector('.chat-pivet')
-  };
 
-  const buttons = {
-    all: document.getElementById('btn-all'),
-    old: document.getElementById('btn-old'),
-    private: document.getElementById('btn-private')
-  };
-
-  function showSection(type) {
-    // إخفاء كل الشاشات
-    Object.values(sections).forEach(sec => {
-      sec.classList.add('hide');
-      sec.classList.remove('show');
-    });
-
-    // إظهار المطلوبة
-    sections[type].classList.remove('hide');
-    sections[type].classList.add('show');
-
-    // إزالة التفعيل من كل الأزرار
-    Object.values(buttons).forEach(btn => btn.classList.remove('active'));
-
-    // تفعيل الزر الحالي
-    buttons[type].classList.add('active');
-  }
-
-  // Events
-  buttons.all.addEventListener('click', () => showSection('all'));
-  buttons.old.addEventListener('click', () => showSection('old'));
-  buttons.private.addEventListener('click', () => showSection('private'));
-
-  // الحالة الافتراضية
-  showSection('all');
-</script>
 
 
 </body>
