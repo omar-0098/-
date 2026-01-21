@@ -107,7 +107,8 @@ document.addEventListener("DOMContentLoaded", () => {
   const chatOptions = document.getElementById("chat-options");
   const oldChats = document.getElementById("old-chats");
   const sound = document.getElementById("sound");
-let userName = localStorage.getItem("userName") || "عزيزنا العميل";
+
+  const userName = "عزيزنا العميل";
   let currentSession = null;
   let stage = "main";
 
