@@ -446,6 +446,7 @@ body.dragging {
   border-radius: 0;
   height: 100vh;
   bottom: 0px;
+       z-index: 9999999999;
 }
 #chat-header {
   border-radius: 0px 0px 0px 0px;
@@ -467,3 +468,4 @@ body.dragging {
     transform: translateY(0) scale(1);
   }
 }
+
