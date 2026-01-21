@@ -99,6 +99,8 @@ document.addEventListener("DOMContentLoaded", () => {
     <audio id="sound" src="notification.mp3"></audio>
   `;
 
+
+
   // إضافة HTML للصفحة
   document.body.insertAdjacentHTML('beforeend', chatHTML);
 
@@ -201,21 +203,28 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* Touch Events */
   chatToggle.addEventListener("touchstart", e => {
-    e.preventDefault();
     const t = e.touches[0];
     startDrag(t.clientX, t.clientY);
-  }, { passive: false });
+  }, { passive: true });
 
   document.addEventListener("touchmove", e => {
     if (!isDragging) return;
-    e.preventDefault();
     const t = e.touches[0];
     drag(t.clientX, t.clientY);
-  }, { passive: false });
+  }, { passive: true });
 
-  document.addEventListener("touchend", endDrag);
+  document.addEventListener("touchend", () => {
+    endDrag();
+    
+    // فتح الشات إذا لم يتم السحب
+    if (!moved && !isOverTrash) {
+      chatWidget.style.display = "flex";
+      startNewChat();
+      loadOldChats();
+    }
+  });
 
-  /* فتح الشات بالضغط */
+  /* فتح الشات بالضغط (للكمبيوتر) */
   chatToggle.addEventListener("click", () => {
     if (moved) return;
     chatWidget.style.display = "flex";
@@ -431,46 +440,3 @@ document.addEventListener("DOMContentLoaded", () => {
   document.getElementById('btn-old').addEventListener('click', () => showSection('old'));
   document.getElementById('btn-private').addEventListener('click', () => showSection('private'));
 });
-
-
-
-
-
-
-  const sections = {
-    all: document.querySelector('.chat-all'),
-    old: document.querySelector('.chat-acient'),
-    private: document.querySelector('.chat-pivet')
-  };
-
-  const buttons = {
-    all: document.getElementById('btn-all'),
-    old: document.getElementById('btn-old'),
-    private: document.getElementById('btn-private')
-  };
-
-  function showSection(type) {
-    // إخفاء كل الشاشات
-    Object.values(sections).forEach(sec => {
-      sec.classList.add('hide');
-      sec.classList.remove('show');
-    });
-
-    // إظهار المطلوبة
-    sections[type].classList.remove('hide');
-    sections[type].classList.add('show');
-
-    // إزالة التفعيل من كل الأزرار
-    Object.values(buttons).forEach(btn => btn.classList.remove('active'));
-
-    // تفعيل الزر الحالي
-    buttons[type].classList.add('active');
-  }
-
-  // Events
-  buttons.all.addEventListener('click', () => showSection('all'));
-  buttons.old.addEventListener('click', () => showSection('old'));
-  buttons.private.addEventListener('click', () => showSection('private'));
-
-  // الحالة الافتراضية
-  showSection('all');
