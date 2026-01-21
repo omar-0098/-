@@ -187,14 +187,19 @@ document.addEventListener("DOMContentLoaded", () => {
 
   /* Mouse Events */
   chatToggle.addEventListener("mousedown", e => {
+    e.preventDefault();
     startDrag(e.clientX, e.clientY);
   });
 
   document.addEventListener("mousemove", e => {
+    if (!isDragging) return;
     drag(e.clientX, e.clientY);
   });
 
-  document.addEventListener("mouseup", endDrag);
+  document.addEventListener("mouseup", () => {
+    if (!isDragging) return;
+    endDrag();
+  });
 
   /* Touch Events */
   chatToggle.addEventListener("touchstart", e => {
@@ -209,10 +214,15 @@ document.addEventListener("DOMContentLoaded", () => {
   }, { passive: true });
 
   document.addEventListener("touchend", () => {
+    if (!isDragging) return;
+    
+    const wasOverTrash = isOverTrash;
+    const wasMoved = moved;
+    
     endDrag();
     
-    // فتح الشات إذا لم يتم السحب - مع تأخير وأنيميشن
-    if (!moved && !isOverTrash && chatWidget.style.display !== "flex") {
+    // فتح الشات فقط إذا لم يتم السحب ومش فوق الحذف والشات مش مفتوح
+    if (!wasMoved && !wasOverTrash && chatWidget.style.display !== "flex") {
       openChatWithAnimation();
     }
   });
@@ -252,7 +262,9 @@ document.addEventListener("DOMContentLoaded", () => {
     currentSession = "chat_" + Date.now();
     stage = "main";
     chatBody.innerHTML = "";
-    botMsg(`أهلاً ${userName} 👋 عامل ايه انا كشميروو لو عايز اي حاجة اسألني عليها`);
+    // إضافة رسالة الترحيب بدون صوت في البداية
+    chatBody.innerHTML += `<div class="bot">أهلاً ${userName} 👋 عامل ايه انا كشميروو لو عايز اي حاجة اسألني عليها</div>`;
+    chatBody.scrollTop = chatBody.scrollHeight;
     showOptions();
   }
 
