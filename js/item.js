@@ -605,3 +605,150 @@ overlay.addEventListener("click", function (e) {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+// مشاركة المنتج
+function toggleShare() {
+    const menu = document.getElementById("shareMenu");
+    menu.style.display = menu.style.display === "block" ? "none" : "block";
+}
+
+function shareWhatsApp() {
+    const productName = document.querySelector(".name").innerText.trim();
+    const pageLink = window.location.href;
+
+    // اللينك لوحده في سطر
+    const message = productName + "\n\n" + pageLink;
+
+    window.open(
+        "https://wa.me/?text=" + encodeURIComponent(message),
+        "_blank"
+    );
+}
+
+function shareTelegram() {
+    const productName = document.querySelector(".name").innerText.trim();
+    const pageLink = window.location.href;
+
+    // تليجرام لازم اللينك يبقى url
+    window.open(
+        "https://t.me/share/url?url=" + encodeURIComponent(pageLink) +
+        "&text=" + encodeURIComponent(productName),
+        "_blank"
+    );
+}
+
+
+
+
+
+
+
+
+
+
+
+
+// تحميل فيديو 
+function downloadAllImages() {
+    // جيب كل الصور
+    const imgElements = document.querySelectorAll('img[onclick*="changeItemImage"]');
+    
+    imgElements.forEach((img, index) => {
+        setTimeout(() => {
+            const link = document.createElement('a');
+            link.href = img.src;
+            
+            // استخرج اسم الملف
+            const fileName = img.src.split('/').pop().split('\\').pop();
+            link.download = fileName;
+            
+            link.click();
+        }, index * 300);
+    });
+}
+
+
+
+
+
+
+
+
+// اعجاب بالمنتج
+document.querySelectorAll(".fav-btn").forEach(button => {
+  const productId = button.getAttribute("data-id");
+
+  // تحميل الحالة من localStorage
+  const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
+
+  if (favorites.includes(productId)) {
+    button.classList.add("active");
+  }
+
+  button.addEventListener("click", () => {
+    let favs = JSON.parse(localStorage.getItem("favorites")) || [];
+
+    if (favs.includes(productId)) {
+      // إزالة من المفضلة
+      favs = favs.filter(id => id !== productId);
+      button.classList.remove("active");
+    } else {
+      // إضافة للمفضلة
+      favs.push(productId);
+      button.classList.add("active");
+    }
+
+    localStorage.setItem("favorites", JSON.stringify(favs));
+  });
+});
+
+
+
+
+const HEART_COUNT = 10;       // عدد القلوب
+const HEART_DELAY = 120;    // الوقت بين كل قلب
+const HEART_LIFETIME = 1000;
+
+function heartAnimation() {
+  const heart = document.createElement("div");
+  heart.innerHTML = "❤️";
+  heart.style.position = "fixed";
+  heart.style.left = Math.random() * 100 + "vw";
+  heart.style.bottom = "-30px";
+  heart.style.fontSize = "24px";
+  heart.style.opacity = "1";
+  heart.style.transition = `all ${HEART_LIFETIME}ms ease-out`;
+  heart.style.zIndex = "9999";
+  document.body.appendChild(heart);
+
+  setTimeout(() => {
+    heart.style.bottom = "50vh";
+    heart.style.opacity = "0";
+  }, 10);
+
+  setTimeout(() => {
+    heart.remove();
+  }, HEART_LIFETIME);
+}
+
+function activateLike(button) {
+  if (button.classList.contains("active")) return;
+
+  button.classList.add("active");
+
+  for (let i = 0; i < HEART_COUNT; i++) {
+    setTimeout(heartAnimation, i * HEART_DELAY);
+  }
+}
+
