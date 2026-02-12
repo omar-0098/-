@@ -112,21 +112,24 @@
 
 
     <!-- start-item -->
-    <div class="item_detail">
+
+
+
+      <div class="item_detail">
         <div class="container">
 
             <!-- imeg-content -->
             <div class="img_item">
                 <div class="big_img">
-                    <img id="bidImg" src="main-imag.jpg" alt="">
+                            <img id="bidImg" src="main-imag.jpg" alt="">
                 </div>
 
                 <div class="sm_imgs">
-                    <img onclick="changeItemImage(this.src)" src="main-imag.jpg" alt="">
+  <img onclick="changeItemImage(this.src)" src="main-imag.jpg" alt="">
                     <img onclick="changeItemImage(this.src)" src="IMG-20250423-WA0038.jpg" alt="">
                     <img onclick="changeItemImage(this.src)" src="IMG-20250423-WA0039.jpg" alt="">
                     <img onclick="changeItemImage(this.src)" src="IMG-20250423-WA0040.jpg" alt="">
-
+                    
                 </div>
             </div>
 
@@ -135,40 +138,82 @@
 
                 <!-- name-product -->
                 <h1 class="name">  كوفرتى سادة شراشيب + 2 خدادية  + 1 غطاء وسادة المقاس الكبير من شركة (ZAHAR) </h1>
-          
+ <div class="stars">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                        </div>
+ <div class="price">
+
+
+                    <p><span> جنيه<span> 1350</span></span></p>
+                    <!-- <p class="old_price">جنيه 1050</p>  -->
+
+                </div>
+
+
+                <h6> كوفرتى سادة شراشيب + 2 خدادية  + 1 غطاء وسادة المقاس الكبير من شركة (ZAHAR) </h6>
+
 
 
                 <hr>
 
                 <!-- the-price -->
-                <div class="price">
-                    <p><span> جنيه<span> 1350</span></span></p>
-                    <!-- <p class="old_price">جنيه 875</p> -->
-                </div>
-
+               
                 <!-- the-detiels -->
             <div class="detils">
-                
+      
                 <h2>تفاصيل المنتج</h2>
                 <h5> اللون :  <span> مينت </span></h5>
                 <h5> المقاس :  <span>الكبير </span></h5>
                 <h5>القطع: <span> كوفرتي + 1ملاية +2 خدادية +1 غطي وسادة</span></h5>
                 <h5>عدد القطع: <span>  5  </span></h5>
+
+ <button class="share-btn" onclick="toggleShare()">
+   <i class="fa-solid fa-share-nodes"></i>
+</button>
+
+
+<button onclick="downloadAllImages()"><i class="fa-solid fa-circle-down"></i></button>
+
+<!-- <button id="cartBtn">مشاهدة الفيديو <i class="fa-solid fa-video"></i></button>  -->
+
+
+
+
+<button class="fav-btn" onclick="activateLike(this)">
+  <i class="fa-solid fa-heart"></i>
+</button>
+
+
+
+<div class="share-menu" id="shareMenu">
+    <p>مشاركة ...</p>
+    <button onclick="shareWhatsApp()"> <img src="../../../img/whats.png" alt="">واتساب</button>
+    <hr>
+    <button onclick="shareTelegram()"><img src="../../../img/telegram.png" alt=""> تليجرام</button>
+</div> 
+
+
         </div>
                   
-                <button id="cartBtn">مشاهدة الفيديو <i class="fa-solid fa-video"></i></button>
+
+
+
+
+                <!-- <button id="cartBtn">مشاهدة الفيديو <i class="fa-solid fa-video"></i></button> -->
 
 
             
-        <!-- the-vedio -->
-                <div id="overlay">
-<!--                 
-                    <video controls >
+        <!-- the-vedio
+               <div id="overlay"> -->
+           <!-- <video controls >
                         <source src="video_2025-04-25_14-23-12.mp4">
-                    </video> -->
-                    <h5 class="nono">السعر الموجود في الفيديو منتهي صلاحيته</h5>
-
-                    <iframe src="https://www.facebook.com/plugins/video.php?height=476&href=https%3A%2F%2Fwww.facebook.com%2F100064031503557%2Fvideos%2F594922000376715%2F&show_text=false&width=267&t=0" width="267" height="476" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" allowFullScreen="true"></iframe>                </div>
+                    </video
+                     <iframe src="https://www.facebook.com/plugins/video.php?height=476&href=https%3A%2F%2Fwww.facebook.com%2F100064031503557%2Fvideos%2F594922000376715%2F&show_text=false&width=267&t=0" width="267" height="476" style="border:none;overflow:hidden" scrolling="no" frameborder="0" allowfullscreen="true" allow="autoplay; clipboard-write; encrypted-media; picture-in-picture; web-share" allowFullScreen="true"></iframe>                 -->
+                <!-- </div>  --> 
 
 <hr>
 
@@ -195,10 +240,20 @@
                     
             </div>
         </div>
+
+
+        
     </div>
 
   </div>
-    <!-- end-item -->
+
+
+
+
+
+
+
+
 
 
     <!-- start-comment -->
