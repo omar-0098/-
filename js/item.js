@@ -686,10 +686,13 @@ function downloadAllImages() {
 
 
 // اعجاب بالمنتج
+const HEART_COUNT = 10;
+const HEART_DELAY = 120;
+const HEART_LIFETIME = 1000;
+
+// اعجاب بالمنتج
 document.querySelectorAll(".fav-btn").forEach(button => {
   const productId = button.getAttribute("data-id");
-
-  // تحميل الحالة من localStorage
   const favorites = JSON.parse(localStorage.getItem("favorites")) || [];
 
   if (favorites.includes(productId)) {
@@ -700,25 +703,16 @@ document.querySelectorAll(".fav-btn").forEach(button => {
     let favs = JSON.parse(localStorage.getItem("favorites")) || [];
 
     if (favs.includes(productId)) {
-      // إزالة من المفضلة
       favs = favs.filter(id => id !== productId);
       button.classList.remove("active");
     } else {
-      // إضافة للمفضلة
       favs.push(productId);
-      button.classList.add("active");
+      activateLike(button);
     }
 
     localStorage.setItem("favorites", JSON.stringify(favs));
   });
 });
-
-
-
-
-const HEART_COUNT = 10;       // عدد القلوب
-const HEART_DELAY = 120;    // الوقت بين كل قلب
-const HEART_LIFETIME = 1000;
 
 function heartAnimation() {
   const heart = document.createElement("div");
@@ -737,9 +731,7 @@ function heartAnimation() {
     heart.style.opacity = "0";
   }, 10);
 
-  setTimeout(() => {
-    heart.remove();
-  }, HEART_LIFETIME);
+  setTimeout(() => heart.remove(), HEART_LIFETIME);
 }
 
 function activateLike(button) {
