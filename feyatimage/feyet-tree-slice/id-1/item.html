@@ -134,26 +134,68 @@
             <div class="details_item"> 
 
                 <!-- name-product -->
-                <h1 class="name">طقم فوط فاخر مكوّن من ثلاث قطع من شركة (VOME)، مصنوع من قطن 100%. </h1>
-          
+                <h1 class="name">طقم فوط فاخر مكوّن من ثلاث قطع من شركة</h1>
+ <div class="stars">
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                            <i class="fa-solid fa-star"></i>
+                        </div>
+ <div class="price">
+                    <p><span> جنيه<span> 875</span></span></p>
+                    <p class="old_price">جنيه 1050</p>
+                </div>
+
+
+                 <h6>طقم فوط فاخر مكوّن من ثلاث قطع من شركة (VOME)، مصنوع من قطن 100%. </h6>
+
 
 
                 <hr>
 
                 <!-- the-price -->
-                <div class="price">
-                    <p><span> جنيه<span> 875</span></span></p>
-                    <p class="old_price">جنيه 1050</p>
-                </div>
-
+               
                 <!-- the-detiels -->
             <div class="detils">
                 <h2>تفاصيل المنتج</h2>
                 <!-- <h5> اللون:  <span> </span></h5> -->
                 <h5>المقاس: <span>  140 * 70  </span></h5>
                 <h5>عدد القطع: <span>  3  </span></h5>
+
+
+ <button class="share-btn" onclick="toggleShare()">
+   <i class="fa-solid fa-share-nodes"></i>
+</button>
+
+
+<button onclick="downloadAllImages()"><i class="fa-solid fa-circle-down"></i></button>
+
+<!-- <button id="cartBtn">مشاهدة الفيديو <i class="fa-solid fa-video"></i></button>  -->
+
+
+
+
+<button class="fav-btn" onclick="activateLike(this)">
+  <i class="fa-solid fa-heart"></i>
+</button>
+
+
+
+<div class="share-menu" id="shareMenu">
+    <p>مشاركة ...</p>
+    <button onclick="shareWhatsApp()"> <img src="../../../img/whats.png" alt="">واتساب</button>
+    <hr>
+    <button onclick="shareTelegram()"><img src="../../../img/telegram.png" alt=""> تليجرام</button>
+</div> 
+
+
         </div>
                   
+
+
+
+
                 <!-- <button id="cartBtn">مشاهدة الفيديو <i class="fa-solid fa-video"></i></button> -->
 
 
@@ -191,6 +233,9 @@
                     
             </div>
         </div>
+
+
+        
     </div>
 
   </div>
@@ -231,9 +276,10 @@
     </div>
 
 
-    <input  type="text" id="usernameInput" placeholder="اسمك الثلاثي إلى الخماسي فقط">
+    <!-- <input  type="text" id="usernameInput" placeholder="اسمك الثلاثي إلى الخماسي فقط"> -->
     <input type="text" id="commentInput" placeholder="تعليقك">
     <button id="button" onclick="postComment()">نشر</button>
+
     <div class="comments" id="commentsContainer"></div>
     <div id="loadMoreBtn">
       <button class="most" onclick="loadMoreComments()">عرض المزيد</button>
@@ -255,7 +301,7 @@
             <p>&copy; <span>kashmir home</span> All Right Reserved.</p>
 
             <div class="payment_img">
-                <img src="img/payment_method.png" alt="">
+                <img src="../../../img/payment_method.png" alt="">
             </div>
         </div>
     </div>
@@ -269,10 +315,14 @@
 
 
 
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
-    <script src="../../../js/item.js"></script>
  <script src="../../../js/main.js"></script>
+<script src="../../../js/item.js"></script>
+<script src="../../../js/advan.js"></script>
+
+
+
+
+
 
 
 
