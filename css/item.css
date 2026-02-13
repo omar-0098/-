@@ -93,8 +93,7 @@ hr{
   }
 
   #cartBtn {
-    margin: 0px 8px;
-    padding: 13px 29px;
+    padding: 12px 17px;
     font-size: 14px;
     cursor: pointer;
     font-family: "Readex Pro", sans-serif;
@@ -767,8 +766,10 @@ font-size: 20px;
     }
     #cartBtn {
       margin: 12px 0px 20px;
-      padding: 13px 24px;
       font-size: 12px;
+    }
+    .fa-video{
+      margin-right: 5px;
     }
     .item_detail .details_item .icons {
         width: 100%;
@@ -953,9 +954,9 @@ background-color: #e5e7eb;
         color: #373737;
     }
   #cartBtn {
-    margin: 12px 0px 18px;
-    padding: 11px 24px;
-    font-size: 10px;
+          margin: 12px 0px 18px;
+        padding: 11px 17px;
+        font-size: 13px;
 }
   .item_detail .details_item .nono {
     font-size: 14px;
