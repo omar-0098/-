@@ -58,9 +58,7 @@ Object.assign(downloadDialog.style, {
   border: "none",
   borderRadius: "10px",
   zIndex: "9999",
-    position: "fixed",
-    top: "45%",
-    left: "42%",
+  margin: "auto",
 });
 
 downloadDialog.innerHTML = `
@@ -198,3 +196,4 @@ function activateLike(button) {
     setTimeout(heartAnimation, i * HEART_DELAY);
   }
 }
+
