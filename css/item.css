@@ -1145,7 +1145,23 @@ button.voted {
 
 
 
-
+input, select, button {
+border: none;
+    outline: none;
+    font-family: "Rubik", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: bold;
+    font-style: normal;
+    padding: 10px;
+    padding: 6px 14px;
+    border-radius: 4px;
+}
+dialog form p{
+      font-family: "Rubik", sans-serif;
+    font-optical-sizing: auto;
+    font-weight: bold;
+    font-style: normal;
+}
 
 
 .fav-btn {
