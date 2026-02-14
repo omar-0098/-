@@ -128,16 +128,17 @@ hr{
 }
 .item_detail .img_item .sm_imgs{
     display: flex;
-    justify-content: center;
+    justify-content: flex-start;
     cursor: pointer;
     overflow-x: scroll;
     flex-direction: column;
     width: 122px;
-    /* background: aquamarine; */
     overflow-x: hidden;
     overflow-y: scroll;
     direction: ltr;
     margin-left: 11px;
+    height: 60.3vh;
+    align-items: center;
 }
 .item_detail .img_item .sm_imgs img{
 width: fit-content;
@@ -704,12 +705,6 @@ color: #886364;
     body {
         padding-top: 135px;
     }
-  .item_detail .img_item .sm_imgs{
-    display: flex;
-    justify-content: center;
-    cursor: pointer;
-    overflow: visible;
-  }
   .item_detail{
     padding-top: 0px;
   }
@@ -729,7 +724,10 @@ font-size: 20px;
     }
     .item_detail .img_item .sm_imgs {
         margin-top: 20px;
-                overflow: scroll;
+        overflow: scroll;
+        display: flex;
+        cursor: pointer;
+        height: 120px;
     }
     .item_detail .img_item .sm_imgs img {
         width: 28%;
