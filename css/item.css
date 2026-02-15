@@ -733,6 +733,7 @@ font-size: 20px;
         width: 28%;
         height: 112px;
         margin-left: 9px;
+        object-fit: cover;
     }
     .item_detail .details_item h6 {
     font-size: 16px;
