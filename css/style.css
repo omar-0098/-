@@ -326,7 +326,7 @@ header{
 header .top_header .container{
     display: flex;
     align-items: center;
-    justify-content: flex-end;
+    justify-content: flex-start;
     padding: 15px 0px;
     position: relative;
 }
@@ -564,7 +564,7 @@ width: fit-content;
     background: #e5e7f0;
     padding: 9px 12px;
     border-radius: 8px;
-    margin: 0px 15px 0px 30px;
+    margin: 0px 10px 0px 10px;
 }
 .person2{
     width: 100%;
@@ -1541,7 +1541,7 @@ footer .bottom_footer .payment_img{
     header .top_header .container{
         flex-wrap: wrap;
         position: relative;
-        justify-content: flex-end;
+        justify-content: flex-start;
     } 
     header .top_header .search_box{
         order: 3;
@@ -1556,6 +1556,7 @@ header .top_header .logo {
         height: 6vh;
         display: flex;
         align-items: center;
+                justify-content: flex-end;
     }
     header .top_header .logo img{
         width: 65%;
@@ -1880,7 +1881,7 @@ font-size: 13px !important;
     }
   .open_menu{
     width: 10%;
-    margin-right: 10px;
+    margin-right: 0px;
   }
 .shipping-container {
   width: 80%;
@@ -1922,10 +1923,10 @@ font-size: 13px !important;
     padding: 15px 20px !important;
 }
     .person1 {
-        width: 10%;
+            width: 10%;
         padding: 10px 23px;
         margin-right: 10px;
-        margin-left: 0px;
+        margin-left: 10px;
     }
     #person {
     font-size: 21px;
@@ -2375,8 +2376,7 @@ padding:  1em 0.5em 0em !important;
     font-size: 11px;
 }
         .person1{
-        /* margin: 0px 0px 0px 0px; */
-        margin-right: 9px;
+         margin: 0px 14px 0px 6px; 
     }
     header .top_header .header_icons,.person1{
         display: flex;
