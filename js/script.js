@@ -363,31 +363,29 @@ function applyLoggedInUI(userData) {
     }
 })();
 // ============================================================
-//  إظهار واجهة المستخدم المسجّل (متاحة globally عبر window)
+//  إظهار واجهة المستخدم المسجّل
 // ============================================================
-window.applyLoggedInUI = function(userData) {
-    const registerSection = document.getElementById("registerSection");
-    const welcomeSection  = document.getElementById("welcomeSection");
-    const userNameEl      = document.getElementById("userName");
-    if (registerSection) registerSection.style.display = "none";
-    if (welcomeSection)  welcomeSection.style.display  = "flex";
-    if (userNameEl)      userNameEl.textContent         = userData.firstName;
-};
+function applyLoggedInUI(userData) {
+    var reg = document.getElementById("registerSection");
+    var wel = document.getElementById("welcomeSection");
+    var nm  = document.getElementById("userName");
+    if (reg) reg.style.display = "none";
+    if (wel) wel.style.display = "flex";
+    if (nm)  nm.textContent    = userData.firstName;
+}
 
 // ============================================================
 //  فحص localStorage عند تحميل الصفحة
 // ============================================================
-(function checkSavedUser() {
-    const saved = localStorage.getItem("kashmirUser");
+(function() {
+    var saved = localStorage.getItem("kashmirUser");
     if (!saved) return;
     try {
-        const userData = JSON.parse(saved);
+        var userData = JSON.parse(saved);
         if (document.readyState === "loading") {
-            document.addEventListener("DOMContentLoaded", () => window.applyLoggedInUI(userData));
+            document.addEventListener("DOMContentLoaded", function() { applyLoggedInUI(userData); });
         } else {
-            window.applyLoggedInUI(userData);
+            applyLoggedInUI(userData);
         }
-    } catch(e) {
-        localStorage.removeItem("kashmirUser");
-    }
+    } catch(e) { localStorage.removeItem("kashmirUser"); }
 })();
