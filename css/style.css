@@ -324,11 +324,12 @@ header{
     z-index: 1000;
 }
 header .top_header .container{
-    display: flex;
+      display: flex;
     align-items: center;
     justify-content: flex-start;
     padding: 15px 0px;
     position: relative;
+    flex-direction: row-reverse;
 }
 header .top_header .logo{
     width: 230px;
@@ -564,7 +565,7 @@ width: fit-content;
     background: #e5e7f0;
     padding: 9px 12px;
     border-radius: 8px;
-    margin: 0px 10px 0px 10px;
+    margin: 0px 11px 0px 11px;
 }
 .person2{
     width: 100%;
@@ -587,7 +588,7 @@ width: fit-content;
     cursor: pointer;
 }
 .man1{
-        margin: 0px 15px 0px 30px;
+        margin: 0px 10px 0px 10px;
 }
 .man2{
     width: 100%;
@@ -1541,8 +1542,8 @@ footer .bottom_footer .payment_img{
     header .top_header .container{
         flex-wrap: wrap;
         position: relative;
-        justify-content: flex-start;
-    } 
+        justify-content: end;
+        } 
     header .top_header .search_box{
         order: 3;
         width: 83%;
@@ -1556,8 +1557,8 @@ header .top_header .logo {
         height: 6vh;
         display: flex;
         align-items: center;
-                justify-content: flex-end;
-    }
+        justify-content: flex-start;
+     }
     header .top_header .logo img{
         width: 65%;
     }
@@ -1881,7 +1882,7 @@ font-size: 13px !important;
     }
   .open_menu{
     width: 10%;
-    margin-right: 0px;
+ margin-right: 8px;
   }
 .shipping-container {
   width: 80%;
@@ -1969,6 +1970,7 @@ font-size: 13px !important;
     header .top_header .header_icons {
         width: 10%;
         padding: 10px 23px;
+        margin: 0px -3px;
     }
 
     .spinner {
@@ -2364,6 +2366,9 @@ padding:  1em 0.5em 0em !important;
 
 
 @media (max-width:400px) {
+        header .top_header .header_icons{
+            margin: 0px -7px !important ;
+        }
     .nav_links {
         width: 100%;
         left: -100%;
@@ -2382,6 +2387,7 @@ padding:  1em 0.5em 0em !important;
         display: flex;
         gap: 0px;
         padding: 10px 21px;
+        margin: 0px 12px;
     }
     .open_menu i{
                padding: 20px 21px;
@@ -2942,15 +2948,17 @@ box-sizing: border-box;
 
 .man2 {
     display: flex;
-    align-items: center;
+/* flex-direction: row-reverse; */
     gap: 8px;
 }
 
 #welcomeMessage {
     margin: 0;
-    font-size: 16px;
+    font-size: 15px;
     color: #333;
     font-weight: bold;
+    display: flex;
+    flex-direction: column;
 }
 
 #userName {
