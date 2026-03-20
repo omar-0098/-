@@ -105,9 +105,7 @@
   </script>
 </head>
 
-<body>
 
- 
     <!-- start-cart -->
     <div class="cart">
         <div class="top_cart">
@@ -228,21 +226,26 @@
 <span onclick="open_Menu()" class="open_menu"><i class="fa-solid fa-bars"></i></span>
 
 <!-- قسم إنشاء الحساب -->
-<div class="person1" id="registerSection">
-  <div class="person2">
-        <i class="fa-regular fa-user"></i>
+ <div class="person1" id="registerSection" onclick="openModal()">
+    <div class="person2">
+        <i id="person" class="fa-regular fa-user"></i>
         <h1>انشاء حساب</h1>
     </div>
-</div>
+</div> 
 
-<!-- الـ Modal -->
- <div class="man1" id="welcomeSection" style="display: none;">
+
+
+
+
+
+                   <!-- قسم الترحيب (مخفي في البداية) -->
+       <div class="man1" id="welcomeSection" style="display: none;">
             <div class="man2">
                 <h1 id="welcomeMessage">مرحباً <span id="userName"></span></h1>
                 <a href="user/accoun.html"><i id="icon_person" class="fa-solid fa-circle-user"></i></a> 
             </div>
         </div> 
-              
+
                 <div class="header_icons">
                     <div class="icon">
                         <!-- <a href="">
@@ -621,7 +624,7 @@
 
 
 
-   <!-- ============================================================
+    <!-- ============================================================
      زر فتح الـ Modal (الـ div بتاعك)
      ============================================================ -->
 
@@ -809,9 +812,38 @@
  
 
 
- 
- 
- 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 <audio id="sound" src="new-notification-07-210334.mp3"></audio>
 
@@ -822,9 +854,11 @@
 
 
 
+
+
+
+
 <script type="module" src="js/script.js"></script>
-
-
   <script src="https://accounts.google.com/gsi/client" async defer></script>
   <!-- مكتبة jwt-decode - النسخة الصحيحة ✅ -->
   <script src="https://cdn.jsdelivr.net/npm/jwt-decode@3.1.2/build/jwt-decode.min.js"></script>
@@ -832,32 +866,18 @@
     <!-- Swiper JS -->
     <script  src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
     <!-- fill -->
-    <script src="js/items_home_shop.js"></script>
-    <script src="js/cart_anemation.js"></script>
-    <script src="js/main.js"></script>
-  
+
+<script src="js/items_home_shop.js"></script>
+<script src="js/cart_anemation.js"></script>
+
+<script src="js/main.js"></script>
 <script src="js/swiper.js"></script>
 <script src="js/omar.js"></script>
+
 <script src="js/chat.js"></script>
 
 
 
-
-
-
-<script>
-window.openModal = function() {
-    var m = document.getElementById("authModal");
-    if (m) { m.classList.add("open"); document.body.style.overflow = "hidden"; }
-};
-window.closeModal = function() {
-    var m = document.getElementById("authModal");
-    if (m) { m.classList.remove("open"); document.body.style.overflow = ""; }
-};
-window.handleOverlayClick = function(e) {
-    if (e.target === document.getElementById("authModal")) window.closeModal();
-};
-</script>
 
 
 
