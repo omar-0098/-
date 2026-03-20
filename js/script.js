@@ -1,4 +1,44 @@
 // ============================================================
+//  Modal Open / Close
+// ============================================================
+window.openModal = function() {
+    const modal = document.querySelector(".modal-overlay");
+    if (modal) modal.classList.add("open");
+};
+
+window.closeModal = function() {
+    const modal = document.querySelector(".modal-overlay");
+    if (modal) modal.classList.remove("open");
+};
+
+// إغلاق الـ modal لما تضغط على الـ overlay نفسه (برا الـ box)
+document.addEventListener("DOMContentLoaded", function() {
+    const modal = document.querySelector(".modal-overlay");
+    if (modal) {
+        modal.addEventListener("click", function(e) {
+            if (e.target === modal) closeModal();
+        });
+    }
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ============================================================
 //  Firebase Imports
 // ============================================================
 import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
