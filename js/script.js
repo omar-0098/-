@@ -362,3 +362,61 @@ function applyLoggedInUI(userData) {
         localStorage.removeItem("kashmirUser");
     }
 })();
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// ============================================================
+//  MODAL CONTROL (فتح / قفل)
+// ============================================================
+
+// فتح المودال
+window.openModal = function () {
+    const modal = document.getElementById("authModal");
+    modal.style.display = "flex";
+    document.body.style.overflow = "hidden"; // يمنع السكرول
+};
+
+// قفل المودال
+window.closeModal = function () {
+    const modal = document.getElementById("authModal");
+    modal.style.display = "none";
+    document.body.style.overflow = "auto";
+};
+
+// قفل عند الضغط خارج الصندوق
+window.handleOverlayClick = function (e) {
+    if (e.target.id === "authModal") {
+        closeModal();
+    }
+};
+
+// ربط زرار الفتح
+document.addEventListener("DOMContentLoaded", () => {
+    const openBtn = document.getElementById("registerSection");
+    if (openBtn) {
+        openBtn.addEventListener("click", openModal);
+    }
+});
