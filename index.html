@@ -851,7 +851,37 @@
 
 
 
+<script>
+// فتح المودال
+function openModal() {
+    const modal = document.getElementById("modal");
+    modal.style.display = "flex";
+}
 
+// قفل المودال
+function closeModal() {
+    const modal = document.getElementById("modal");
+    modal.style.display = "none";
+}
+
+// ربط الأحداث بعد تحميل الصفحة
+document.addEventListener("DOMContentLoaded", () => {
+
+    const openBtn = document.getElementById("registerSection");
+    const closeBtn = document.getElementById("closeBtn");
+    const modal = document.getElementById("modal");
+
+    openBtn.addEventListener("click", openModal);
+    closeBtn.addEventListener("click", closeModal);
+
+    // قفل لما تدوس برا المودال
+    window.addEventListener("click", (e) => {
+        if (e.target === modal) {
+            closeModal();
+        }
+    });
+});
+</script>
 
 
 
