@@ -333,32 +333,7 @@ window.resetRegister = function() {
     setRegStep(1);
 };
 // ============================================================
-//  Modal Controls
-// ============================================================
-window.openModal = function() {
-    const modal = document.getElementById("authModal");
-    if (modal) {
-        modal.style.display = "flex";
-        document.body.style.overflow = "hidden";
-    }
-};
-
-window.closeModal = function() {
-    const modal = document.getElementById("authModal");
-    if (modal) {
-        modal.style.display = "none";
-        document.body.style.overflow = "";
-    }
-};
-
-window.handleOverlayClick = function(event) {
-    if (event.target === document.getElementById("authModal")) {
-        window.closeModal();
-    }
-};
-
-// ============================================================
-//  إظهار واجهة المستخدم المسجّل
+//  إظهار واجهة المستخدم المسجل
 // ============================================================
 function applyLoggedInUI(userData) {
     const registerSection = document.getElementById("registerSection");
@@ -371,20 +346,19 @@ function applyLoggedInUI(userData) {
 }
 
 // ============================================================
-//  فحص localStorage عند تحميل الصفحة
+//  فحص localStorage فور ما الصفحة تتحمل
 // ============================================================
-function checkSavedUser() {
+(function checkSavedUser() {
     const saved = localStorage.getItem("kashmirUser");
     if (!saved) return;
     try {
-        applyLoggedInUI(JSON.parse(saved));
+        const userData = JSON.parse(saved);
+        if (document.readyState === "loading") {
+            document.addEventListener("DOMContentLoaded", () => applyLoggedInUI(userData));
+        } else {
+            applyLoggedInUI(userData);
+        }
     } catch (e) {
         localStorage.removeItem("kashmirUser");
     }
-}
-
-if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", checkSavedUser);
-} else {
-    checkSavedUser();
-}
+})();
