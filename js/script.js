@@ -362,3 +362,32 @@ function applyLoggedInUI(userData) {
         localStorage.removeItem("kashmirUser");
     }
 })();
+// ============================================================
+//  إظهار واجهة المستخدم المسجّل (متاحة globally عبر window)
+// ============================================================
+window.applyLoggedInUI = function(userData) {
+    const registerSection = document.getElementById("registerSection");
+    const welcomeSection  = document.getElementById("welcomeSection");
+    const userNameEl      = document.getElementById("userName");
+    if (registerSection) registerSection.style.display = "none";
+    if (welcomeSection)  welcomeSection.style.display  = "flex";
+    if (userNameEl)      userNameEl.textContent         = userData.firstName;
+};
+
+// ============================================================
+//  فحص localStorage عند تحميل الصفحة
+// ============================================================
+(function checkSavedUser() {
+    const saved = localStorage.getItem("kashmirUser");
+    if (!saved) return;
+    try {
+        const userData = JSON.parse(saved);
+        if (document.readyState === "loading") {
+            document.addEventListener("DOMContentLoaded", () => window.applyLoggedInUI(userData));
+        } else {
+            window.applyLoggedInUI(userData);
+        }
+    } catch(e) {
+        localStorage.removeItem("kashmirUser");
+    }
+})();
