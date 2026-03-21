@@ -1,75 +1,3 @@
-.modal {
-    display: none;
-    position: fixed;
-    z-index: 999;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    
-    background: rgba(0,0,0,0.5);
-    backdrop-filter: blur(5px); /* ضبابية */
-    
-    justify-content: center;
-    align-items: center;
-}
-
-.modal-content {
-    background: #fff;
-    padding: 25px;
-    border-radius: 15px;
-    width: 300px;
-    text-align: center;
-    
-    animation: scaleIn 0.3s ease;
-}
-
-#closeBtn {
-    position: absolute;
-    right: 15px;
-    top: 10px;
-    cursor: pointer;
-    font-size: 25px;
-}
-
-@keyframes scaleIn {
-    from {
-        transform: scale(0.7);
-        opacity: 0;
-    }
-    to {
-        transform: scale(1);
-        opacity: 1;
-    }
-}
-
-
-
-.modal-overlay {
-    display: none;
-    position: fixed;
-    inset: 0;
-    background: rgba(0,0,0,0.5);
-    backdrop-filter: blur(6px);
-    justify-content: center;
-    align-items: center;
-    z-index: 999;
-}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 .top_top_header{
     background: #252f47;
 ;
@@ -1954,8 +1882,8 @@ font-size: 13px !important;
     }
   .open_menu{
     width: 10%;
- margin-right: 8px;
-  }
+        margin-left: 12px;
+      }
 .shipping-container {
   width: 80%;
   direction: rtl;
@@ -1998,7 +1926,7 @@ font-size: 13px !important;
     .person1 {
             width: 10%;
         padding: 10px 23px;
-        margin-right: 10px;
+        margin-right: -2px;
         margin-left: 10px;
     }
     #person {
@@ -2280,7 +2208,10 @@ font-size: 13px !important;
 
 
 @media (max-width:400px) {
-
+    .open_menu {
+        width: 10%;
+        margin-left: 6px;
+    }
         .slider .container {
         padding: 15px 0px;
         height: fit-content;
@@ -2439,7 +2370,7 @@ padding:  1em 0.5em 0em !important;
 
 @media (max-width:400px) {
         header .top_header .header_icons{
-            margin: 0px -7px !important ;
+            /* margin: 0px -7px !important ; */
         }
     .nav_links {
         width: 100%;
@@ -2455,11 +2386,17 @@ padding:  1em 0.5em 0em !important;
         .person1{
          margin: 0px 14px 0px 6px; 
     }
-    header .top_header .header_icons,.person1{
+    header .top_header .header_icons{
         display: flex;
         gap: 0px;
         padding: 10px 21px;
-        margin: 0px 12px;
+        margin: 0px 8px 0px 1px;
+    }
+    .person1{
+           display: flex;
+        gap: 0px;
+        padding: 10px 21px;
+         margin: 0px 8px 0px -2px;
     }
     .open_menu i{
                padding: 20px 21px;
@@ -2471,7 +2408,7 @@ padding:  1em 0.5em 0em !important;
     }
     .man1 {
     width: fit-content;
-    right: 90px;
+    right: 84px;
 }
     #icon_person {
         font-size: 39px  !important;
