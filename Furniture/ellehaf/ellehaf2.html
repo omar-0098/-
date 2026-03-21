@@ -354,7 +354,192 @@
 
 
 
+    <!-- ============================================================
+     زر فتح الـ Modal (الـ div بتاعك)
+     ============================================================ -->
 
+ 
+<!-- ============================================================
+     Modal Overlay
+     ============================================================ -->
+<div class="modal-overlay" id="authModal" onclick="handleOverlayClick(event)">
+    <div class="modal-box" id="modalBox">
+ 
+        <!-- زرار القفل / الإغلاق -->
+        <button class="modal-close" onclick="closeModal()" title="إغلاق">🔒</button>
+ 
+        <!-- Main Card بداخل الـ Modal -->
+        <div class="main-card">
+ 
+            <!-- Tab Switcher -->
+            <div class="tab-bar">
+                <button class="tab-btn active" id="tab-login" onclick="switchTab('login')">
+                    <span class="tab-icon">🔑</span> تسجيل الدخول
+                </button>
+                <button class="tab-btn" id="tab-register" onclick="switchTab('register')">
+                    <span class="tab-icon">✨</span> إنشاء حساب
+                </button>
+            </div>
+ 
+            <!-- ============ LOGIN PANEL ============ -->
+            <div class="panel" id="panel-login">
+ 
+                <div class="step" id="login-step1">
+                    <div class="step-header">
+                        <h2>مرحباً بعودتك 👋</h2>
+                        <p>أدخل بريدك الإلكتروني لنرسل لك رمز التحقق</p>
+                    </div>
+                    <div class="field-group">
+                        <label>البريد الإلكتروني</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">✉️</span>
+                            <input type="email" id="login-email" placeholder="example@email.com" autocomplete="email">
+                        </div>
+                    </div>
+                    <button class="btn-primary" onclick="sendOTP()">
+                        <span class="btn-text">إرسال رمز التحقق</span>
+                        <span class="btn-arrow">←</span>
+                    </button>
+                </div>
+ 
+                <div class="step hidden" id="login-step2">
+                    <div class="step-header">
+                        <div class="otp-icon">📩</div>
+                        <h2>تحقق من بريدك</h2>
+                        <p>أرسلنا رمز مكون من 6 أرقام إلى<br><strong id="display-email"></strong></p>
+                    </div>
+                    <div class="otp-boxes">
+                        <input class="otp-input" maxlength="1" type="text" inputmode="numeric" onInput="moveOTP(this, 0)">
+                        <input class="otp-input" maxlength="1" type="text" inputmode="numeric" onInput="moveOTP(this, 1)">
+                        <input class="otp-input" maxlength="1" type="text" inputmode="numeric" onInput="moveOTP(this, 2)">
+                        <input class="otp-input" maxlength="1" type="text" inputmode="numeric" onInput="moveOTP(this, 3)">
+                        <input class="otp-input" maxlength="1" type="text" inputmode="numeric" onInput="moveOTP(this, 4)">
+                        <input class="otp-input" maxlength="1" type="text" inputmode="numeric" onInput="moveOTP(this, 5)">
+                    </div>
+                    <div id="otp-timer" class="otp-timer">⏱ انتهت الصلاحية خلال: <span id="countdown">02:00</span></div>
+                    <button class="btn-primary" onclick="verifyOTP()">
+                        <span class="btn-text">تحقق والدخول</span>
+                        <span class="btn-arrow">←</span>
+                    </button>
+                    <button class="btn-ghost" onclick="resendOTP()">إعادة إرسال الرمز</button>
+                </div>
+ 
+                <div class="step hidden" id="login-step3">
+                    <div class="success-anim">
+                        <div class="success-ring"></div>
+                        <div class="success-check">✓</div>
+                    </div>
+                    <h2>تم الدخول بنجاح! 🎉</h2>
+                    <p>أهلاً بك مجدداً</p>
+                    <button class="btn-ghost" style="margin-top:16px" onclick="closeModal()">إغلاق 🔒</button>
+                </div>
+ 
+            </div>
+ 
+            <!-- ============ REGISTER PANEL ============ -->
+            <div class="panel hidden" id="panel-register">
+ 
+                <div class="steps-indicator">
+                    <div class="step-dot active" id="reg-dot1">1</div>
+                    <div class="step-line" id="reg-line1"></div>
+                    <div class="step-dot" id="reg-dot2">2</div>
+                    <div class="step-line" id="reg-line2"></div>
+                    <div class="step-dot" id="reg-dot3">3</div>
+                </div>
+ 
+                <div class="step" id="register-step1">
+                    <div class="step-header">
+                        <h2>إنشاء حساب جديد ✨</h2>
+                        <p>أدخل بريدك الإلكتروني وسنرسل لك رمز التحقق</p>
+                    </div>
+                    <div class="field-group">
+                        <label>البريد الإلكتروني</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">✉️</span>
+                            <input type="email" id="reg-email" placeholder="example@email.com" autocomplete="email">
+                        </div>
+                    </div>
+                    <button class="btn-primary" onclick="sendRegOTP()">
+                        <span class="btn-text">إرسال رمز التحقق</span>
+                        <span class="btn-arrow">←</span>
+                    </button>
+                </div>
+ 
+                <div class="step hidden" id="register-step2">
+                    <div class="step-header">
+                        <div class="otp-icon">📩</div>
+                        <h2>تحقق من بريدك</h2>
+                        <p>أرسلنا رمز مكون من 6 أرقام إلى<br><strong id="reg-display-email"></strong></p>
+                    </div>
+                    <div class="otp-boxes" id="reg-otp-boxes">
+                        <input class="otp-input" maxlength="1" type="text" inputmode="numeric" onInput="moveRegOTP(this, 0)">
+                        <input class="otp-input" maxlength="1" type="text" inputmode="numeric" onInput="moveRegOTP(this, 1)">
+                        <input class="otp-input" maxlength="1" type="text" inputmode="numeric" onInput="moveRegOTP(this, 2)">
+                        <input class="otp-input" maxlength="1" type="text" inputmode="numeric" onInput="moveRegOTP(this, 3)">
+                        <input class="otp-input" maxlength="1" type="text" inputmode="numeric" onInput="moveRegOTP(this, 4)">
+                        <input class="otp-input" maxlength="1" type="text" inputmode="numeric" onInput="moveRegOTP(this, 5)">
+                    </div>
+                    <div id="reg-otp-timer" class="otp-timer">⏱ انتهت الصلاحية خلال: <span id="reg-countdown">02:00</span></div>
+                    <button class="btn-primary" onclick="verifyRegOTP()">
+                        <span class="btn-text">تحقق والمتابعة</span>
+                        <span class="btn-arrow">←</span>
+                    </button>
+                    <button class="btn-ghost" onclick="resendRegOTP()">إعادة إرسال الرمز</button>
+                </div>
+ 
+                <div class="step hidden" id="register-step3">
+                    <div class="step-header">
+                        <h2>أكمل بياناتك 👤</h2>
+                        <p>خطوة أخيرة لإتمام التسجيل</p>
+                    </div>
+                    <div class="field-group">
+                        <label>الاسم الأول</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">👤</span>
+                            <input type="text" id="reg-firstname" placeholder="الاسم الاول">
+                        </div>
+                    </div>
+                    <div class="field-group">
+                        <label>الاسم الأخير</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">👤</span>
+                            <input type="text" id="reg-lastname" placeholder="الاسم الاخير">
+                        </div>
+                    </div>
+                    <div class="field-group">
+                        <label>رقم الهاتف</label>
+                        <div class="input-wrapper">
+                            <span class="input-icon">📱</span>
+                            <input type="tel" id="reg-phone" placeholder="+20 1XX XXX XXXX">
+                        </div>
+                    </div>
+                    <button class="btn-primary" onclick="registerUser()">
+                        <span class="btn-text">إنشاء الحساب</span>
+                        <span class="btn-arrow">←</span>
+                    </button>
+                </div>
+ 
+                <div class="step hidden" id="register-step4">
+                    <div class="success-anim">
+                        <div class="success-ring"></div>
+                        <div class="success-check">✓</div>
+                    </div>
+                    <h2>تم إنشاء حسابك! 🎉</h2>
+                    <p>مرحباً بك في عائلتنا</p>
+                    <div class="user-summary" id="user-summary"></div>
+                    <button class="btn-ghost" onclick="resetRegister()">تسجيل حساب آخر</button>
+                    <button class="btn-ghost" style="margin-top:8px;border-color:#e2e8f0" onclick="closeModal()">إغلاق 🔒</button>
+                </div>
+ 
+            </div>
+ 
+        </div><!-- /main-card -->
+    </div><!-- /modal-box -->
+</div><!-- /modal-overlay -->
+ 
+<!-- Toast Notification -->
+<div class="toast" id="toast"></div>
+ 
 
 
 
