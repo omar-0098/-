@@ -6,26 +6,215 @@
     <title>كشمير هوم | إتمام عملية الشراء </title>
     <meta name="description" content="أكمل عملية الشراء من كشمير هوم بسهولة وأمان. نقدم خدمة التوصيل لجميع محافظات مصر. أدخل بياناتك الشخصية واختر طريقة الدفع المناسبة. لدينا خيارات دفع مرنة وخدمة عملاء متاحة على 01028604523">
     <link rel="icon" href="icon-main.png">
-    <!-- font -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Almarai:wght@300;400;700;800&display=swap" rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Readex+Pro:wght@160..700&display=swap" rel="stylesheet"> 
-    <link href="https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap" rel="stylesheet">
-    <!-- css -->
-     <link rel="stylesheet" href="../css/style.css">
+    <link rel="stylesheet" href="../css/style.css">
     <link rel="stylesheet" href="../css/user.css">
-     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
-     <!-- Link Swiper's CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
+
+    <style>
+        /* ========== Devices Section ========== */
+        .devices-section {
+            background: #fff;
+            border-radius: 16px;
+            padding: 28px;
+            margin-top: 24px;
+            border: 1px solid #f0e8da;
+            direction: rtl;
+        }
+        .devices-section h2 {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 6px;
+            font-family: 'Almarai', sans-serif;
+        }
+        .devices-section .devices-sub {
+            color: #888;
+            font-size: 13px;
+            margin-bottom: 20px;
+            font-family: 'Almarai', sans-serif;
+        }
+        #devices-list {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        .device-card {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: #fafafa;
+            border: 1px solid #eee;
+            border-radius: 12px;
+            padding: 16px 18px;
+            transition: border-color .2s;
+            font-family: 'Almarai', sans-serif;
+        }
+        .device-card.device-current {
+            border-color: #c8a96e;
+            background: #fffbf4;
+        }
+        .device-icon {
+            font-size: 28px;
+            flex-shrink: 0;
+        }
+        .device-info {
+            flex: 1;
+        }
+        .device-info h4 {
+            font-size: 14px;
+            font-weight: 700;
+            color: #1a1a1a;
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .device-info p {
+            font-size: 12px;
+            color: #999;
+        }
+        .device-badge {
+            background: #c8a96e;
+            color: #fff;
+            font-size: 11px;
+            padding: 2px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+        .device-logout-btn {
+            background: #fff0f0;
+            color: #e53935;
+            border: 1px solid #ffc9c9;
+            border-radius: 8px;
+            padding: 8px 14px;
+            font-size: 12px;
+            cursor: pointer;
+            font-family: 'Almarai', sans-serif;
+            font-weight: 700;
+            transition: background .2s;
+            white-space: nowrap;
+        }
+        .device-logout-btn:hover {
+            background: #ffe0e0;
+        }
+        .logout-all-btn {
+            margin-top: 16px;
+            background: none;
+            border: 1px solid #e53935;
+            color: #e53935;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-family: 'Almarai', sans-serif;
+            font-weight: 700;
+            font-size: 13px;
+            cursor: pointer;
+            transition: background .2s, color .2s;
+        }
+        .logout-all-btn:hover {
+            background: #e53935;
+            color: #fff;
+        }
+
+        /* ========== Account Deletion Modal Fix ========== */
+        #accountDeletionModal {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.65);
+            z-index: 9999;
+            align-items: center;
+            justify-content: center;
+            direction: rtl;
+        }
+        #accountDeletionModal[style*="flex"] { display: flex !important; }
+        .accountDeletionModal2 {
+            background: #fff;
+            border-radius: 16px;
+            padding: 36px 32px;
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+            font-family: 'Almarai', sans-serif;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.2);
+        }
+        .accountDeletionModal2 h4 {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 10px;
+            color: #1a1a1a;
+        }
+        .accountDeletionModal2 p {
+            color: #666;
+            font-size: 14px;
+            margin-bottom: 16px;
+            line-height: 1.7;
+        }
+        #accountDeletionEmailInput {
+            width: 100%;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 12px 16px;
+            font-family: 'Almarai', sans-serif;
+            font-size: 14px;
+            text-align: center;
+            box-sizing: border-box;
+            margin-bottom: 10px;
+            outline: none;
+            transition: border-color .2s;
+        }
+        #accountDeletionEmailInput:focus { border-color: #c8a96e; }
+        #deletionErrorMsg {
+            color: #e53935;
+            font-size: 13px;
+            min-height: 18px;
+            margin-bottom: 14px;
+        }
+        .sure {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+        #confirmAccountDeletion {
+            background: #e53935;
+            color: #fff;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 24px;
+            font-family: 'Almarai', sans-serif;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        #cancelAccountDeletion {
+            background: #f5f5f5;
+            color: #333;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 24px;
+            font-family: 'Almarai', sans-serif;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 14px;
+        }
+        #deletionLoader {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0,0,0,0.5);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+            flex-direction: column;
+            gap: 12px;
+            color: #fff;
+            font-family: 'Almarai', sans-serif;
+        }
+    </style>
 </head>
 <body>
     <!-- start-cart -->
@@ -34,343 +223,211 @@
             <h3>المنتاجات : <span class="Count_item_cart">0</span></h3>
             <span onclick="open_close_cart()" class="close_cart"><i class="fa-regular fa-circle-xmark"></i></span>
         </div>
-
-
-
-        <div class="items_in_cart" id="cart_items">
-  
-
-        </div>
-
-
+        <div class="items_in_cart" id="cart_items"></div>
         <div class="bottom_cart">
             <div class="total">
                 <p>السعر :</p>
                 <p class="price_cart_total">0</p>
             </div>
-
-
             <div class="button_cart">
                 <a href="../chexkout.html" class="btn_cart btn">شراء</a>
-              <a href="../index.html" class="btn_cart btn"><span onclick="open_close_cart()" class="btn_cart trans_bg btn">تسوق</span></a>  
-            
+                <a href="../index.html" class="btn_cart btn"><span onclick="open_close_cart()" class="btn_cart trans_bg btn">تسوق</span></a>  
             </div>
         </div>
-
-        
-     </div>
+    </div>
     <!-- end-cart -->
 
-
-
-
-     <!-- start-header -->
-     <header>
-             <div class="top_top_header">
+    <!-- start-header -->
+    <header>
+        <div class="top_top_header">
             <div class="container">
-            <div class="help">
-                <a href="callme.html"> الدعم </a>
-                <hr>
-                <a href="Privacy.html"> السياسة و الخصوصية </a>
-            </div>
-            <div class="links">
-                         <a target="_blank"
-                        href="https://www.facebook.com/p/%D9%83%D8%B4%D9%85%D9%8A%D8%B1-%D9%87%D9%88%D9%85-kashmir-home-100064031503557/"><i
-                            class="fa-brands fa-facebook"></i></a>
-                    <a target="_blank"
-                        href="https://www.instagram.com/kashmir_home_center/?fbclid=IwY2xjawHwa8xleHRuA2FlbQIxMAABHc8LrSfm4Gu37osiGk8MTGyptSigZZqTQ0WbYC1CRy2d4y0JmsYTbUiQzQ_aem_W7NnxJhHGMWugD_WC8i6EQ#"><i
-                            class="fa-brands fa-instagram"></i></a>
+                <div class="help">
+                    <a href="callme.html"> الدعم </a>
+                    <hr>
+                    <a href="Privacy.html"> السياسة و الخصوصية </a>
+                </div>
+                <div class="links">
+                    <a target="_blank" href="https://www.facebook.com/p/%D9%83%D8%B4%D9%85%D9%8A%D8%B1-%D9%87%D9%88%D9%85-kashmir-home-100064031503557/"><i class="fa-brands fa-facebook"></i></a>
+                    <a target="_blank" href="https://www.instagram.com/kashmir_home_center/"><i class="fa-brands fa-instagram"></i></a>
                     <a target="_blank" href="https://wa.me/201028604523"><i class="fa-brands fa-whatsapp"></i></a>
                     <a target="_blank" href="tel:+201028604523"><i class="fa-solid fa-phone"></i></a>
                     <a target="_blank" href="mailto:kashmirhome.00@gmail.com"><i class="fa-solid fa-envelope"></i></a>
-            </div>
-            </div>
-        </div>
-
-
-        <div class="top_header">
-            <div class="container">
-                <a href="" class="logo"><img src="../img/logo.png"></a>
-
-
-
-
-
-
-
-
-
-                <div>
-                  <ul class="nav_links">
-
-
-                           <div class="category_nav">
-                        <div onclick="Open_Categ_list()" class="category_btn">
-                            <p>المنتجات</p>
-                            <i class="fa-solid fa-sort-down"></i>
-                            
-                        </div>
-
-
-                        <div class="categoru_nav_list">
-                            <a href="../../Furniture/feyat/feyat1.html" >الفوط</a>
-                            <a href="../../Furniture/mlayat/mlayat1.html">الملايات</a>
-                            <a href="../../Furniture/paranes/paranes.html">البرانس</a>
-                            <a href="../../Furniture/patatin/patatin1.html">البطاطين</a>
-                            <a href="../../Furniture/ellehaf/ellehaf1.html">اللحاف</a>
-                            <a href="../../Furniture/coferta/coferta1.html">كوفرتا</a>
-                            <!-- <a href="">omar omar</a> -->
-
-
-                           
-
-
-                        </div>
-
-                    </div>
-                                            <span onclick="open_Menu()" class="close_menu"><i class="fa-regular fa-circle-xmark"></i></span>
-                        <li ><a href="../index.html">الرئيسية</a></li>
-
-                        <li class="check"><a href="../chexkout.html">الدفع</a></li>
-                        <li><a href="../callme.html">المساعدة </a></li>
-                        <li><a href="../Privacy.html">السياسة و الخصوصية</a></li>
-
-
-                    </ul>
-
-</div>
-
-
-
-
-
-
-
-<span onclick="open_Menu()" class="open_menu"><i class="fa-solid fa-bars"></i></span>
-
-
-
-
-
-                <form action="" class="search_box">
-
-                    <!-- <div class="select_box">
-                        <select id="category" name="category">
-                            <option value="omar">omar</option>
-                            <option value="omar">omar</option>
-                            <option value="omar">omar</option>
-                            <option value="omar">omar</option>
-                            <option value="omar">omar</option>
-                            <option value="omar">omar</option>
-
-     
-                        </select>
-                    </div> -->
-
-                    
-                    <input type="text" id="search" name="search" placeholder=" ابدأ البحث..." required>
-                    <button type="submit">
-                        <i class="fa-solid fa-magnifying-glass"></i>
-                    </button>
-
-                </form>
-
-                <div class="header_icons">
-                    <div class="icon">
-                        <!-- <a href="">
-                            <i class="fa-regular fa-heart"></i>
-                            <span class="count count_favourite">0</span>
-                        </a> -->
-                    </div>
-
-                    <div onclick="open_close_cart()" class="icon">
-                         <i class="fa-solid fa-bag-shopping"></i>
-                        <span class="count count_item_header">0</span>
-                    </div>
-
-
                 </div>
             </div>
         </div>
 
-
-     
-
+        <div class="top_header">
+            <div class="container">
+                <a href="" class="logo"><img src="../img/logo.png"></a>
+                <div>
+                    <ul class="nav_links">
+                        <div class="category_nav">
+                            <div onclick="Open_Categ_list()" class="category_btn">
+                                <p>المنتجات</p>
+                                <i class="fa-solid fa-sort-down"></i>
+                            </div>
+                            <div class="categoru_nav_list">
+                                <a href="../../Furniture/feyat/feyat1.html">الفوط</a>
+                                <a href="../../Furniture/mlayat/mlayat1.html">الملايات</a>
+                                <a href="../../Furniture/paranes/paranes.html">البرانس</a>
+                                <a href="../../Furniture/patatin/patatin1.html">البطاطين</a>
+                                <a href="../../Furniture/ellehaf/ellehaf1.html">اللحاف</a>
+                                <a href="../../Furniture/coferta/coferta1.html">كوفرتا</a>
+                            </div>
+                        </div>
+                        <span onclick="open_Menu()" class="close_menu"><i class="fa-regular fa-circle-xmark"></i></span>
+                        <li><a href="../index.html">الرئيسية</a></li>
+                        <li class="check"><a href="../chexkout.html">الدفع</a></li>
+                        <li><a href="../callme.html">المساعدة </a></li>
+                        <li><a href="../Privacy.html">السياسة و الخصوصية</a></li>
+                    </ul>
+                </div>
+                <span onclick="open_Menu()" class="open_menu"><i class="fa-solid fa-bars"></i></span>
+                <form action="" class="search_box">
+                    <input type="text" id="search" name="search" placeholder=" ابدأ البحث..." required>
+                    <button type="submit"><i class="fa-solid fa-magnifying-glass"></i></button>
+                </form>
+                <div class="header_icons">
+                    <div class="icon"></div>
+                    <div onclick="open_close_cart()" class="icon">
+                        <i class="fa-solid fa-bag-shopping"></i>
+                        <span class="count count_item_header">0</span>
+                    </div>
+                </div>
+            </div>
+        </div>
     </header>
     <!-- end-header -->
-
-
-
 
     <div class="all_formation">
         <div class="container">
 
-     <div class="formation">
-        <div class="section">
-            <!-- <div>
-            <i id="icon_person" class="fa-solid fa-circle-user"></i>
-            <h1 id="welcomeName"> مرحبا  </h1>
-            </div> -->
+            <div class="formation">
+                <div class="section">
+                    <div>
+                        <img id="profileImage" src="" alt="Profile Image">
+                        <i id="icon_person" class="fa-solid fa-circle-user"><h5>اضافة صورة</h5></i>
+                        <input type="file" id="fileInput" accept="image/*" style="display: none;">
+                        <h1 id="welcomeName">مرحبا</h1>
+                    </div> 
+                    <h2 id="userEmailDisplay" class="email"></h2>
+                </div>
 
-            <div>
- <img id="profileImage" src="" alt="Profile Image">
+                <div class="section">
+                    <a href="accoun.html"><h3 class="active4">حسابي <i class="fa-solid fa-user"></i></h3></a> 
+                    <a href="Discount.html"><h3>اكواد خصم <i class="fa-solid fa-barcode"></i></h3></a>
+                    <a href="../Privacy.html"><h3>شروط و الخصوصية <i class="fa-solid fa-book"></i></h3></a>
+                </div>
 
-  <!-- الأيقونة اللي بتتغير -->
-  <i id="icon_person" class="fa-solid fa-circle-user"></i>
+                <div class="section" id="section">
+                    <a href="qrcode.html"><h3>كود كشمير هوم <i class="fa-solid fa-qrcode"></i></h3></a>
+                </div>
 
-  <!-- input file مخفي -->
-  <input type="file" id="fileInput" accept="image/*" style="display: none;">
-   <h1 id="welcomeName">مرحبا</h1>
-           </div> 
-        <h2 id="userEmailDisplay" class="email"></h2>
-        </div>
+                <div class="section" id="section">
+                    <a href="#" id="logoutLink"><h3>تسجيل الخروج <i class="fa-solid fa-user-minus"></i></h3></a>
+                    
+                    <!-- نافذة تأكيد تسجيل الخروج -->
+                    <div id="accountDeletionModal">
+                        <div class="accountDeletionModal2">
+                            <h4>تأكيد تسجيل الخروج</h4>
+                            <p>أدخل بريدك الإلكتروني المسجل لتأكيد تسجيل الخروج من هذا الجهاز:</p>
+                            <input type="email" id="accountDeletionEmailInput" placeholder="البريد الإلكتروني">
+                            <p id="deletionErrorMsg"></p>
+                            <div class="sure">
+                                <button id="confirmAccountDeletion">تسجيل الخروج</button>
+                                <button id="cancelAccountDeletion">إلغاء</button>
+                            </div>
+                        </div>
+                    </div>
 
+                    <div id="deletionLoader">
+                        <div></div>
+                        <p>جاري تسجيل الخروج...</p>
+                    </div>
+                </div>
+            </div>
 
-        <div class="section">
-            <a href="accoun.html"><h3 class="active4">حسابي <i class="fa-solid fa-user"></i></h3></a> 
-           <a href="Discount.html"> <h3>اكواد خصم <i class="fa-solid fa-barcode"></i> </h3></a>
-            <a href="../Privacy.html"><h3> شروط و الخصوصية <i class="fa-solid fa-book"></i> </h3></a>
-        </div>
-        <div class="section" id="section" >
-            <a href="qrcode.html"><h3>كود كشمير هوم <i class="fa-solid fa-qrcode"></i></h3></a>
-        </div>
+            <div class="user">
+                <div class="text">
+                    <h2>حسابك</h2>
+                    <h3>تتطلع الي حسابك و معلوماتك الشخصية في كشمير هوم</h3>
+                </div>
 
+                <div class="info_user1">
+                    <h2>معلومات الاتصال</h2>
+                    <div class="input">
+                        <h3>البريد الالكتروني</h3>
+                        <input type="email" id="userEmail" readonly>
+                        <p>يستخدم هذا الايميل علي كشمير هوم</p>
+                    </div>
+                    <div class="input">
+                        <h3>رقم الهاتف</h3>
+                        <input type="text" id="userPhone" readonly>
+                        <p>يستخدم هذا الرقم علي كشمير هوم</p>
+                    </div>
+                </div>
 
+                <div class="info_user1">
+                    <h2>معلومات الشخصية</h2>
+                    <div class="input">
+                        <h3>اسمك</h3>
+                        <input type="text" id="userName">
+                        <i class="fa-solid fa-pen"></i>
+                    </div>
+                    <div class="input">
+                        <h3>اسم العائلة</h3>
+                        <input type="text" id="userFamily">
+                        <i class="fa-solid fa-pen"></i>
+                    </div>
+                    <div class="input">
+                        <h3>البلد</h3>
+                        <input type="text" value="مصر" readonly>
+                        <div class="egypt"><img src="Flag_of_Egypt.svg.webp"></div>
+                    </div>
+                    <div class="radios">
+                        <label><input type="radio" name="gender" value="male"> ذكر</label><br>
+                        <label><input type="radio" name="gender" value="female"> أنثى</label><br>
+                    </div>
+                    <p>سوف يعمل تعديل واحد فقط تأكد ان جميع معلوماتك الشخصية صحيحة</p>
+                </div>
 
+                <div class="buttons">
+                    <button id="updateNamesBtn" disabled>تحديث الحساب</button>
+                </div>
 
-<div class="section" id="section">
-  <a href="#" id="logoutLink"><h3>تسجيل الخروج <i class="fa-solid fa-user-minus"></i></h3></a>
-  
-  <!-- نافذة تأكيد الحذف -->
-  <div id="accountDeletionModal">
-    <div class="accountDeletionModal2">
-      <h4>تأكيد حذف الحساب</h4>
-      <p>لحذف حسابك، أدخل بريدك الإلكتروني المسجل:</p>
-      
-      <!-- حقل الإيميل الخاص بالحذف مع ID فريد -->
-      <input type="email" id="accountDeletionEmailInput" placeholder="البريد الإلكتروني">
-      
-      <p id="deletionErrorMsg"></p>
-      
-      <div class="sure">
-        <button id="confirmAccountDeletion">
-          تأكيد الحذف
-        </button>
-        <button id="cancelAccountDeletion">
-          إلغاء
-        </button>
-      </div>
-    </div>
-  </div>
-  
-  <!-- مؤشر التحميل -->
-  <div id="deletionLoader">
-    <div></div>
-    <p>جاري حذف الحساب...</p>
-  </div>
-</div>
+                <!-- ====== قسم الأجهزة المتصلة ====== -->
+                <div class="devices-section">
+                    <h2><i class="fa-solid fa-mobile-screen-button" style="color:#c8a96e; margin-left:8px;"></i> الأجهزة المتصلة</h2>
+                    <p class="devices-sub">الأجهزة التي سجّلت الدخول على حسابك — يمكنك إنهاء أي جلسة عن بُعد</p>
+                    <div id="devices-list">
+                        <p style="color:#aaa; text-align:center; font-family:'Almarai',sans-serif;">جاري التحميل...</p>
+                    </div>
+                    <button class="logout-all-btn" onclick="logoutAllDevices()">
+                        <i class="fa-solid fa-right-from-bracket"></i> تسجيل الخروج من كل الأجهزة
+                    </button>
+                </div>
+                <!-- ====== نهاية قسم الأجهزة ====== -->
 
-
-
-
-
-
-
-
-
-     </div>
-
-
-     <div class="user">
-    <div class="text">
-        <h2>حسابك</h2>
-        <h3>تتطلع الي حسابك و معلوماتك الشخصية في كشمير هوم</h3>
-    </div>
-
-    <div class="info_user1">
-        <h2>معلومات الاتصال</h2>
-        <div class="input">
-            <h3>البريد الالكتروني</h3>
-            <input type="email" id="userEmail" readonly>
-            <p>يستخدم هذا الايميل علي كشمير هوم</p>
-        </div>
-        <div class="input">
-            <h3>رقم الهاتف</h3>
-            <input type="text" id="userPhone" readonly>
-            <p>يستخدم هذا الرقم علي كشمير هوم</p>
-        </div>
-    </div>
-
-    <div class="info_user1">
-        <h2>معلومات الشخصية</h2>
-        <div class="input">
-            <h3>اسمك</h3>
-            <input type="text" id="userName" >
-            <i class="fa-solid fa-pen"></i>
-        </div>
-        <div class="input">
-            <h3>اسم العائلة</h3>
-            <input type="text" id="userFamily" >
-            <i class="fa-solid fa-pen"></i>
-        </div>
-         <div class="input">
-            <h3> البلد</h3>
-            
-            <input type="text" value="مصر" id="userFamily" readonly>
-            <div class="egypt"><img src="Flag_of_Egypt.svg.webp"></div> 
-        </div>
-
-        <div class="radios">
-          <label>
-    <input type="radio" name="gender" value="male">
-    ذكر
-  </label><br>
-
-  <label>
-    <input type="radio" name="gender" value="female">
-    أنثى
-  </label><br>
-  </div>
-
-  <p>سوف يعمل تعديل واحد فقط تأكد ان جميع معلوماتك الشخصية صحيحة</p>
-
-    </div>
-
-      <div class="buttons">
-        <button id="updateNamesBtn" disabled>تحديث الحساب</button>
-       
-    </div>
-
-</div>
-
-  
-
-
-
-    </div>
-</div>
-
-
-
-       <!-- start-footer -->
-   <footer>
-
-    <div class="bottom_footer">
-        <div class="container">
-            <p>&copy; <span>kashmir home</span> All Right Reserved.</p>
-
-            <div class="payment_img">
-                <img src="../img/payment_method.png" alt="">
             </div>
         </div>
     </div>
-</footer>
-<!-- end-footer -->
 
+    <!-- start-footer -->
+    <footer>
+        <div class="bottom_footer">
+            <div class="container">
+                <p>&copy; <span>kashmir home</span> All Right Reserved.</p>
+                <div class="payment_img">
+                    <img src="../img/payment_method.png" alt="">
+                </div>
+            </div>
+        </div>
+    </footer>
+    <!-- end-footer -->
 
-<script src="../js/user.js"></script>
-  <script src="../js/login2.js"></script>   
-<script src="../js/main.js"></script>
-<script src="../js/omar.js"></script>
+    <script src="../js/user.js" type="module"></script>
+    <script src="../js/login2.js" type="module"></script>   
+    <script src="../js/main.js"></script>
+    <script src="../js/omar.js"></script>
 </body>
 </html>
