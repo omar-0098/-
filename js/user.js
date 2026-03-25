@@ -1,619 +1,442 @@
-// عند تحميل الصفحة
-document.addEventListener('DOMContentLoaded', function() {
-    loadUserData();
-    displayUserHeaderInfo();
-});
+// ============================================================
+//  Firebase Imports
+// ============================================================
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import {
+    getDatabase, ref, set, get, child, onValue, off, remove, push, query, orderByChild, equalTo
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-// دالة مساعدة لجلب البيانات من localStorage
-function getLocalStorageData() {
-    const savedData = localStorage.getItem('userData');
-    return savedData ? JSON.parse(savedData) : null;
+const firebaseConfig = {
+    apiKey:            "AIzaSyCCk0w_KHVCswjp16TSkNToRSSOjlPC5kE",
+    authDomain:        "data-customer-d722f.firebaseapp.com",
+    databaseURL:       "https://data-customer-d722f-default-rtdb.firebaseio.com/",
+    projectId:         "data-customer-d722f",
+    storageBucket:     "data-customer-d722f.firebasestorage.app",
+    messagingSenderId: "398522341614",
+    appId:             "1:398522341614:web:99e0f897c61ec960cffbff"
+};
+
+const app = initializeApp(firebaseConfig);
+const db  = getDatabase(app);
+
+// ============================================================
+//  Helpers
+// ============================================================
+function emailKey(email) {
+    return email.replace(/\./g, "_").replace(/@/g, "__");
 }
 
-// دالة لجلب بيانات المستخدم وعرضها في الحقول مع التحقق من وجود العناصر
-function loadUserData() {
-    const userData = getLocalStorageData();
-    
-    if (userData) {
-        // دالة مساعدة للتحقق من وجود العنصر قبل تعيين القيمة
-        function setValueIfElementExists(elementId, value) {
-            const element = document.getElementById(elementId);
-            if (element) element.value = value || '';
-        }
-        
-        setValueIfElementExists('userName', userData.name);
-        setValueIfElementExists('userFamily', userData.family);
-        setValueIfElementExists('userEmail', userData.email);
-        setValueIfElementExists('userPhone', userData.phone);
-    }
+function generateSessionId() {
+    return Date.now().toString(36) + Math.random().toString(36).substring(2, 10);
 }
 
-// دالة لعرض معلومات المستخدم في الهيدر مع التحقق من وجود العناصر
-function displayUserHeaderInfo() {
-    const userData = getLocalStorageData();
-    
-    if (userData) {
-        const welcomeElement = document.getElementById('welcomeName');
-        const emailElement = document.getElementById('userEmailDisplay');
-        
-        if (welcomeElement) {
-            welcomeElement.textContent = userData.name ? `مرحبا ${userData.name}` : 'مرحبا';
-        }
-        
-        if (emailElement) {
-            emailElement.textContent = userData.email || '';
-        }
-    }
+function getDeviceInfo() {
+    const ua = navigator.userAgent;
+    let device = "جهاز غير معروف";
+    let icon = "💻";
+
+    if (/iPhone/.test(ua))        { device = "iPhone";       icon = "📱"; }
+    else if (/iPad/.test(ua))     { device = "iPad";          icon = "📱"; }
+    else if (/Android/.test(ua) && /Mobile/.test(ua)) { device = "Android موبايل"; icon = "📱"; }
+    else if (/Android/.test(ua))  { device = "Android تابلت"; icon = "📱"; }
+    else if (/Mac/.test(ua))      { device = "Mac";           icon = "💻"; }
+    else if (/Windows/.test(ua))  { device = "Windows PC";   icon = "🖥️"; }
+    else if (/Linux/.test(ua))    { device = "Linux";         icon = "🖥️"; }
+
+    let browser = "متصفح";
+    if (/Chrome/.test(ua) && !/Edg/.test(ua)) browser = "Chrome";
+    else if (/Firefox/.test(ua))  browser = "Firefox";
+    else if (/Safari/.test(ua))   browser = "Safari";
+    else if (/Edg/.test(ua))      browser = "Edge";
+    else if (/Opera|OPR/.test(ua)) browser = "Opera";
+
+    return { device, browser, icon };
 }
 
-// دالة لتحديث بيانات المستخدم مع التحقق من وجود العناصر
-function updateUserInfo() {
-    const userData = getLocalStorageData() || {};
-    
-    function getValueIfElementExists(elementId) {
-        const element = document.getElementById(elementId);
-        return element ? element.value.trim() : null;
-    }
-    
-    const updatedData = {
-        ...userData,
-        name: getValueIfElementExists('editName') || userData.name,
-        family: getValueIfElementExists('editFamily') || userData.family,
-        email: getValueIfElementExists('editEmail') || userData.email,
-        phone: getValueIfElementExists('editPhone') || userData.phone
+// ============================================================
+//  Session Management
+// ============================================================
+let currentSessionId  = localStorage.getItem("kashmirSessionId");
+let sessionListenerRef = null;
+
+async function createSession(email, userData) {
+    const sessionId   = generateSessionId();
+    const eKey        = emailKey(email);
+    const { device, browser, icon } = getDeviceInfo();
+
+    const sessionData = {
+        sessionId,
+        email,
+        device,
+        browser,
+        icon,
+        loginAt:   new Date().toISOString(),
+        lastSeen:  Date.now(),
+        isActive:  true,
+        userAgent: navigator.userAgent.substring(0, 150)
     };
-    
-    localStorage.setItem('userData', JSON.stringify(updatedData));
-    displayUserHeaderInfo();
-    loadUserData();
-    
-    alert('تم تحديث البيانات بنجاح!');
-    return true;
+
+    // حفظ الـ session في Firebase
+    await set(ref(db, `sessions/${eKey}/${sessionId}`), sessionData);
+
+    // حفظ محلي
+    localStorage.setItem("kashmirSessionId",    sessionId);
+    localStorage.setItem("kashmirSessionEmail", email);
+    localStorage.setItem("kashmirUser",         JSON.stringify(userData));
+
+    currentSessionId = sessionId;
+    return sessionId;
 }
 
+async function validateSession() {
+    const sessionId = localStorage.getItem("kashmirSessionId");
+    const email     = localStorage.getItem("kashmirSessionEmail");
+    if (!sessionId || !email) return null;
 
-
-
-
-
-
-
-
-        
-// document.addEventListener('DOMContentLoaded', function() {
-//     // تحميل البيانات وحالة التحديث
-//     loadUserData();
-//     checkUpdateStatus();
-    
-//     // إعداد زر التحديث
-//     const updateBtn = document.getElementById('updateNamesBtn');
-    
-//     // عند الضغط على زر التحديث
-//     updateBtn.addEventListener('click', function() {
-//         updateUserNames();
-//     });
-    
-//     // تفعيل/تعطيل الزر عند التغيير
-//     document.getElementById('userName').addEventListener('input', checkForChanges);
-//     document.getElementById('userFamily').addEventListener('input', checkForChanges);
-// });
-
-// // دالة التحقق من حالة التحديث
-// function checkUpdateStatus() {
-//     const userData = JSON.parse(localStorage.getItem('userData')) || {};
-    
-//     // إذا كان التحديث قد تم مسبقاً
-//     if (userData.isUpdated) {
-//         disableEditing();
-//     } else {
-//         // إذا لم يتم التحديث بعد
-//         document.getElementById('updateNamesBtn').disabled = true;
-//         checkForChanges();
-//     }
-// }
-
-// // دالة التحديث
-// function updateUserNames() {
-//     const updateBtn = document.getElementById('updateNamesBtn');
-    
-//     // جلب البيانات الحالية
-//     const userData = JSON.parse(localStorage.getItem('userData')) || {};
-    
-//     // تحديث البيانات
-//     userData.name = document.getElementById('userName').value;
-//     userData.family = document.getElementById('userFamily').value;
-//     userData.isUpdated = true; // علامة أن التحديث تم
-    
-//     // حفظ البيانات المحدثة
-//     localStorage.setItem('userData', JSON.stringify(userData));
-    
-//     // تعطيل النظام بعد التحديث
-//     disableEditing();
-    
-//     alert('تم تحديث الأسماء بنجاح!');
-//     displayUserHeaderInfo();
-// }
-
-// // دالة تعطيل التعديل بعد التحديث
-// function disableEditing() {
-//     const updateBtn = document.getElementById('updateNamesBtn');
-    
-//     updateBtn.disabled = true;
-//     updateBtn.textContent = 'تم التحديث';
-//     updateBtn.style.backgroundColor = '#4CAF50';
-//     document.getElementById('userName').readOnly = true;
-//     document.getElementById('userFamily').readOnly = true;
-// }
-
-// // دالة التحقق من التغييرات
-// function checkForChanges() {
-//     if (isUpdated()) return;
-    
-//     const updateBtn = document.getElementById('updateNamesBtn');
-//     const userData = JSON.parse(localStorage.getItem('userData')) || {};
-
-//     const nameChanged = document.getElementById('userName').value !== userData.name;
-//     const familyChanged = document.getElementById('userFamily').value !== userData.family;
-    
-//     updateBtn.disabled = !(nameChanged || familyChanged);
-// }
-
-// // دالة للتحقق إذا كان التحديث تم مسبقاً
-// function isUpdated() {
-//     const userData = JSON.parse(localStorage.getItem('userData')) || {};
-//     return userData.isUpdated;
-// }
-
-// // باقي الدوال كما هي (loadUserData, displayUserHeaderInfo)
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-document.addEventListener('DOMContentLoaded', function() {
-    loadUserData();
-    checkUpdateStatus();
-    
-    const updateBtn = document.getElementById('updateNamesBtn');
-    
-    updateBtn.addEventListener('click', function() {
-        updateUserNames();
-    });
-    
-    document.getElementById('userName').addEventListener('input', checkForChanges);
-    document.getElementById('userFamily').addEventListener('input', checkForChanges);
-});
-
-// دالة التحقق من حالة التحديث
-function checkUpdateStatus() {
-    const userData = JSON.parse(localStorage.getItem('userData')) || {};
-    
-    if (userData.isUpdated) {
-        disableEditing();
-    } else {
-        document.getElementById('updateNamesBtn').disabled = true;
-        checkForChanges();
-    }
-}
-
-// دالة التحديث المعدلة لإرسال البيانات إلى Google Sheets
-async function updateUserNames() {
-    const updateBtn = document.getElementById('updateNamesBtn');
-    updateBtn.disabled = true;
-    updateBtn.textContent = 'جاري التحديث...';
-    
     try {
-        const userData = JSON.parse(localStorage.getItem('userData')) || {};
-        const email = userData.email; // افترض أن لديك بريد المستخدم
-        
-        // تحديث البيانات المحلية
-        userData.name = document.getElementById('userName').value;
-        userData.family = document.getElementById('userFamily').value;
-        userData.isUpdated = true;
-        userData.updateTimestamp = new Date().toISOString();
-        
-        localStorage.setItem('userData', JSON.stringify(userData));
-        
-        // إرسال البيانات إلى Google Sheets
-        const response = await sendDataToGoogleSheets({
-            email: email,
-            name: userData.name,
-            family: userData.family,
-            timestamp: userData.updateTimestamp
-        });
-        
-        if (response.success) {
-            disableEditing();
-            alert('تم تحديث الأسماء بنجاح وتم تسجيلها في قاعدة البيانات!');
-            displayUserHeaderInfo();
-        } else {
-            throw new Error(response.message || 'فشل في إرسال البيانات');
+        const snap = await get(ref(db, `sessions/${emailKey(email)}/${sessionId}`));
+        if (!snap.exists() || !snap.val().isActive) {
+            // الـ session اتحذفت أو اتعطّلت من جهاز تاني
+            clearLocalSession();
+            return null;
         }
-    } catch (error) {
-        console.error('Error updating data:', error);
-        updateBtn.disabled = false;
-        updateBtn.textContent = 'تحديث الأسماء';
-        alert('حدث خطأ أثناء محاولة تحديث البيانات. الرجاء المحاولة مرة أخرى.');
+        // تحديث lastSeen
+        await set(ref(db, `sessions/${emailKey(email)}/${sessionId}/lastSeen`), Date.now());
+        return snap.val();
+    } catch (e) {
+        return null;
     }
 }
 
-// دالة لإرسال البيانات إلى Google Sheets
-async function sendDataToGoogleSheets(data) {
-    // هنا يجب استبدال هذا برمز الاتصال الفعلي ب Google Sheets
-    // يمكنك استخدام Google Apps Script أو خدمة ويب أخرى
-    
-    // مثال باستخدام fetch إلى نقطة نهاية Google Apps Script
+function clearLocalSession() {
+    localStorage.removeItem("kashmirSessionId");
+    localStorage.removeItem("kashmirSessionEmail");
+    localStorage.removeItem("kashmirUser");
+    currentSessionId = null;
+}
+
+async function destroySession(email, sessionId) {
     try {
-        const scriptUrl = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec';
-        const response = await fetch(scriptUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(data),
-            mode: 'no-cors' // قد تحتاج هذا لبعض التطبيقات
-        });
-        
-        // إذا كنت تستخدم Google Apps Script مع إرجاع JSON
-        // const result = await response.json();
-        // return result;
-        
-        // في هذا المثال سنفترض أن الإرسال ناجح
-        return { success: true };
-    } catch (error) {
-        return { success: false, message: error.message };
-    }
+        await remove(ref(db, `sessions/${emailKey(email)}/${sessionId}`));
+    } catch (e) { /* ignore */ }
 }
 
-// بقية الدوال كما هي
-function disableEditing() {
-    const updateBtn = document.getElementById('updateNamesBtn');
-    
-    updateBtn.disabled = true;
-    updateBtn.textContent = 'تم التحديث';
-    updateBtn.style.backgroundColor = '#4CAF50';
-    document.getElementById('userName').readOnly = true;
-    document.getElementById('userFamily').readOnly = true;
-}
+// ============================================================
+//  مراقبة الـ Session (لو اتحذفت من جهاز تاني → سجّل خروج)
+// ============================================================
+function watchSession(email, sessionId) {
+    const path = `sessions/${emailKey(email)}/${sessionId}`;
+    if (sessionListenerRef) off(ref(db, sessionListenerRef));
+    sessionListenerRef = path;
 
-function checkForChanges() {
-    if (isUpdated()) return;
-    
-    const updateBtn = document.getElementById('updateNamesBtn');
-    const userData = JSON.parse(localStorage.getItem('userData')) || {};
-
-    const nameChanged = document.getElementById('userName').value !== userData.name;
-    const familyChanged = document.getElementById('userFamily').value !== userData.family;
-    
-    updateBtn.disabled = !(nameChanged || familyChanged);
-}
-
-function isUpdated() {
-    const userData = JSON.parse(localStorage.getItem('userData')) || {};
-    return userData.isUpdated;
-}
-
-// باقي الدوال الأخرى...
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-const icon = document.getElementById("icon_person");
-const fileInput = document.getElementById("fileInput");
-const profileImage = document.getElementById("profileImage");
-
-// عند تحميل الصفحة، نتحقق إذا كانت هناك صورة محفوظة
-window.addEventListener('load', function() {
-    const savedImage = localStorage.getItem('userProfileImage');
-    if (savedImage) {
-        profileImage.src = savedImage;
-        profileImage.style.display = "block";
-        icon.style.display = "none";
-    } else {
-        profileImage.style.display = "none";
-        icon.style.display = "block";
-    }
-});
-
-// عند الضغط على الأيقونة
-icon.addEventListener("click", () => {
-    fileInput.click();
-});
-
-// عند اختيار صورة جديدة
-fileInput.addEventListener("change", (event) => {
-    const file = event.target.files[0];
-    
-    if (file) {
-        // التحقق من نوع الصورة (يقبل جميع أنواع الصور)
-        if (!file.type.startsWith('image/')) {
-            alert('الرجاء اختيار ملف صورة فقط');
-            return;
+    onValue(ref(db, path), (snap) => {
+        if (!snap.exists() || !snap.val().isActive) {
+            // تم تسجيل الخروج من جهاز آخر
+            clearLocalSession();
+            showForcedLogoutAlert();
         }
-
-        // التحقق من حجم الصورة (2MB كحد أقصى)
-        if (file.size > 2 * 1024 * 1024) {
-            alert('حجم الصورة يجب أن يكون أقل من 2MB');
-            return;
-        }
-
-        const reader = new FileReader();
-        
-        reader.onload = function(e) {
-            // عرض الصورة المختارة
-            profileImage.src = e.target.result;
-            profileImage.style.display = "block";
-            icon.style.display = "none";
-            
-            // تخزين الصورة في localStorage
-            localStorage.setItem('userProfileImage', e.target.result);
-            
-            // يمكنك دمجها مع بيانات المستخدم الأخرى
-            const userData = JSON.parse(localStorage.getItem('userData')) || {};
-            userData.profileImage = e.target.result;
-            localStorage.setItem('userData', JSON.stringify(userData));
-            
-            // إرسال البيانات إلى Google Sheets
-            sendToGoogleSheets(userData);
-            
-            alert('تم حفظ الصورة بنجاح!');
-        };
-        
-        reader.onerror = function() {
-            alert('حدث خطأ أثناء قراءة الصورة');
-        };
-        
-        reader.readAsDataURL(file);
-    }
-});
-
-// إضافة حدث الضغط المزدوج لحذف الصورة
-profileImage.addEventListener("dblclick", function() {
-    if (confirm("هل تريد حقاً حذف هذه الصورة؟")) {
-        // حذف الصورة من localStorage
-        localStorage.removeItem('userProfileImage');
-        
-        // حذف الصورة من بيانات المستخدم
-        const userData = JSON.parse(localStorage.getItem('userData')) || {};
-        delete userData.profileImage;
-        localStorage.setItem('userData', JSON.stringify(userData));
-        
-        // إعادة عرض الأيقونة الأصلية
-        profileImage.style.display = "none";
-        icon.style.display = "block";
-        profileImage.src = "";
-        
-        alert("تم حذف الصورة بنجاح");
-    }
-});
-
-// دالة لإرسال البيانات إلى Google Sheets
-function sendToGoogleSheets(data) {
-    // هنا يجب وضع رابط سكربت Google Apps Script الخاص بك
-    const scriptURL = 'https://script.google.com/macros/s/YOUR_SCRIPT_ID/exec';
-    
-    // تحضير البيانات للإرسال
-    const formData = new FormData();
-    formData.append('action', 'saveProfileImage');
-    formData.append('data', JSON.stringify(data));
-    
-    // إرسال البيانات
-    fetch(scriptURL, {
-        method: 'POST',
-        body: formData
-    })
-    .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
-        return response.json();
-    })
-    .then(data => {
-        console.log('تم إرسال البيانات بنجاح:', data);
-    })
-    .catch(error => {
-        console.error('حدث خطأ أثناء الإرسال:', error);
     });
 }
 
+function showForcedLogoutAlert() {
+    // شاشة إشعار بتسجيل الخروج القسري
+    const overlay = document.createElement("div");
+    overlay.id = "forced-logout-overlay";
+    overlay.style.cssText = `
+        position:fixed; inset:0; background:rgba(0,0,0,0.85); z-index:99999;
+        display:flex; align-items:center; justify-content:center; direction:rtl;
+    `;
+    overlay.innerHTML = `
+        <div style="background:#1a1a1a; border:1px solid #c8a96e; border-radius:16px; padding:40px;
+                    text-align:center; max-width:380px; color:#fff; font-family:'Almarai',sans-serif;">
+            <div style="font-size:56px; margin-bottom:16px;">🔒</div>
+            <h3 style="color:#c8a96e; font-size:20px; margin-bottom:12px;">تم تسجيل الخروج</h3>
+            <p style="color:#aaa; font-size:15px; line-height:1.7; margin-bottom:24px;">
+                تم تسجيل دخول من جهاز آخر، لذلك تم تسجيل خروجك تلقائياً من هذا الجهاز.
+            </p>
+            <button onclick="location.reload()" style="
+                background:#c8a96e; color:#000; border:none; border-radius:8px;
+                padding:12px 32px; font-size:15px; cursor:pointer; font-family:'Almarai',sans-serif; font-weight:700;
+            ">تسجيل الدخول مجدداً</button>
+        </div>
+    `;
+    document.body.appendChild(overlay);
+}
 
+// ============================================================
+//  عرض الأجهزة المتصلة في صفحة الحساب
+// ============================================================
+async function renderDevices(email) {
+    const container = document.getElementById("devices-list");
+    if (!container) return;
 
+    container.innerHTML = `<p style="color:#888; text-align:center;">جاري التحميل...</p>`;
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-document.addEventListener('DOMContentLoaded', function() {
-  // تعريف العناصر
-  const logoutBtn = document.getElementById('logoutLink');
-  const deletionModal = document.getElementById('accountDeletionModal');
-  const deletionEmailInput = document.getElementById('accountDeletionEmailInput');
-  const deletionError = document.getElementById('deletionErrorMsg');
-  const confirmDeletionBtn = document.getElementById('confirmAccountDeletion');
-  const cancelDeletionBtn = document.getElementById('cancelAccountDeletion');
-  const deletionLoader = document.getElementById('deletionLoader');
-  
-  // عند النقر على تسجيل الخروج
-  logoutBtn.addEventListener('click', function(e) {
-    e.preventDefault();
-    deletionModal.style.display = 'block';
-    deletionEmailInput.value = '';
-    deletionError.style.display = 'none';
-  });
-  
-  // عند الإلغاء
-  cancelDeletionBtn.addEventListener('click', function() {
-    deletionModal.style.display = 'none';
-  });
-  
-  // عند تأكيد الحذف
-  confirmDeletionBtn.addEventListener('click', function() {
-    const enteredEmail = deletionEmailInput.value.trim().toLowerCase();
-    const userData = JSON.parse(localStorage.getItem('userData')) || {};
-    const storedEmail = userData.email ? userData.email.toLowerCase() : '';
-    
-    if (!enteredEmail) {
-      deletionError.textContent = 'يجب إدخال البريد الإلكتروني';
-      deletionError.style.display = 'block';
-      return;
+    const snap = await get(ref(db, `sessions/${emailKey(email)}`));
+    if (!snap.exists()) {
+        container.innerHTML = `<p style="color:#888; text-align:center;">لا توجد أجهزة متصلة</p>`;
+        return;
     }
-    
-    if (enteredEmail !== storedEmail) {
-      deletionError.textContent = 'البريد الإلكتروني غير متطابق مع السجلات';
-      deletionError.style.display = 'block';
-      return;
+
+    const sessions = snap.val();
+    const mySession = localStorage.getItem("kashmirSessionId");
+    let html = "";
+
+    Object.entries(sessions).forEach(([sid, data]) => {
+        const isThis  = sid === mySession;
+        const date    = new Date(data.loginAt).toLocaleDateString("ar-EG", {
+            year:"numeric", month:"long", day:"numeric", hour:"2-digit", minute:"2-digit"
+        });
+
+        html += `
+        <div class="device-card ${isThis ? 'device-current' : ''}">
+            <div class="device-icon">${data.icon || "💻"}</div>
+            <div class="device-info">
+                <h4>${data.device} — ${data.browser} ${isThis ? '<span class="device-badge">هذا الجهاز</span>' : ''}</h4>
+                <p>تسجيل الدخول: ${date}</p>
+            </div>
+            ${!isThis ? `
+            <button class="device-logout-btn" onclick="logoutDevice('${email}','${sid}')">
+                <i class="fa-solid fa-right-from-bracket"></i> إنهاء
+            </button>` : ''}
+        </div>`;
+    });
+
+    container.innerHTML = html;
+}
+
+// ============================================================
+//  تسجيل الخروج من جهاز محدد (من صفحة الحساب)
+// ============================================================
+window.logoutDevice = async function(email, sessionId) {
+    try {
+        await remove(ref(db, `sessions/${emailKey(email)}/${sessionId}`));
+        showToastAccount("✅ تم إنهاء الجلسة بنجاح", "success");
+        setTimeout(() => renderDevices(email), 800);
+    } catch (e) {
+        showToastAccount("❌ حدث خطأ", "error");
     }
-    
-    // بدء عملية الحذف
-    deletionModal.style.display = 'none';
-    deletionLoader.style.display = 'flex';
-    
-    setTimeout(function() {
-      // 1. حذف جميع البيانات المحفوظة
-      localStorage.clear(); // حذف كل شيء في localStorage
-      sessionStorage.clear(); // حذف بيانات الجلسة
-      
-      // 2. الانتقال للصفحة الرئيسية مع منع العودة
-      window.location.replace('/'); // هذه الطريقة تمنع العودة للصفحة السابقة
-      
-      // 3. إضافة علامة في localStorage للإشارة لتسجيل الخروج
-      localStorage.setItem('logoutFlag', 'true');
-    }, 1000);
-  });
-  
-  // التحقق من حالة تسجيل الخروج عند تحميل الصفحة
-  if (localStorage.getItem('logoutFlag') === 'true') {
-    localStorage.removeItem('logoutFlag');
-    window.location.replace('/');
-  }
+};
+
+// تسجيل الخروج من كل الأجهزة
+window.logoutAllDevices = async function() {
+    const email = localStorage.getItem("kashmirSessionEmail");
+    if (!email) return;
+    try {
+        await remove(ref(db, `sessions/${emailKey(email)}`));
+        clearLocalSession();
+        showToastAccount("✅ تم تسجيل الخروج من كل الأجهزة", "success");
+        setTimeout(() => location.reload(), 1500);
+    } catch (e) {
+        showToastAccount("❌ حدث خطأ", "error");
+    }
+};
+
+// ============================================================
+//  تعبئة بيانات المستخدم في صفحة الحساب
+// ============================================================
+async function fillAccountPage(email) {
+    try {
+        const snap = await get(query(ref(db, "users"), orderByChild("email"), equalTo(email)));
+        if (!snap.exists()) return;
+
+        let userData = null;
+        snap.forEach(child => { userData = child.val(); });
+
+        if (!userData) return;
+
+        const setVal = (id, val) => { const el = document.getElementById(id); if (el) el.value = val || ""; };
+        const setTxt = (id, val) => { const el = document.getElementById(id); if (el) el.textContent = val || ""; };
+
+        setVal("userEmail",  userData.email);
+        setVal("userPhone",  userData.phone);
+        setVal("userName",   userData.firstName);
+        setVal("userFamily", userData.lastName);
+        setTxt("welcomeName",      "مرحبا، " + (userData.firstName || ""));
+        setTxt("userEmailDisplay", userData.email);
+
+        if (userData.gender) {
+            const radios = document.querySelectorAll('input[name="gender"]');
+            radios.forEach(r => { r.checked = (r.value === userData.gender); });
+        }
+
+        // عرض الأجهزة
+        renderDevices(email);
+    } catch (e) {
+        console.error("fillAccountPage error:", e);
+    }
+}
+
+// ============================================================
+//  تحديث اسم المستخدم
+// ============================================================
+document.addEventListener("DOMContentLoaded", async () => {
+
+    // --- تفعيل زر التحديث ---
+    const nameInput   = document.getElementById("userName");
+    const familyInput = document.getElementById("userFamily");
+    const updateBtn   = document.getElementById("updateNamesBtn");
+
+    if (nameInput && familyInput && updateBtn) {
+        const enableUpdate = () => { updateBtn.disabled = false; };
+        nameInput.addEventListener("input",   enableUpdate);
+        familyInput.addEventListener("input", enableUpdate);
+
+        const genderRadios = document.querySelectorAll('input[name="gender"]');
+        genderRadios.forEach(r => r.addEventListener("change", enableUpdate));
+    }
+
+    if (updateBtn) {
+        updateBtn.addEventListener("click", async () => {
+            const email = localStorage.getItem("kashmirSessionEmail");
+            if (!email) return;
+
+            const firstName = document.getElementById("userName")?.value.trim();
+            const lastName  = document.getElementById("userFamily")?.value.trim();
+            const gender    = document.querySelector('input[name="gender"]:checked')?.value || "";
+
+            if (!firstName || !lastName) {
+                showToastAccount("❌ أدخل الاسم الأول والأخير", "error"); return;
+            }
+
+            updateBtn.disabled   = true;
+            updateBtn.textContent = "جاري التحديث...";
+
+            try {
+                const snap = await get(query(ref(db, "users"), orderByChild("email"), equalTo(email)));
+                if (snap.exists()) {
+                    let userKey = null;
+                    snap.forEach(c => { userKey = c.key; });
+                    if (userKey) {
+                        await set(ref(db, `users/${userKey}/firstName`), firstName);
+                        await set(ref(db, `users/${userKey}/lastName`),  lastName);
+                        if (gender) await set(ref(db, `users/${userKey}/gender`), gender);
+
+                        const saved = JSON.parse(localStorage.getItem("kashmirUser") || "{}");
+                        saved.firstName = firstName;
+                        saved.lastName  = lastName;
+                        if (gender) saved.gender = gender;
+                        localStorage.setItem("kashmirUser", JSON.stringify(saved));
+
+                        showToastAccount("✅ تم تحديث البيانات بنجاح", "success");
+                    }
+                }
+            } catch (e) {
+                showToastAccount("❌ " + e.message, "error");
+            } finally {
+                updateBtn.textContent = "تحديث الحساب";
+                updateBtn.disabled    = true;
+            }
+        });
+    }
+
+    // --- صورة البروفايل ---
+    const iconPerson   = document.getElementById("icon_person");
+    const fileInput    = document.getElementById("fileInput");
+    const profileImage = document.getElementById("profileImage");
+
+    if (iconPerson && fileInput && profileImage) {
+        const savedImg = localStorage.getItem("kashmirProfileImg");
+        if (savedImg) { profileImage.src = savedImg; profileImage.style.display = "block"; iconPerson.style.display = "none"; }
+
+        iconPerson.addEventListener("click", () => fileInput.click());
+        fileInput.addEventListener("change", (e) => {
+            const file = e.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = (ev) => {
+                const dataUrl = ev.target.result;
+                profileImage.src     = dataUrl;
+                profileImage.style.display = "block";
+                iconPerson.style.display   = "none";
+                localStorage.setItem("kashmirProfileImg", dataUrl);
+            };
+            reader.readAsDataURL(file);
+        });
+    }
+
+    // --- تسجيل الخروج (الزر الموجود في الصفحة) ---
+    const logoutLink = document.getElementById("logoutLink");
+    if (logoutLink) {
+        logoutLink.addEventListener("click", (e) => {
+            e.preventDefault();
+            document.getElementById("accountDeletionModal")?.style && (document.getElementById("accountDeletionModal").style.display = "flex");
+        });
+    }
+
+    const cancelBtn = document.getElementById("cancelAccountDeletion");
+    if (cancelBtn) {
+        cancelBtn.addEventListener("click", () => {
+            const modal = document.getElementById("accountDeletionModal");
+            if (modal) modal.style.display = "none";
+        });
+    }
+
+    const confirmBtn = document.getElementById("confirmAccountDeletion");
+    if (confirmBtn) {
+        confirmBtn.addEventListener("click", async () => {
+            const input = document.getElementById("accountDeletionEmailInput")?.value.trim();
+            const email = localStorage.getItem("kashmirSessionEmail");
+            const errEl = document.getElementById("deletionErrorMsg");
+
+            if (!input) { if (errEl) errEl.textContent = "أدخل بريدك الإلكتروني"; return; }
+            if (input !== email) { if (errEl) errEl.textContent = "❌ البريد غير مطابق"; return; }
+
+            // تسجيل خروج من الجهاز الحالي فقط
+            const sessionId = localStorage.getItem("kashmirSessionId");
+            if (sessionId && email) await destroySession(email, sessionId);
+
+            clearLocalSession();
+            localStorage.removeItem("kashmirProfileImg");
+
+            const modal = document.getElementById("accountDeletionModal");
+            if (modal) modal.style.display = "none";
+
+            showToastAccount("👋 تم تسجيل الخروج بنجاح", "success");
+            setTimeout(() => location.href = "../index.html", 1500);
+        });
+    }
+
+    // --- التحقق من الجلسة وملء البيانات ---
+    const session = await validateSession();
+    if (session) {
+        const email = localStorage.getItem("kashmirSessionEmail");
+        watchSession(email, session.sessionId);
+        fillAccountPage(email);
+    }
 });
+
+// ============================================================
+//  Toast للحساب
+// ============================================================
+function showToastAccount(msg, type = "info") {
+    let t = document.getElementById("toast-account");
+    if (!t) {
+        t = document.createElement("div");
+        t.id = "toast-account";
+        t.style.cssText = `
+            position:fixed; bottom:24px; left:50%; transform:translateX(-50%) translateY(60px);
+            background:#1a1a1a; color:#fff; padding:14px 28px; border-radius:12px;
+            font-family:'Almarai',sans-serif; font-size:14px; z-index:9999;
+            transition:transform .3s ease, opacity .3s ease; opacity:0;
+            border:1px solid #333; direction:rtl;
+        `;
+        document.body.appendChild(t);
+    }
+    if (type === "success") t.style.borderColor = "#4caf50";
+    else if (type === "error") t.style.borderColor = "#f44336";
+    else t.style.borderColor = "#c8a96e";
+
+    t.textContent = msg;
+    t.style.transform = "translateX(-50%) translateY(0)";
+    t.style.opacity   = "1";
+    setTimeout(() => {
+        t.style.transform = "translateX(-50%) translateY(60px)";
+        t.style.opacity   = "0";
+    }, 3000);
+}
+
+// ============================================================
+//  تصدير للاستخدام في ملفات أخرى (login2.js / script.js)
+// ============================================================
+export { createSession, validateSession, watchSession, clearLocalSession, emailKey };
