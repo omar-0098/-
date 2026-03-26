@@ -33,6 +33,7 @@
 body {
   background: var(--bg);
   font-family: 'Almarai', sans-serif;
+  direction: rtl;
 }
 
 /* ─── Layout ───────────────────────────────────── */
@@ -684,7 +685,7 @@ body {
   font-size: 18px;
   padding: 12px 0 0;
 }
-.all_formation .user .info_user1 img {  display: block; margin: 0 auto; }
+.all_formation .user .info_user1 img { width: 180px; display: block; margin: 0 auto; }
 
 /* ================================================
    MODALS
@@ -843,7 +844,7 @@ body {
 }
 
 @media (max-width: 500px) {
-  body { padding-top: 165px; background: var(--bg); }
+  body { padding-top: 230px; background: var(--bg); }
   .all_formation { padding: 20px 0 40px; }
   .formation { flex-direction: column; }
   .formation .section:not(:first-child) { width: 100%; }
@@ -860,7 +861,7 @@ body {
 }
 
 @media (max-width: 400px) {
-  body { padding-top: 150px; }
+  body { padding-top: 215px; }
   .all_formation .user .text h2 { font-size: 18px; }
   .info_user1 > h2 { font-size: 15px; }
   .buttons button { width: 100%; }
