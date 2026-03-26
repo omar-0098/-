@@ -13,153 +13,7 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.6.0/css/all.min.css">
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css" />
 <style>
-:root{--gold:#c8a96e;--gold-light:#f0e0ba;--navy:#0f1b35;--navy-mid:#1a2d52;--blue:#1d6fc4;--blue-light:#e8f2fc;--red:#e53935;--green:#2e7d32;--bg:#f2f4f8;--card:#fff;--border:#e2e8f0;--text:#1a1a2e;--text-mid:#475569;--text-light:#94a3b8;--input-bg:#f8fafd;--shadow-sm:0 2px 8px rgba(0,0,0,.06);--shadow-md:0 4px 20px rgba(0,0,0,.10);--radius:16px;--radius-sm:10px;--t:.25s ease}
-[data-theme="dark"]{--bg:#0d1117;--card:#161b22;--border:#30363d;--text:#e6edf3;--text-mid:#8b949e;--text-light:#484f58;--input-bg:#0d1117;--shadow-sm:0 2px 8px rgba(0,0,0,.3);--shadow-md:0 4px 20px rgba(0,0,0,.4);--navy-mid:#1c2333;--blue-light:#1c2b3a}
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-body{background:var(--bg);font-family:'Almarai',sans-serif;color:var(--text);transition:background var(--t),color var(--t)}
-.all_formation{padding:36px 0 60px}
-.all_formation .container{display:flex;flex-direction:row-reverse;gap:24px;align-items:flex-start}
-/* SIDEBAR */
-.formation{width:272px;flex-shrink:0;display:flex;flex-direction:column;gap:12px;position:sticky;top:20px}
-.profile-card{background:linear-gradient(145deg,var(--navy),var(--navy-mid));border-radius:var(--radius);padding:28px 20px 22px;text-align:center;box-shadow:var(--shadow-md);position:relative;overflow:hidden}
-.profile-card::before{content:'';position:absolute;top:-40px;right:-40px;width:130px;height:130px;background:rgba(200,169,110,.12);border-radius:50%}
-.profile-card::after{content:'';position:absolute;bottom:-30px;left:-30px;width:90px;height:90px;background:rgba(200,169,110,.08);border-radius:50%}
-.avatar-wrap{position:relative;width:84px;height:84px;margin:0 auto 12px;cursor:pointer;z-index:1}
-#profileImage{width:84px;height:84px;border-radius:50%;object-fit:cover;border:3px solid var(--gold);display:none;box-shadow:0 0 0 4px rgba(200,169,110,.25)}
-#icon_person{font-size:84px;color:var(--gold);display:block;line-height:1;transition:transform var(--t);cursor:pointer}
-#icon_person:hover{transform:scale(1.06)}
-.avatar-edit{position:absolute;bottom:0;left:0;background:var(--gold);color:#fff;width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;box-shadow:0 2px 6px rgba(0,0,0,.25);pointer-events:none}
-#fileInput{display:none}
-#welcomeName{font-family:'Readex Pro',sans-serif;font-size:17px;font-weight:700;color:#fff;margin-bottom:4px;position:relative;z-index:1}
-#userEmailDisplay{font-size:12px;color:var(--gold-light);font-weight:400;word-break:break-all;direction:ltr;position:relative;z-index:1}
-.stats-card{background:var(--card);border-radius:var(--radius);padding:14px 12px;box-shadow:var(--shadow-sm);border:1px solid var(--border);display:flex;transition:background var(--t),border-color var(--t)}
-.stat-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;padding:6px 4px}
-.stat-item:not(:last-child){border-left:1px solid var(--border)}
-.stat-icon{font-size:18px;color:var(--gold)}
-.stat-value{font-size:20px;font-weight:800;color:var(--navy);font-family:'Readex Pro',sans-serif;transition:color var(--t)}
-[data-theme="dark"] .stat-value{color:var(--text)}
-.stat-label{font-size:10px;color:var(--text-mid);font-weight:600;text-align:center}
-.nav-card{background:var(--card);border-radius:var(--radius);padding:8px;box-shadow:var(--shadow-sm);border:1px solid var(--border);display:flex;flex-direction:column;gap:2px;transition:background var(--t),border-color var(--t)}
-.nav-btn{display:flex;align-items:center;justify-content:flex-end;gap:10px;padding:11px 14px;border-radius:var(--radius-sm);background:transparent;border:none;color:var(--text);font-family:'Almarai',sans-serif;font-size:14px;font-weight:700;cursor:pointer;width:100%;text-align:right;transition:background var(--t),color var(--t),transform var(--t)}
-.nav-btn i{font-size:14px;color:var(--text-light);transition:color var(--t)}
-.nav-btn:hover{background:var(--blue-light);color:var(--blue);transform:translateX(-3px)}
-.nav-btn:hover i{color:var(--blue)}
-.nav-btn.active{background:linear-gradient(135deg,var(--blue),#1a5fad);color:#fff;box-shadow:0 4px 14px rgba(29,111,196,.3)}
-.nav-btn.active i{color:rgba(255,255,255,.8)}
-.nav-btn.active:hover{transform:none}
-.nav-btn.danger{color:var(--red)}
-.nav-btn.danger i{color:var(--red)}
-.nav-btn.danger:hover{background:#fff0f0}
-[data-theme="dark"] .nav-btn.danger:hover{background:rgba(229,57,53,.12)}
-.nav-divider{height:1px;background:var(--border);margin:4px 0}
-/* MAIN */
-.main-panel{flex:1;min-width:0}
-.tab-panel{display:none;flex-direction:column;gap:20px;animation:fadeUp .3s ease}
-.tab-panel.active{display:flex}
-@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
-.panel-title h2{font-family:'Readex Pro',sans-serif;font-size:24px;font-weight:700;color:var(--text)}
-.panel-title p{font-size:13px;color:var(--text-mid);padding-top:4px}
-.info-card{background:var(--card);border-radius:var(--radius);padding:22px 24px 28px;box-shadow:var(--shadow-sm);border:1px solid var(--border);direction:rtl;transition:background var(--t),border-color var(--t)}
-.card-header{display:flex;align-items:center;gap:10px;padding-bottom:16px;border-bottom:2px solid var(--border);margin-bottom:20px}
-.card-header-bar{width:4px;height:20px;background:var(--gold);border-radius:4px;flex-shrink:0}
-.card-header h3{font-family:'Readex Pro',sans-serif;font-size:16px;font-weight:700;color:var(--text)}
-.input-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.input-group{position:relative}
-.input-group.full{grid-column:1/-1}
-.input-group label{display:block;font-size:12px;font-weight:700;color:var(--text-mid);margin-bottom:6px}
-.input-group input{width:100%;padding:12px 14px 12px 40px;border-radius:var(--radius-sm);border:1.5px solid var(--border);outline:none;font-family:'Almarai',sans-serif;font-size:14px;font-weight:600;text-align:right;background:var(--input-bg);color:var(--text);transition:border-color var(--t),box-shadow var(--t),background var(--t)}
-.input-group input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(200,169,110,.15)}
-.input-group input[readonly]{background:var(--border);color:var(--text-light);cursor:not-allowed}
-[data-theme="dark"] .input-group input[readonly]{background:#21262d}
-.i-icon{position:absolute;left:13px;bottom:13px;color:var(--text-light);font-size:13px;pointer-events:none}
-.hint{font-size:11px;color:var(--blue);padding-top:5px}
-.radio-group{display:flex;gap:10px;flex-wrap:wrap;margin-top:4px}
-.radio-label{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--text);cursor:pointer;padding:9px 14px;border-radius:30px;border:1.5px solid var(--border);transition:all var(--t)}
-.radio-label:has(input:checked){border-color:var(--blue);background:var(--blue-light);color:var(--blue)}
-.radio-label input{accent-color:var(--blue)}
-.info-note{font-size:12px;color:var(--text-mid);padding-top:12px;grid-column:1/-1}
-.btn-primary{background:linear-gradient(135deg,var(--blue),#1a5fad);color:#fff;padding:13px 36px;border-radius:var(--radius-sm);border:none;font-family:'Almarai',sans-serif;font-weight:700;font-size:15px;cursor:pointer;transition:all var(--t);box-shadow:0 4px 14px rgba(29,111,196,.35)}
-.btn-primary:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(29,111,196,.45)}
-.btn-primary:disabled{background:#c8d0dc;box-shadow:none;cursor:not-allowed;transform:none}
-/* DEVICES */
-#devices-list{display:flex;flex-direction:column;gap:10px}
-.device-card{display:flex;align-items:center;gap:14px;background:var(--input-bg);border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:14px 16px;transition:border-color var(--t);direction:rtl}
-.device-card.device-current{border-color:var(--gold)}
-.device-icon{font-size:26px;flex-shrink:0}
-.device-info{flex:1}
-.device-info h4{font-size:13px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:3px}
-.device-info p{font-size:11px;color:var(--text-light)}
-.device-badge{background:var(--gold);color:#fff;font-size:10px;padding:2px 9px;border-radius:20px;font-weight:700}
-.device-end-btn{background:#fff0f0;color:var(--red);border:1px solid #ffc9c9;border-radius:8px;padding:7px 12px;font-size:12px;font-weight:700;cursor:pointer;font-family:'Almarai',sans-serif;white-space:nowrap;transition:background var(--t);flex-shrink:0}
-.device-end-btn:hover{background:#ffe0e0}
-[data-theme="dark"] .device-end-btn{background:rgba(229,57,53,.1);border-color:rgba(229,57,53,.3)}
-.btn-danger-outline{margin-top:14px;background:none;border:1.5px solid var(--red);color:var(--red);padding:10px 22px;border-radius:var(--radius-sm);font-family:'Almarai',sans-serif;font-weight:700;font-size:13px;cursor:pointer;transition:background var(--t),color var(--t)}
-.btn-danger-outline:hover{background:var(--red);color:#fff}
-/* COUPON */
-.coupon-card{display:flex;border:1.5px solid var(--border);border-radius:var(--radius-sm);overflow:hidden;transition:box-shadow var(--t),border-color var(--t);direction:rtl}
-.coupon-card:hover{box-shadow:var(--shadow-md);border-color:var(--gold)}
-.coupon-badge{background:linear-gradient(160deg,#fec853,#f5a623);padding:20px 18px;display:flex;align-items:center;justify-content:center;min-width:88px;flex-shrink:0}
-.coupon-badge p{color:#7a0010;font-size:16px;font-weight:800;font-family:'Readex Pro',sans-serif;line-height:1.4;text-align:center}
-.coupon-body{padding:14px;flex:1}
-.coupon-meta{display:flex;gap:10px;align-items:flex-start}
-.coupon-info{flex:1}
-.coupon-info h3{font-size:13px;font-weight:600;color:var(--text);line-height:1.7}
-.coupon-info .exp{font-size:11px;color:var(--blue);margin-top:8px;font-weight:600}
-.coupon-store{width:60px;flex-shrink:0;display:flex;align-items:center;justify-content:center}
-.coupon-store img{width:100%;border-radius:8px}
-.coupon-code-row{width:100%;background:linear-gradient(135deg,#7b2ff7,#9c33ff);padding:11px;margin-top:14px;border-radius:var(--radius-sm);text-align:center;cursor:pointer;transition:opacity var(--t)}
-.coupon-code-row:hover{opacity:.88}
-.coupon-code-row h4{color:#fff;font-size:18px;font-family:'Readex Pro',sans-serif;font-weight:700;letter-spacing:3px}
-/* QR */
-.qr-wrap{display:flex;flex-direction:column;align-items:center;gap:14px;padding:10px 0}
-.qr-wrap img{width:180px;border-radius:12px;box-shadow:var(--shadow-md)}
-.qr-wrap a{color:var(--blue);font-size:15px;direction:ltr;font-family:'Rubik',sans-serif}
-.qr-wrap .qr-hint{color:var(--green);font-weight:700;font-size:16px;font-family:'Readex Pro',sans-serif}
-/* SETTINGS */
-.setting-row{display:flex;align-items:center;justify-content:space-between;padding:18px 0;border-bottom:1px solid var(--border);direction:rtl}
-.setting-row:last-child{border-bottom:none;padding-bottom:0}
-.setting-info{display:flex;align-items:center;gap:14px}
-.setting-icon-wrap{width:42px;height:42px;border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
-.setting-icon-wrap.blue{background:var(--blue-light);color:var(--blue)}
-.setting-icon-wrap.yellow{background:#fff8e1;color:#f59e0b}
-.setting-icon-wrap.green{background:#e8f5e9;color:var(--green)}
-[data-theme="dark"] .setting-icon-wrap.blue{background:#1c2b3a}
-[data-theme="dark"] .setting-icon-wrap.yellow{background:#2c2400}
-[data-theme="dark"] .setting-icon-wrap.green{background:#1a2e1a}
-.setting-text h4{font-size:14px;font-weight:700;color:var(--text)}
-.setting-text p{font-size:12px;color:var(--text-mid);margin-top:2px}
-.toggle{position:relative;width:48px;height:26px;flex-shrink:0}
-.toggle input{opacity:0;width:0;height:0}
-.toggle-slider{position:absolute;inset:0;background:#ccc;border-radius:30px;cursor:pointer;transition:background var(--t)}
-.toggle-slider::before{content:'';position:absolute;left:3px;top:3px;width:20px;height:20px;border-radius:50%;background:#fff;transition:transform var(--t);box-shadow:0 2px 4px rgba(0,0,0,.2)}
-.toggle input:checked+.toggle-slider{background:var(--blue)}
-.toggle input:checked+.toggle-slider::before{transform:translateX(22px)}
-.btn-delete-account{background:none;border:1.5px solid var(--red);color:var(--red);padding:11px 24px;border-radius:var(--radius-sm);font-family:'Almarai',sans-serif;font-weight:700;font-size:14px;cursor:pointer;transition:background var(--t),color var(--t);display:flex;align-items:center;gap:8px}
-.btn-delete-account:hover{background:var(--red);color:#fff}
-/* MODAL */
-#logoutModal{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:9999;align-items:center;justify-content:center;backdrop-filter:blur(5px)}
-#logoutModal.open{display:flex!important}
-.modal-box{background:var(--card);width:92%;max-width:420px;border-radius:20px;padding:36px 28px 28px;box-shadow:0 20px 60px rgba(0,0,0,.3);display:flex;flex-direction:column;align-items:center;gap:10px;direction:rtl;animation:modalIn .3s ease}
-@keyframes modalIn{from{transform:scale(.9);opacity:0}to{transform:scale(1);opacity:1}}
-.modal-box h4{font-family:'Readex Pro',sans-serif;font-size:19px;font-weight:700;color:var(--text)}
-.modal-box>p{font-size:13px;color:var(--text-mid);text-align:center;line-height:1.8}
-.modal-box input{width:100%;padding:13px 16px;border-radius:var(--radius-sm);border:1.5px solid var(--border);outline:none;font-family:'Almarai',sans-serif;font-size:14px;text-align:center;background:var(--input-bg);color:var(--text);transition:border-color var(--t)}
-.modal-box input:focus{border-color:var(--gold)}
-#logoutErrorMsg{color:var(--red);font-size:13px;min-height:16px}
-.modal-actions{display:flex;gap:12px;justify-content:center;width:100%}
-.btn-confirm-logout{background:var(--red);color:#fff;border:none;border-radius:var(--radius-sm);padding:12px 28px;font-family:'Almarai',sans-serif;font-weight:700;font-size:14px;cursor:pointer}
-.btn-cancel{background:var(--border);color:var(--text);border:none;border-radius:var(--radius-sm);padding:12px 28px;font-family:'Almarai',sans-serif;font-weight:700;font-size:14px;cursor:pointer}
-#forcedLogoutOverlay{display:none;position:fixed;inset:0;background:rgba(15,27,53,.9);z-index:99999;align-items:center;justify-content:center;direction:rtl;backdrop-filter:blur(6px)}
-#forcedLogoutOverlay.open{display:flex!important}
-.forced-box{background:var(--card);border-radius:20px;padding:44px 36px;text-align:center;max-width:380px;width:92%;box-shadow:0 20px 60px rgba(0,0,0,.3)}
-.forced-box .lock-emoji{font-size:56px;margin-bottom:16px}
-.forced-box h3{font-size:20px;font-weight:700;color:var(--text);margin-bottom:10px}
-.forced-box p{color:var(--text-mid);font-size:14px;line-height:1.8;margin-bottom:28px}
-.btn-relogin{background:linear-gradient(135deg,#1d6fc4,#1a5fad);color:#fff;border:none;border-radius:10px;padding:13px 36px;font-size:15px;cursor:pointer;font-family:'Almarai',sans-serif;font-weight:700}
-#toast-acc{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(70px);background:var(--navy);color:#fff;padding:13px 26px;border-radius:30px;font-family:'Almarai',sans-serif;font-size:14px;font-weight:600;z-index:99999;opacity:0;transition:all .35s cubic-bezier(.34,1.56,.64,1);box-shadow:0 8px 28px rgba(0,0,0,.25);white-space:nowrap;border:1.5px solid transparent}
-@media(max-width:900px){.all_formation .container{flex-direction:column}.formation{width:100%;position:static;flex-direction:row;flex-wrap:wrap}.profile-card,.stats-card{width:100%}.nav-card{flex:1;min-width:200px}.main-panel{width:100%}}
-@media(max-width:600px){body{padding-top:230px}.all_formation{padding:20px 0 40px}.formation{flex-direction:column}.nav-card{width:100%}.input-grid{grid-template-columns:1fr}.panel-title h2{font-size:20px}.device-card{flex-wrap:wrap}.device-end-btn{width:100%;margin-top:6px}.coupon-card{flex-direction:column}}
-@media(max-width:400px){body{padding-top:210px}.modal-box{padding:28px 18px 22px}}
+
 </style>
 </head>
 <body>
@@ -223,7 +77,6 @@ body{background:var(--bg);font-family:'Almarai',sans-serif;color:var(--text);tra
       <div class="avatar-wrap" onclick="document.getElementById('fileInput').click()">
         <img id="profileImage" src="" alt="صورة الملف الشخصي">
         <i id="icon_person" class="fa-solid fa-circle-user"></i>
-        <div class="avatar-edit"><i class="fa-solid fa-camera"></i></div>
       </div>
       <input type="file" id="fileInput" accept="image/*">
       <h1 id="welcomeName">مرحباً</h1>
@@ -250,6 +103,7 @@ body{background:var(--bg);font-family:'Almarai',sans-serif;color:var(--text);tra
       <button class="nav-btn" onclick="switchTab('qr',this)">كود كشمير هوم <i class="fa-solid fa-qrcode"></i></button>
       <button class="nav-btn" onclick="switchTab('settings',this)">الإعدادات <i class="fa-solid fa-gear"></i></button>
       <div class="nav-divider"></div>
+      <div></div>
       <button class="nav-btn danger" id="logoutBtn">تسجيل الخروج <i class="fa-solid fa-right-from-bracket"></i></button>
     </div>
   </div>
@@ -301,7 +155,7 @@ body{background:var(--bg);font-family:'Almarai',sans-serif;color:var(--text);tra
       <div class="panel-title"><h2>أكواد الخصم</h2><p>أكواد خصم مجانية مقدمة من كشمير هوم</p></div>
       <div class="info-card">
         <div class="card-header"><div class="card-header-bar"></div><h3>الأكواد المتاحة</h3></div>
-        <div class="coupon-card">
+        <!-- <div class="coupon-card">
           <div class="coupon-badge"><p>خصم<br>10%</p></div>
           <div class="coupon-body">
             <div class="coupon-meta">
@@ -315,7 +169,7 @@ body{background:var(--bg);font-family:'Almarai',sans-serif;color:var(--text);tra
               <h4>a64k97fm</h4>
             </div>
           </div>
-        </div>
+        </div> -->
       </div>
     </div>
 
@@ -361,10 +215,11 @@ body{background:var(--bg);font-family:'Almarai',sans-serif;color:var(--text);tra
       </div>
       <div class="info-card">
         <div class="card-header"><div class="card-header-bar"></div><h3>منطقة الخطر</h3></div>
-        <p style="font-size:13px;color:var(--text-mid);margin-bottom:16px;line-height:1.7">حذف الحساب نهائي ولا يمكن التراجع عنه. ستُفقد جميع بياناتك.</p>
+        <p style="font-size:13px;color:var(--text-mid);margin-bottom:16px;line-height:1.7;font-family: 'Almarai', sans-serif;">حذف الحساب نهائي ولا يمكن التراجع عنه. ستُفقد جميع بياناتك.</p>
         <button class="btn-delete-account" id="deleteAccountBtn"><i class="fa-solid fa-trash-can"></i> حذف الحساب نهائياً</button>
       </div>
-    </div>
+
+</div>
 
   </div>
 </div></div>
@@ -401,148 +256,6 @@ body{background:var(--bg);font-family:'Almarai',sans-serif;color:var(--text);tra
 
 <script src="../js/main.js"></script>
 <script src="../js/omar.js"></script>
-<script type="module">
-import{initializeApp}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import{getDatabase,ref,set,get,onValue,off,remove,query,orderByChild,equalTo}from"https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
-const cfg={apiKey:"AIzaSyCCk0w_KHVCswjp16TSkNToRSSOjlPC5kE",authDomain:"data-customer-d722f.firebaseapp.com",databaseURL:"https://data-customer-d722f-default-rtdb.firebaseio.com/",projectId:"data-customer-d722f",storageBucket:"data-customer-d722f.firebasestorage.app",messagingSenderId:"398522341614",appId:"1:398522341614:web:99e0f897c61ec960cffbff"};
-const db=getDatabase(initializeApp(cfg));
-const eKey=e=>e.replace(/\./g,"_").replace(/@/g,"__");
-let _start=Date.now(),_iv=null,_lp=null;
-
-// toast
-function toast(msg,type="info"){
-  let t=document.getElementById("toast-acc");
-  if(!t){t=document.createElement("div");t.id="toast-acc";document.body.appendChild(t);}
-  t.style.borderColor={success:"#2e7d32",error:"#e53935",info:"#c8a96e"}[type]||"#c8a96e";
-  t.textContent=msg;
-  requestAnimationFrame(()=>{t.style.opacity="1";t.style.transform="translateX(-50%) translateY(0)";});
-  clearTimeout(t._t);t._t=setTimeout(()=>{t.style.opacity="0";t.style.transform="translateX(-50%) translateY(70px)";},3200);
-}
-
-// tab switch
-window.switchTab=function(name,btn){
-  document.querySelectorAll(".tab-panel").forEach(p=>p.classList.remove("active"));
-  document.querySelectorAll(".nav-btn").forEach(b=>b.classList.remove("active"));
-  document.getElementById("tab-"+name).classList.add("active");
-  btn.classList.add("active");
-  if(name==="devices"){const e=localStorage.getItem("kashmirSessionEmail");if(e)renderDevices(e);}
-};
-
-// dark mode
-const dmToggle=document.getElementById("darkModeToggle");
-function applyDark(on){document.documentElement.setAttribute("data-theme",on?"dark":"light");if(dmToggle)dmToggle.checked=on;}
-applyDark(localStorage.getItem("kashmirDarkMode")==="1");
-dmToggle?.addEventListener("change",()=>{localStorage.setItem("kashmirDarkMode",dmToggle.checked?"1":"0");applyDark(dmToggle.checked);});
-
-// mute
-const muteToggle=document.getElementById("muteToggle");
-function applyMute(on){
-  document.querySelectorAll("video,audio").forEach(m=>m.muted=on);
-  const ico=document.getElementById("muteIcon");
-  if(ico)ico.className=on?"fa-solid fa-volume-xmark":"fa-solid fa-volume-high";
-  if(muteToggle)muteToggle.checked=on;
-}
-applyMute(localStorage.getItem("kashmirMuted")==="1");
-muteToggle?.addEventListener("change",()=>{localStorage.setItem("kashmirMuted",muteToggle.checked?"1":"0");applyMute(muteToggle.checked);toast(muteToggle.checked?"🔇 تم كتم الأصوات":"🔊 تم تشغيل الأصوات","info");});
-
-// copy coupon
-window.copyCoupon=function(el,code){
-  navigator.clipboard.writeText(code).then(()=>{const h=el.querySelector("h4"),o=h.textContent;h.textContent="✅ تم النسخ!";setTimeout(()=>h.textContent=o,1800);}).catch(()=>toast("❌ تعذّر النسخ","error"));
-};
-
-// tracking
-async function trackVisit(email){try{const r=ref(db,`userStats/${eKey(email)}/totalVisits`),s=await get(r);await set(r,(s.exists()?s.val():0)+1);await set(ref(db,`userStats/${eKey(email)}/lastVisit`),new Date().toISOString());}catch(e){}}
-async function saveTime(email,mins){if(mins<=0)return;try{const r=ref(db,`userStats/${eKey(email)}/totalMinutes`),s=await get(r);await set(r,(s.exists()?s.val():0)+mins);}catch(e){}}
-function startTimer(email){_start=Date.now();clearInterval(_iv);_iv=setInterval(async()=>{const m=Math.round((Date.now()-_start)/60000);if(m>=1){await saveTime(email,m);_start=Date.now();}},2*60*1000);window.addEventListener("beforeunload",()=>{const m=Math.round((Date.now()-_start)/60000);if(m>=1)saveTime(email,m);});}
-async function loadStats(email){try{const s=await get(ref(db,`userStats/${eKey(email)}`));const d=s.exists()?s.val():{};animNum(document.getElementById("stat-visits"),d.totalVisits||1,0);animNum(document.getElementById("stat-hours"),((d.totalMinutes||0)/60),1);}catch(e){}}
-function animNum(el,target,dec){if(!el)return;const dur=900,t0=Date.now(),id=setInterval(()=>{const p=Math.min((Date.now()-t0)/dur,1),e=1-Math.pow(1-p,3);el.textContent=(e*target).toFixed(dec);if(p>=1){clearInterval(id);el.textContent=target.toFixed(dec);}},16);}
-
-// session
-function devInfo(){const ua=navigator.userAgent;let d="جهاز",ic="💻";if(/iPhone/.test(ua)){d="iPhone";ic="📱";}else if(/iPad/.test(ua)){d="iPad";ic="📱";}else if(/Android/.test(ua)&&/Mobile/.test(ua)){d="Android موبايل";ic="📱";}else if(/Android/.test(ua)){d="Android تابلت";ic="📱";}else if(/Mac/.test(ua)){d="Mac";ic="💻";}else if(/Windows/.test(ua)){d="Windows PC";ic="🖥️";}else if(/Linux/.test(ua)){d="Linux";ic="🖥️";}let b="متصفح";if(/Chrome/.test(ua)&&!/Edg/.test(ua))b="Chrome";else if(/Firefox/.test(ua))b="Firefox";else if(/Safari/.test(ua))b="Safari";else if(/Edg/.test(ua))b="Edge";return{device:d,browser:b,icon:ic};}
-function clearLocal(){["kashmirSessionId","kashmirSessionEmail","kashmirUser"].forEach(k=>localStorage.removeItem(k));}
-async function destroySess(email,sid){try{await remove(ref(db,`sessions/${eKey(email)}/${sid}`));}catch(e){}}
-async function validateSession(){const sid=localStorage.getItem("kashmirSessionId"),email=localStorage.getItem("kashmirSessionEmail");if(!sid||!email)return null;try{const sn=await get(ref(db,`sessions/${eKey(email)}/${sid}`));if(!sn.exists()||!sn.val().isActive){clearLocal();return null;}await set(ref(db,`sessions/${eKey(email)}/${sid}/lastSeen`),Date.now());return sn.val();}catch(e){return null;}}
-function watchSession(email,sid){const path=`sessions/${eKey(email)}/${sid}`;if(_lp){try{off(ref(db,_lp));}catch(e){}}_lp=path;onValue(ref(db,path),(sn)=>{if(!sn.exists()||!sn.val().isActive){clearLocal();document.getElementById("forcedLogoutOverlay").classList.add("open");}});}
-
-// devices
-async function renderDevices(email){
-  const c=document.getElementById("devices-list");if(!c)return;
-  c.innerHTML=`<p style="color:var(--text-light);text-align:center;padding:20px;font-size:13px">جاري التحميل...</p>`;
-  const sn=await get(ref(db,`sessions/${eKey(email)}`));
-  if(!sn.exists()){c.innerHTML=`<p style="color:var(--text-light);text-align:center;padding:20px;font-size:13px">لا توجد أجهزة متصلة</p>`;return;}
-  const sessions=sn.val(),mySid=localStorage.getItem("kashmirSessionId");
-  let html="";
-  Object.entries(sessions).sort(([,a],[,b])=>new Date(b.loginAt)-new Date(a.loginAt)).forEach(([sid,d])=>{
-    const isMine=sid===mySid,date=new Date(d.loginAt).toLocaleDateString("ar-EG",{year:"numeric",month:"long",day:"numeric",hour:"2-digit",minute:"2-digit"});
-    html+=`<div class="device-card ${isMine?"device-current":""}"><div class="device-icon">${d.icon||"💻"}</div><div class="device-info"><h4>${d.device||"جهاز"} — ${d.browser||"متصفح"} ${isMine?'<span class="device-badge">هذا الجهاز</span>':""}</h4><p>آخر دخول: ${date}</p></div>${!isMine?`<button class="device-end-btn" onclick="logoutDevice('${email}','${sid}')"><i class="fa-solid fa-right-from-bracket"></i> إنهاء</button>`:""}</div>`;
-  });
-  c.innerHTML=html;
-}
-window.logoutDevice=async function(email,sid){try{await remove(ref(db,`sessions/${eKey(email)}/${sid}`));toast("✅ تم إنهاء الجلسة","success");setTimeout(()=>renderDevices(email),700);}catch(e){toast("❌ حدث خطأ","error");}};
-window.logoutAllDevices=async function(){const email=localStorage.getItem("kashmirSessionEmail");if(!email)return;try{await remove(ref(db,`sessions/${eKey(email)}`));clearLocal();toast("✅ تم تسجيل الخروج من كل الأجهزة","success");setTimeout(()=>location.href="../index.html",1500);}catch(e){toast("❌ حدث خطأ","error");}};
-
-// fill page
-async function fillPage(email){
-  const sn=await get(query(ref(db,"users"),orderByChild("email"),equalTo(email)));
-  if(!sn.exists())return;let ud=null;sn.forEach(c=>{ud=c.val();});if(!ud)return;
-  const sv=(id,v)=>{const e=document.getElementById(id);if(e)e.value=v||"";};
-  const st=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v||"";};
-  sv("userEmail",ud.email);sv("userPhone",ud.phone);sv("userName",ud.firstName);sv("userFamily",ud.lastName);
-  st("welcomeName","مرحباً، "+(ud.firstName||""));st("userEmailDisplay",ud.email);
-  if(ud.gender)document.querySelectorAll('input[name="gender"]').forEach(r=>{r.checked=r.value===ud.gender;});
-}
-
-// update names
-const ni=document.getElementById("userName"),fi=document.getElementById("userFamily"),ub=document.getElementById("updateNamesBtn");
-if(ub){
-  const en=()=>{ub.disabled=false;};
-  ni?.addEventListener("input",en);fi?.addEventListener("input",en);
-  document.querySelectorAll('input[name="gender"]').forEach(r=>r.addEventListener("change",en));
-  ub.addEventListener("click",async()=>{
-    const email=localStorage.getItem("kashmirSessionEmail");if(!email)return;
-    const fn=ni?.value.trim(),ln=fi?.value.trim(),g=document.querySelector('input[name="gender"]:checked')?.value||"";
-    if(!fn||!ln){toast("❌ أدخل الاسم الأول والأخير","error");return;}
-    ub.disabled=true;ub.textContent="جاري التحديث...";
-    try{const sn=await get(query(ref(db,"users"),orderByChild("email"),equalTo(email)));if(sn.exists()){let key=null;sn.forEach(c=>{key=c.key;});if(key){await set(ref(db,`users/${key}/firstName`),fn);await set(ref(db,`users/${key}/lastName`),ln);if(g)await set(ref(db,`users/${key}/gender`),g);const s=JSON.parse(localStorage.getItem("kashmirUser")||"{}");Object.assign(s,{firstName:fn,lastName:ln,...(g&&{gender:g})});localStorage.setItem("kashmirUser",JSON.stringify(s));toast("✅ تم تحديث البيانات بنجاح","success");}}}
-    catch(e){toast("❌ "+e.message,"error");}finally{ub.textContent="تحديث الحساب";ub.disabled=true;}
-  });
-}
-
-// logout modal
-const logoutModal=document.getElementById("logoutModal"),logoutErrEl=document.getElementById("logoutErrorMsg");
-document.getElementById("logoutBtn")?.addEventListener("click",()=>logoutModal.classList.add("open"));
-document.getElementById("cancelLogoutBtn")?.addEventListener("click",()=>{logoutModal.classList.remove("open");if(logoutErrEl)logoutErrEl.textContent="";});
-logoutModal?.addEventListener("click",(e)=>{if(e.target===logoutModal){logoutModal.classList.remove("open");if(logoutErrEl)logoutErrEl.textContent="";}});
-document.getElementById("confirmLogoutBtn")?.addEventListener("click",async()=>{
-  const input=document.getElementById("logoutEmailInput")?.value.trim(),email=localStorage.getItem("kashmirSessionEmail");
-  if(!input){if(logoutErrEl)logoutErrEl.textContent="أدخل بريدك الإلكتروني";return;}
-  if(input!==email){if(logoutErrEl)logoutErrEl.textContent="❌ البريد الإلكتروني غير مطابق";return;}
-  const m=Math.round((Date.now()-_start)/60000);if(m>=1)await saveTime(email,m);clearInterval(_iv);
-  const sid=localStorage.getItem("kashmirSessionId");if(sid&&email)await destroySess(email,sid);
-  clearLocal();localStorage.removeItem("kashmirProfileImg");logoutModal.classList.remove("open");
-  toast("👋 تم تسجيل الخروج بنجاح","success");setTimeout(()=>location.href="../index.html",1400);
-});
-
-// delete account
-document.getElementById("deleteAccountBtn")?.addEventListener("click",()=>toast("⚠️ ميزة حذف الحساب قيد التطوير","info"));
-
-// profile pic
-const fileInput=document.getElementById("fileInput"),pi=document.getElementById("profileImage"),ico=document.getElementById("icon_person");
-const si=localStorage.getItem("kashmirProfileImg");
-if(si&&pi&&ico){pi.src=si;pi.style.display="block";ico.style.display="none";}
-fileInput?.addEventListener("change",(e)=>{const file=e.target.files[0];if(!file)return;const r=new FileReader();r.onload=(ev)=>{pi.src=ev.target.result;pi.style.display="block";ico.style.display="none";localStorage.setItem("kashmirProfileImg",ev.target.result);};r.readAsDataURL(file);});
-
-// init
-(async function(){
-  const session=await validateSession();
-  if(!session){toast("❌ يجب تسجيل الدخول أولاً","error");setTimeout(()=>location.href="../index.html",2000);return;}
-  const email=localStorage.getItem("kashmirSessionEmail");
-  watchSession(email,session.sessionId);
-  await fillPage(email);
-  await trackVisit(email);
-  startTimer(email);
-  loadStats(email);
-})();
-</script>
+<script type="module" src="../js/account.js"></script>
 </body>
 </html>
