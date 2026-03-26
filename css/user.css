@@ -58,7 +58,7 @@ body {
   flex-direction: column;
   gap: 16px;
 }
-.user-stats-card{
+#user-stats-card{
   display: none !important;
 }
 /* ─── Profile Card ─────────────────────────────── */
