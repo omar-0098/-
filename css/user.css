@@ -58,7 +58,9 @@ body {
   flex-direction: column;
   gap: 16px;
 }
-
+.user-stats-card{
+  display: none;
+}
 /* ─── Profile Card ─────────────────────────────── */
 .formation .section:first-child {
   background: linear-gradient(145deg, var(--navy) 0%, var(--navy-mid) 100%);
