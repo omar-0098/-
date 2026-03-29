@@ -1,617 +1,495 @@
+// ============================================================
+//  item.js — كشمير هوم
+//  الكومنتس + صورة البروفايل + Firebase Realtime Database
+// ============================================================
 
-const img = document.getElementById("bidImg");
-let scale = 1;
-let originX = 0;
-let originY = 0;
-let lastX = 0;
-let lastY = 0;
-let isDragging = false;
-let initialPinchDistance = null;
-let lastScale = 1;
+import { initializeApp }          from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+import { getStorage, ref as sRef, uploadBytes, getDownloadURL }
+                                   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
+import {
+  getDatabase, ref, push, set, get, onValue, query,
+  orderByChild, equalTo, limitToLast
+} from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
 
-// ✅ زووم بالماوس
-img.addEventListener("wheel", (e) => {
-  e.preventDefault();
+// ─── Firebase Config (نفس الـ config بتاعتك) ────────────────
+const firebaseConfig = {
+  apiKey:            "AIzaSyCCk0w_KHVCswjp16TSkNToRSSOjlPC5kE",
+  authDomain:        "data-customer-d722f.firebaseapp.com",
+  databaseURL:       "https://data-customer-d722f-default-rtdb.firebaseio.com/",
+  projectId:         "data-customer-d722f",
+  storageBucket:     "data-customer-d722f.firebasestorage.app",
+  messagingSenderId: "398522341614",
+  appId:             "1:398522341614:web:99e0f897c61ec960cffbff"
+};
 
-  const rect = img.getBoundingClientRect();
-  const offsetX = e.clientX - rect.left;
-  const offsetY = e.clientY - rect.top;
+const app     = initializeApp(firebaseConfig);
+const db      = getDatabase(app);
+const storage = getStorage(app);
 
-  const zoomIntensity = 0.1;
-  const delta = e.deltaY > 0 ? -zoomIntensity : zoomIntensity;
-  const newScale = Math.min(Math.max(0.5, scale + delta), 4);
+// ============================================================
+//  ① صورة البروفايل — رفع على Storage وحفظ URL في Database
+// ============================================================
 
-  originX -= (offsetX / scale - offsetX / newScale);
-  originY -= (offsetY / scale - offsetY / newScale);
-
-  scale = newScale;
-  updateTransform();
-});
-
-// ✅ سحب بالماوس
-img.addEventListener("mousedown", (e) => {
-  isDragging = true;
-  lastX = e.clientX;
-  lastY = e.clientY;
-  img.style.cursor = "grabbing";
-  preventPageScroll(true);
-});
-
-window.addEventListener("mousemove", (e) => {
-  if (!isDragging) return;
-  originX += (e.clientX - lastX) / scale;
-  originY += (e.clientY - lastY) / scale;
-  lastX = e.clientX;
-  lastY = e.clientY;
-  updateTransform();
-});
-
-window.addEventListener("mouseup", () => {
-  isDragging = false;
-  img.style.cursor = "grab";
-  preventPageScroll(false);
-});
-
-// ✅ سحب باللمس بإصبع واحد
-img.addEventListener("touchstart", (e) => {
-  if (e.touches.length === 1) {
-    isDragging = true;
-    lastX = e.touches[0].clientX;
-    lastY = e.touches[0].clientY;
-    preventPageScroll(true);
-  }
-});
-
-img.addEventListener("touchmove", (e) => {
-  if (e.touches.length === 1 && isDragging) {
-    originX += (e.touches[0].clientX - lastX) / scale;
-    originY += (e.touches[0].clientY - lastY) / scale;
-    lastX = e.touches[0].clientX;
-    lastY = e.touches[0].clientY;
-    updateTransform();
-  }
-
-  // ✅ دعم pinch zoom
-  if (e.touches.length === 2) {
-    e.preventDefault(); // يمنع الزوم الافتراضي
-
-    const dx = e.touches[0].clientX - e.touches[1].clientX;
-    const dy = e.touches[0].clientY - e.touches[1].clientY;
-    const distance = Math.hypot(dx, dy);
-
-    if (initialPinchDistance == null) {
-      initialPinchDistance = distance;
-      lastScale = scale;
-    } else {
-      const pinchScale = distance / initialPinchDistance;
-      scale = Math.min(Math.max(0.5, lastScale * pinchScale), 4);
-      updateTransform();
-    }
-  }
-}, { passive: false });
-
-img.addEventListener("touchend", (e) => {
-  if (e.touches.length < 2) {
-    isDragging = false;
-    initialPinchDistance = null;
-    preventPageScroll(false);
-  }
-});
-
-function updateTransform() {
-  img.style.transform = `translate(${originX}px, ${originY}px) scale(${scale})`;
+// جيب الصورة الحالية من localStorage (نفس طريقة account.js)
+function getCurrentUserPhoto() {
+  return localStorage.getItem("kashmirProfileImg") || "";
 }
 
-function preventPageScroll(enable) {
-  document.body.style.overflow = enable ? "hidden" : "";
+// جيب email المستخدم الحالي
+function getCurrentUserEmail() {
+  return localStorage.getItem("kashmirSessionEmail") || "";
 }
 
-// ✅ تغيير الصورة عند الضغط على صورة صغيرة
-function changeItemImage(src) {
-  img.style.opacity = 0;
-  setTimeout(() => {
-    img.src = src;
-    scale = 1;
-    originX = 0;
-    originY = 0;
-    updateTransform();
-    img.style.opacity = 1;
-  }, 200);
+// جيب اسم المستخدم من kashmirUser
+function getCurrentUserName() {
+  try {
+    const u = JSON.parse(localStorage.getItem("kashmirUser") || "{}");
+    return (u.firstName || "") + (u.lastName ? " " + u.lastName : "") || "زائر";
+  } catch { return "زائر"; }
 }
 
+// حوّل email لـ key آمن (نفس طريقة account.js)
+function emailKey(email) {
+  return email.replace(/\./g, "_").replace(/@/g, "__");
+}
 
+// رفع صورة على Storage وتحديث URL في Database
+async function uploadProfilePhoto(file) {
+  const email = getCurrentUserEmail();
+  if (!email) return null;
 
+  try {
+    // رفع الصورة على Storage في مسار: profilePhotos/{emailKey}
+    const storageRef = sRef(storage, `profilePhotos/${emailKey(email)}`);
+    await uploadBytes(storageRef, file);
+    const url = await getDownloadURL(storageRef);
 
+    // حفظ الـ URL في Database عشان أي حد يقدر يشوفها
+    await set(ref(db, `userPhotos/${emailKey(email)}`), url);
 
+    // تحديث localStorage كمان (عشان يكون سريع في التحميل)
+    localStorage.setItem("kashmirProfileImg", url);
 
+    return url;
+  } catch (err) {
+    console.error("خطأ في رفع الصورة:", err);
+    return null;
+  }
+}
 
+// جيب صورة المستخدم من Database (للناس التانية تشوف الصورة)
+async function fetchUserPhoto(email) {
+  if (!email) return "";
+  try {
+    const snap = await get(ref(db, `userPhotos/${emailKey(email)}`));
+    return snap.exists() ? snap.val() : "";
+  } catch { return ""; }
+}
 
+// ─── ربط fileInput بالـ upload ────────────────────────────────
+// لو عندك input في صفحة البروفايل بس — ده للـ item page مش محتاجه
+// بس لو المستخدم فتح الصفحة وعنده صورة قديمة في localStorage هيتحفظ تلقائياً في Storage
+(async function syncPhotoToStorage() {
+  const email      = getCurrentUserEmail();
+  const localPhoto = getCurrentUserPhoto();
+  if (!email || !localPhoto || localPhoto.startsWith("https://")) return;
 
+  // لو الصورة base64 (محفوظة قديمة) — ارفعها على Storage
+  try {
+    const res  = await fetch(localPhoto);
+    const blob = await res.blob();
+    const storageRef = sRef(storage, `profilePhotos/${emailKey(email)}`);
+    await uploadBytes(storageRef, blob);
+    const url = await getDownloadURL(storageRef);
+    await set(ref(db, `userPhotos/${emailKey(email)}`), url);
+    localStorage.setItem("kashmirProfileImg", url);
+    console.log("✅ صورة البروفايل اترفعت على Storage تلقائياً");
+  } catch (err) {
+    console.warn("تعذّر رفع الصورة القديمة:", err);
+  }
+})();
 
+// ============================================================
+//  ② نظام التقييم بالنجوم
+// ============================================================
 
-
-
-
-
-
-
-
-// إعدادات JSONBin
-const BIN_ID = "684430798561e97a5020a6a3";
-const API_KEY = "$2a$10$xAWjC3zelpDKCd6zdOdUg.D0bwtEURjcR5sEiYdonjBmP5lHuqzq2";
-
-const colors = ['#e74c3c', '#8e44ad', '#3498db', '#f39c12', '#27ae60', '#e67e22', '#1abc9c'];
-let allComments = [];
-let visibleCount = 5;
 let selectedRating = 0;
-const productId = window.location.pathname;
 
-function getRandomColor() {
-  return colors[Math.floor(Math.random() * colors.length)];
+document.querySelectorAll(".star").forEach((star) => {
+  star.addEventListener("click", () => {
+    selectedRating = parseInt(star.dataset.star);
+    updateStarUI(selectedRating);
+  });
+
+  star.addEventListener("mouseover", () => {
+    updateStarUI(parseInt(star.dataset.star));
+  });
+
+  star.addEventListener("mouseout", () => {
+    updateStarUI(selectedRating);
+  });
+});
+
+function updateStarUI(rating) {
+  document.querySelectorAll(".star").forEach((s) => {
+    s.classList.toggle("selected", parseInt(s.dataset.star) <= rating);
+  });
+  const display = document.getElementById("ratingDisplay");
+  if (display) display.textContent = rating > 0 ? `التقييم: ${rating} نجوم` : "التقييم: 0 نجوم";
 }
 
-function formatDate(date) {
-  const d = new Date(date);
-  const year = d.getFullYear();
-  const month = String(d.getMonth() + 1).padStart(2, '0');
-  const day = String(d.getDate()).padStart(2, '0');
-  return `${year}-${month}-${day}`;
-}
+// ============================================================
+//  ③ جيب itemId من الـ URL
+// ============================================================
 
-function createCommentElement({ name, comment, date, color, rating, imageUrl, id, likes = 0, dislikes = 0 }) {
-  const commentDiv = document.createElement('div');
-  commentDiv.className = 'comment';
-  commentDiv.dataset.commentId = id;
+// الـ URL المفروض يكون: item.html?id=ITEM_KEY
+// لو بتستخدم اسم تاني غير "id" غيّره هنا
+const urlParams = new URLSearchParams(window.location.search);
+const ITEM_ID   = urlParams.get("id") || window.location.pathname; // fallback لـ path لو مفيش id
 
-  const avatar = document.createElement('div');
-  avatar.className = 'avatar';
+// ============================================================
+//  ④ إضافة كومنت جديد
+// ============================================================
 
-  if (imageUrl) {
-    avatar.style.backgroundImage = `url(${imageUrl})`;
-    avatar.style.backgroundSize = 'cover';
-    avatar.style.backgroundPosition = 'center';
-  } else {
-    avatar.style.backgroundColor = color;
-    avatar.textContent = name.charAt(0);
+let isPosting = false;
+
+window.postComment = async function () {
+  if (isPosting) return;
+
+  const commentInput = document.getElementById("commentInput");
+  const submitBtn    = document.getElementById("button");
+  const text         = commentInput?.value?.trim();
+
+  if (!text) {
+    showItemToast("اكتب تعليقك الأول ✍️", "info");
+    commentInput?.focus();
+    return;
   }
 
-  const content = document.createElement('div');
-  content.className = 'comment-content';
-  content.innerHTML = `
-    <div class="comment-name">${name}</div>
-    <div class="comment-date .comment-stars"> ${formatDate(date)}</div>
-    <div class="comment-text">${'<i class="fa-solid fa-star" id="star"></i>'.repeat(rating)}</div>
-    <div class="comment-text">${comment}</div>
-  `;
-
-  const reactionDiv = document.createElement('div');
-  reactionDiv.className = 'comment-reactions';
-  reactionDiv.innerHTML = `
-    <button class="dislike-btn" data-comment-id="${id}"><svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" viewBox="0 0 256 256">
-                        <path d="M239.82,157l-12-96A24,24,0,0,0,204,40H32A16,16,0,0,0,16,56v88a16,16,0,0,0,16,16H75.06l37.78,75.58A8,8,0,0,0,120,240a40,40,0,0,0,40-40V184h56a24,24,0,0,0,23.82-27ZM72,144H32V56H72Zm150,21.29a7.88,7.88,0,0,1-6,2.71H152a8,8,0,0,0-8,8v24a24,24,0,0,1-19.29,23.54L88,150.11V56H204a8,8,0,0,1,7.94,7l12,96A7.87,7.87,0,0,1,222,165.29Z"></path>
-                      </svg> ${dislikes}</button>
-    <span class="vote-separator"></span>
-    <button class="like-btn" data-comment-id="${id}"><svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" viewBox="0 0 256 256">
-      <path d="M234,80.12A24,24,0,0,0,216,72H160V56a40,40,0,0,0-40-40,8,8,0,0,0-7.16,4.42L75.06,96H32a16,16,0,0,0-16,16v88a16,16,0,0,0,16,16H204a24,24,0,0,0,23.82-21l12-96A24,24,0,0,0,234,80.12ZM32,112H72v88H32ZM223.94,97l-12,96a8,8,0,0,1-7.94,7H88V105.89l36.71-73.43A24,24,0,0,1,144,56V80a8,8,0,0,0,8,8h64a8,8,0,0,1,7.94,9Z"></path>
-        </svg>${likes}</button>
-  `;
-
-  commentDiv.appendChild(avatar);
-  commentDiv.appendChild(content);
-  commentDiv.appendChild(reactionDiv);
-
-  // إضافة الأحداث بعد إنشاء الأزرار
-  setTimeout(() => attachReactionEvents(commentDiv), 0);
-
-  return commentDiv;
-}
-
-function attachReactionEvents(commentDiv) {
-  const id = commentDiv.dataset.commentId;
-  const likeBtn = commentDiv.querySelector('.like-btn');
-  const dislikeBtn = commentDiv.querySelector('.dislike-btn');
-  const voteKey = `vote_${id}`;
-  const previousVote = localStorage.getItem(voteKey);
-
-  likeBtn.addEventListener('click', () => handleVote(id, 'like', likeBtn, dislikeBtn));
-  dislikeBtn.addEventListener('click', () => handleVote(id, 'dislike', likeBtn, dislikeBtn));
-
-  // تمييز التصويت السابق
-  if (previousVote === 'like') likeBtn.classList.add('voted');
-  else if (previousVote === 'dislike') dislikeBtn.classList.add('voted');
-}
-
-async function handleVote(commentId, type, likeBtn, dislikeBtn) {
-  const voteKey = `vote_${commentId}`;
-  const previousVote = localStorage.getItem(voteKey);
-
-  const comment = allComments.find(c => c.id === commentId);
-  if (!comment) return;
-
-  if (previousVote === type) {
-    // إلغاء التصويت
-    if (type === 'like') comment.likes--;
-    else comment.dislikes--;
-    localStorage.removeItem(voteKey);
-  } else {
-    // تحديث التصويت
-    if (type === 'like') {
-      comment.likes++;
-      if (previousVote === 'dislike') comment.dislikes--;
-    } else {
-      comment.dislikes++;
-      if (previousVote === 'like') comment.likes--;
-    }
-    localStorage.setItem(voteKey, type);
+  if (selectedRating === 0) {
+    showItemToast("اختر تقييماً بالنجوم أولاً ⭐", "info");
+    return;
   }
 
-  await updateCommentsOnServer();
-  renderComments();
+  if (text.length > 500) {
+    showItemToast("التعليق طويل جداً (500 حرف كحد أقصى)", "error");
+    return;
+  }
+
+  isPosting = true;
+  if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = "جاري النشر..."; }
+
+  const email    = getCurrentUserEmail();
+  const userName = getCurrentUserName();
+
+  // جيب صورة المستخدم — من localStorage أولاً (أسرع)، وإلا من Database
+  let userPhoto = getCurrentUserPhoto();
+  if (!userPhoto && email) {
+    userPhoto = await fetchUserPhoto(email);
+  }
+
+  try {
+    await push(ref(db, `comments/${ITEM_ID}`), {
+      text,
+      rating:    selectedRating,
+      userName,
+      userEmail: email || "",
+      userPhoto: userPhoto || "",          // ← الصورة محفوظة مع الكومنت
+      createdAt: Date.now()
+    });
+
+    commentInput.value = "";
+    selectedRating = 0;
+    updateStarUI(0);
+    showItemToast("✅ تم نشر تعليقك!", "success");
+
+  } catch (err) {
+    console.error("خطأ في إضافة الكومنت:", err);
+    showItemToast("❌ حصل خطأ، حاول مرة تانية", "error");
+  } finally {
+    isPosting = false;
+    if (submitBtn) { submitBtn.disabled = false; submitBtn.textContent = "نشر"; }
+  }
+};
+
+// ============================================================
+//  ⑤ تحميل الكومنتس Real-Time
+//     أي حد من أي تليفون يشوف التحديثات فوراً
+// ============================================================
+
+const COMMENTS_PER_PAGE = 10;
+let   allComments       = [];
+let   displayedCount    = COMMENTS_PER_PAGE;
+
+function loadComments() {
+  const commentsRef = query(
+    ref(db, `comments/${ITEM_ID}`),
+    orderByChild("createdAt")
+  );
+
+  // onValue = real-time listener — بيشتغل تلقائياً لما يُضاف أي كومنت
+  onValue(commentsRef, (snapshot) => {
+    allComments = [];
+    snapshot.forEach((child) => {
+      allComments.push({ id: child.key, ...child.val() });
+    });
+
+    // الأحدث أول
+    allComments.reverse();
+
+    displayedCount = COMMENTS_PER_PAGE;
+    renderComments();
+    updateStats();
+  });
 }
 
 function renderComments() {
-  const container = document.getElementById('commentsContainer');
-  container.innerHTML = '';
-  const filtered = allComments.filter(c => c.productId === productId);
-  const toShow = filtered.slice().reverse().slice(0, visibleCount);
-  toShow.forEach(comment => {
-    container.appendChild(createCommentElement(comment));
-  });
-  document.getElementById('loadMoreBtn').style.display = (visibleCount < filtered.length) ? 'block' : 'none';
+  const container = document.getElementById("commentsContainer");
+  const loadMore  = document.getElementById("loadMoreBtn");
+  if (!container) return;
+
+  const toShow = allComments.slice(0, displayedCount);
+
+  if (toShow.length === 0) {
+    container.innerHTML = `
+      <p style="text-align:center;color:#999;padding:30px 0;direction:rtl;font-family:'Readex Pro',sans-serif;">
+        لا يوجد تعليقات بعد — كن أول من يقيّم! 🌟
+      </p>`;
+    if (loadMore) loadMore.style.display = "none";
+    return;
+  }
+
+  container.innerHTML = toShow.map(buildCommentHTML).join("");
+
+  if (loadMore) {
+    loadMore.style.display = allComments.length > displayedCount ? "block" : "none";
+  }
 }
 
-function loadMoreComments() {
-  visibleCount += 5;
+// عرض المزيد
+window.loadMoreComments = function () {
+  displayedCount += COMMENTS_PER_PAGE;
   renderComments();
-  updateProductStats();
-  updateCommentCount();
-}
-
-// تحديث دالة updateProductStats لإنشاء التصميم المطلوب
-function updateProductStats() {
-  const statsContainer = document.getElementById('starsStats');
-  const counts = [0, 0, 0, 0, 0];
-
-  const filtered = allComments.filter(c => c.productId === productId);
-  filtered.forEach(c => { if (c.rating >= 1 && c.rating <= 5) counts[c.rating - 1]++; });
-
-  const total = counts.reduce((a, b) => a + b, 0);
-  const averageRating = total > 0 ? (counts.reduce((sum, count, index) => sum + count * (index + 1), 0) / total).toFixed(1) : 0;
-  
-  statsContainer.innerHTML = '';
-
-  // إنشاء قسم العرض الرئيسي
-  const mainSection = document.createElement('div');
-  // mainSection.style.cssText = ``;
-
-  // قسم التقييم العام
-  const ratingSection = document.createElement('div');
-  ratingSection.style.cssText = `
-    text-align: center;
-    min-width: 120px;
-  `;
-
-  // عنوان Reviews
-  const reviewsTitle = document.createElement('h3');
-  reviewsTitle.textContent = 'إحصائيات تقييم المنتج';
-  reviewsTitle.style.cssText = `
-    margin: 0 0 35px 0;
-    font-size: 18px;
-    color:rgb(0, 0, 0);
-    font-weight: 600;
-        font-family: "Readex Pro", sans-serif;
-    font-optical-sizing: auto;
-    font-style: normal;
-    font-variation-settings: 
-  `;
-
-  // التقييم الرقمي الكبير
-  const ratingNumber = document.createElement('div');
-  ratingNumber.textContent = averageRating;
-  ratingNumber.style.cssText = `
-    font-size: 48px;
-    font-weight: bold;
-    color: #333;
-    margin: 10px 0;
-    line-height: 1;
-  `;
-
-  // النجوم
-  const starsDiv = document.createElement('div');
-  starsDiv.style.cssText = `
-    display: flex;
-    justify-content: center;
-    gap: 2px;
-    margin: 10px 0;
-  `;
-
-  for (let i = 1; i <= 5; i++) {
-    const star = document.createElement('span');
-    star.innerHTML = '★';
-    star.style.cssText = `
-      font-size: 28px;
-      color: ${i <= Math.round(averageRating) ? '#ffc107' : '#e9ecef'};
-          text-shadow: 0px 0px 2px black;
-    `;
-    starsDiv.appendChild(star);
-  }
-
-  // عدد المراجعات
-  const reviewCount = document.createElement('div');
-  reviewCount.textContent = `مراجعات ${total}`;
-  reviewCount.style.cssText = `
-     color: rgb(108, 117, 125);
-    font-size: 16px;
-    margin-top: 5px;
-    font-family: "Readex Pro", sans-serif;
-    font-optical-sizing: auto;
-    font-style: normal;
-    margin-bottom: 10px;;
-  `;
-
-  ratingSection.appendChild(reviewsTitle);
-  ratingSection.appendChild(ratingNumber);
-  ratingSection.appendChild(starsDiv);
-  ratingSection.appendChild(reviewCount);
-
-  // قسم التفصيل
-  const detailSection = document.createElement('div');
-  detailSection.style.cssText = `
-    flex: 1;
-    min-width: 300px;
-  `;
-
-  // إنشاء أشرطة التقييم
-  for (let i = 5; i >= 1; i--) {
-    const percent = total > 0 ? (counts[i - 1] / total) * 100 : 0;
-    
-    const ratingBar = document.createElement('div');
-    ratingBar.style.cssText = `
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      margin-bottom: 13px;
-    `;
-
-    // النسبة المئوية
-    const percentLabel = document.createElement('span');
-    percentLabel.textContent = `${Math.round(percent)}%`;
-    percentLabel.style.cssText = `
-      width: 35px;
-      text-align: right;
-      font-size: 15px;
-      color: #6c757d;
-      font-weight: 500;
-    `;
-
-    // شريط التقدم
-    const progressContainer = document.createElement('div');
-    progressContainer.style.cssText = `
-      flex: 1;
-      height: 8px;
-      background-color: rgb(228 219 219);
-      border-radius: 6px;
-      overflow: hidden;
-      position: relative;
-       direction: rtl;
-    `;
-
-    const progressBar = document.createElement('div');
-    progressBar.style.cssText = `
-      height: 100%;
-      width: ${percent}%;
-      background: linear-gradient(90deg, #333 0%, #555 100%);
-      border-radius: 6px;
-      transition: width 0.3s ease;
-    `;
-
-    progressContainer.appendChild(progressBar);
-
-    // رقم النجمة
-    const starNumber = document.createElement('span');
-    starNumber.textContent = i.toString();
-    starNumber.style.cssText = `
-      width: 20px;
-      text-align: center;
-      font-size: 14px;
-      font-weight: 600;
-      color: #333;
-    `;
-
-    ratingBar.appendChild(percentLabel);
-    ratingBar.appendChild(progressContainer);
-    ratingBar.appendChild(starNumber);
-    detailSection.appendChild(ratingBar);
-  }
-
-  mainSection.appendChild(ratingSection);
-  mainSection.appendChild(detailSection);
-  statsContainer.appendChild(mainSection);
-}
-
-function updateCommentCount() {
-  const count = allComments.filter(c => c.productId === productId).length;
-  const totalElement = document.getElementById('totalComments');
-  if (totalElement) {
-    totalElement.textContent = `عدد التقيمات: ${count}`;
-  }
-}
-
-function updateStarDisplay() {
-  const colorMap = { 1: 'red', 2: 'orange', 3: '#f1c40f', 4: 'green', 5: '#3498db' };
-  document.querySelectorAll('.star').forEach(star => {
-    const num = parseInt(star.getAttribute('data-star'));
-    star.classList.toggle('selected', num <= selectedRating);
-    star.style.color = num <= selectedRating ? colorMap[selectedRating] : '#ccc';
-  });
-  const ratingDisplay = document.getElementById('ratingDisplay');
-  if (ratingDisplay) {
-    ratingDisplay.textContent = `التقييم: ${selectedRating} نجمة`;
-  }
-}
-
-document.querySelectorAll('.star').forEach(star => {
-  star.addEventListener('click', () => {
-    selectedRating = parseInt(star.getAttribute('data-star'));
-    updateStarDisplay();
-  });
-});
-
-async function postComment() {
-  const commentInput = document.getElementById('commentInput');
-  const comment = commentInput.value.trim();
-  const userData = JSON.parse(localStorage.getItem('userData')) || {};
-  const name = userData.name || 'مستخدم';
-  const fatherName = userData.family || '';
-  const fullName = fatherName ? `${name} ${fatherName}` : name;
-  const imageUrl = userData.imageUrl || null;
-
-  if (name === 'مستخدم') {
-    return alert("❌ يجب عليك إنشاء حساب أولاً قبل نشر التعليق.");
-  }
-
-  if (!comment) return alert('يرجى كتابة تعليق!');
-  if (selectedRating === 0) return alert('يرجى اختيار تقييم من النجوم!');
-
-  const newComment = {
-    id: `${Date.now()}_${Math.random().toString(36).substr(2, 5)}`,
-    name: fullName,
-    comment,
-    date: new Date(),
-    color: getRandomColor(),
-    rating: selectedRating,
-    imageUrl,
-    productId,
-    likes: 0,
-    dislikes: 0
-  };
-
-  try {
-    const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
-      headers: { 'X-Master-Key': API_KEY }
-    });
-    const data = await res.json();
-    const comments = data.record.comments || [];
-
-    comments.push(newComment);
-
-    await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
-      method: "PUT",
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Master-Key': API_KEY
-      },
-      body: JSON.stringify({ comments })
-    });
-
-    allComments.push(newComment);
-    renderComments();
-    updateProductStats();
-    updateCommentCount();
-
-    commentInput.value = '';
-    selectedRating = 0;
-    updateStarDisplay();
-
-    alert("✅ تم نشر تعليقك!");
-  } catch (err) {
-    console.error("❌ خطأ أثناء إرسال التعليق:", err);
-    alert("حدث خطأ أثناء إرسال التعليق.");
-  }
-}
-
-async function updateCommentsOnServer() {
-  try {
-    await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
-      method: "PUT",
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Master-Key': API_KEY
-      },
-      body: JSON.stringify({ comments: allComments })
-    });
-  } catch (err) {
-    console.error("❌ فشل تحديث بيانات الإعجابات:", err);
-  }
-}
-
-window.onload = async function () {
-  try {
-    const res = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
-      headers: { 'X-Master-Key': API_KEY }
-    });
-    const data = await res.json();
-    allComments = data.record.comments || [];
-  } catch (e) {
-    console.error("⚠️ خطأ أثناء تحميل التعليقات:", e);
-    allComments = [];
-  }
-  renderComments();
-  updateProductStats();
-  updateCommentCount();
 };
 
+// ============================================================
+//  ⑥ بناء HTML كارت الكومنت
+// ============================================================
 
+function buildCommentHTML(c) {
+  const stars   = "★".repeat(c.rating || 0) + "☆".repeat(5 - (c.rating || 0));
+  const dateStr = c.createdAt
+    ? new Date(c.createdAt).toLocaleDateString("ar-EG", {
+        year: "numeric", month: "long", day: "numeric",
+        hour: "2-digit", minute: "2-digit"
+      })
+    : "";
 
+  // الأفاتار: صورة لو موجودة، أو دائرة ملوّنة بأول حرف
+  const initial    = (c.userName || "م")[0];
+  const colorIndex = initial.charCodeAt(0) % AVATAR_COLORS.length;
+  const avatarHTML = c.userPhoto
+    ? `<img
+         src="${escapeHtml(c.userPhoto)}"
+         alt="صورة ${escapeHtml(c.userName || '')}"
+         style="
+           width:48px;height:48px;border-radius:50%;
+           object-fit:cover;flex-shrink:0;
+           border:2.5px solid #c8a96e;
+           box-shadow:0 2px 8px rgba(0,0,0,.12);
+         "
+         onerror="this.style.display='none';this.nextElementSibling.style.display='flex';"
+       />
+       <div class="avatar" style="
+         display:none;background:${AVATAR_COLORS[colorIndex]};
+       ">${initial}</div>`
+    : `<div class="avatar" style="background:${AVATAR_COLORS[colorIndex]};">${initial}</div>`;
 
+  return `
+    <div class="comment" style="margin-bottom:30px;">
+      <div style="display:flex;align-items:flex-start;gap:12px;direction:rtl;">
+        <div style="display:flex;flex-shrink:0;">
+          ${avatarHTML}
+        </div>
+        <div class="comment-content" style="flex:1;min-width:0;">
+          <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:3px;">
+            <span class="comment-name">${escapeHtml(c.userName || "مجهول")}</span>
+            <span class="comment-date">${dateStr}</span>
+          </div>
+          <div class="comment-stars" style="color:#e4650f;font-size:16px;margin:4px 0;">${stars}</div>
+          <p id="text" style="margin:0;">${escapeHtml(c.text || "")}</p>
+        </div>
+      </div>
+      <hr style="margin:16px 0 0;border:none;height:1px;background:#eee;">
+    </div>
+  `;
+}
 
+// ألوان الأفاتار للناس اللي معندهومش صورة
+const AVATAR_COLORS = [
+  "linear-gradient(135deg,#1d6fc4,#0f1b35)",
+  "linear-gradient(135deg,#c8a96e,#a8893e)",
+  "linear-gradient(135deg,#16a085,#0d6b57)",
+  "linear-gradient(135deg,#8e44ad,#5b2c6f)",
+  "linear-gradient(135deg,#e74c3c,#922b21)",
+  "linear-gradient(135deg,#e67e22,#935116)",
+];
 
+// ============================================================
+//  ⑦ إحصائيات التقييم (stars stats)
+// ============================================================
 
+function updateStats() {
+  const totalEl = document.getElementById("totalComments");
+  if (totalEl) totalEl.textContent = `عدد التقييمات: ${allComments.length}`;
 
+  if (!allComments.length) return;
 
+  // حساب متوسط التقييم وتوزيع النجوم
+  const counts = { 5: 0, 4: 0, 3: 0, 2: 0, 1: 0 };
+  let   total  = 0;
+  allComments.forEach((c) => {
+    if (c.rating >= 1 && c.rating <= 5) {
+      counts[c.rating]++;
+      total += c.rating;
+    }
+  });
 
+  const avg      = (total / allComments.length).toFixed(1);
+  const statsEl  = document.getElementById("starsStats");
+  if (!statsEl) return;
 
+  statsEl.innerHTML = `
+    <div style="text-align:end;margin-bottom:10px;direction:rtl;">
+      <span style="font-size:38px;font-weight:900;font-family:'Rubik',sans-serif;color:#e4650f;">${avg}</span>
+      <span style="font-size:18px;color:#e4650f;"> / 5 ⭐</span>
+    </div>
+    ${[5,4,3,2,1].map(n => {
+      const pct = allComments.length ? Math.round((counts[n] / allComments.length) * 100) : 0;
+      return `
+        <div class="rating-bar">
+          <span class="label">${n}</span>
+          <span id="star" class="fa-solid fa-star" style="font-size:14px;margin:0 4px;"></span>
+          <div class="progress">
+            <div class="progress-inner" style="width:${pct}%"></div>
+          </div>
+          <span class="count">${counts[n]}</span>
+        </div>`;
+    }).join("")}
+  `;
+}
 
+// ============================================================
+//  ⑧ Toast رسائل مؤقتة
+// ============================================================
 
+function showItemToast(msg, type = "info") {
+  let t = document.getElementById("toast-item");
+  if (!t) {
+    t = document.createElement("div");
+    t.id = "toast-item";
+    t.style.cssText = `
+      position:fixed;bottom:30px;left:50%;transform:translateX(-50%) translateY(70px);
+      background:#1a1a2e;color:#fff;padding:12px 24px;border-radius:10px;
+      font-family:'Readex Pro',sans-serif;font-size:14px;
+      box-shadow:0 4px 20px rgba(0,0,0,.25);z-index:9999;
+      opacity:0;transition:opacity .3s,transform .3s;
+      border-right:4px solid #c8a96e;direction:rtl;white-space:nowrap;
+    `;
+    document.body.appendChild(t);
+  }
+  const colors = { success: "#2e7d32", error: "#e53935", info: "#c8a96e" };
+  t.style.borderRightColor = colors[type] || "#c8a96e";
+  t.textContent = msg;
+  requestAnimationFrame(() => {
+    t.style.opacity   = "1";
+    t.style.transform = "translateX(-50%) translateY(0)";
+  });
+  clearTimeout(t._timer);
+  t._timer = setTimeout(() => {
+    t.style.opacity   = "0";
+    t.style.transform = "translateX(-50%) translateY(70px)";
+  }, 3000);
+}
 
+// ============================================================
+//  ⑨ حماية من XSS
+// ============================================================
 
+function escapeHtml(str) {
+  if (!str) return "";
+  return String(str)
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#039;");
+}
 
+// ============================================================
+//  ⑩ وظائف الصفحة القديمة (صور المنتج + مشاركة + كارت)
+// ============================================================
 
+// تغيير صورة المنتج الرئيسية
+window.changeItemImage = function (src) {
+  const bigImg = document.getElementById("bidImg");
+  if (!bigImg) return;
 
+  bigImg.classList.add("slide-out");
+  setTimeout(() => {
+    bigImg.src = src;
+    bigImg.classList.remove("slide-out");
+    bigImg.classList.add("slide-in");
+    setTimeout(() => bigImg.classList.remove("slide-in"), 400);
+  }, 300);
+};
 
+// تحميل كل صور المنتج
+window.downloadAllImages = function () {
+  document.querySelectorAll(".sm_imgs img").forEach((img, i) => {
+    const a    = document.createElement("a");
+    a.href     = img.src;
+    a.download = `kashmir-image-${i + 1}.jpg`;
+    a.click();
+  });
+};
 
-const btn = document.getElementById("cartBtn");
-const overlay = document.getElementById("overlay");
+// مشاركة
+window.toggleShare = function () {
+  const menu = document.getElementById("shareMenu");
+  if (menu) menu.style.display = menu.style.display === "block" ? "none" : "block";
+};
 
-let iframe = overlay.querySelector("iframe");
-let video = overlay.querySelector("video");
+window.shareWhatsApp = function () {
+  const url = encodeURIComponent(window.location.href);
+  window.open(`https://wa.me/?text=${url}`, "_blank");
+};
 
-btn.addEventListener("click", function () {
-  overlay.style.display = "flex";
+window.shareTelegram = function () {
+  const url = encodeURIComponent(window.location.href);
+  window.open(`https://t.me/share/url?url=${url}`, "_blank");
+};
 
-  if (iframe) {
-    iframe.style.display = "block";
-    iframe.src = iframe.src; // نضمن تشغيله من الأول
-  } else if (video) {
-    video.style.display = "block";
-    video.play(); // نشغل الفيديو
+// إغلاق قائمة المشاركة لما يضغط برا
+document.addEventListener("click", (e) => {
+  const menu    = document.getElementById("shareMenu");
+  const shareBtn = document.querySelector(".share-btn");
+  if (menu && !menu.contains(e.target) && e.target !== shareBtn && !shareBtn?.contains(e.target)) {
+    menu.style.display = "none";
   }
 });
 
-overlay.addEventListener("click", function (e) {
-  if (iframe && !iframe.contains(e.target)) {
-    overlay.style.display = "none";
-    iframe.style.display = "none";
-    iframe.src = iframe.src; // نوقف الiframe
-  }
-  if (video && !video.contains(e.target)) {
-    overlay.style.display = "none";
-    video.style.display = "none";
-    video.pause(); // نوقف الفيديو
-    video.currentTime = 0; // نرجعه لأول ثانية
-  }
+// زر المفضلة
+window.activateLike = function (btn) {
+  btn.classList.toggle("active");
+  const isActive = btn.classList.contains("active");
+  showItemToast(isActive ? "❤️ تمت الإضافة إلى المفضلة" : "💔 تمت الإزالة من المفضلة", "info");
+};
+
+// ============================================================
+//  ⑪ تشغيل كل حاجة لما تُحمّل الصفحة
+// ============================================================
+
+document.addEventListener("DOMContentLoaded", () => {
+  loadComments(); // يبدأ الـ real-time listener للكومنتس
 });
-
-
-
-
-
-
-
-
-
-
-
-
-
-
