@@ -145,7 +145,27 @@ function updateStarUI(rating) {
 // الـ URL المفروض يكون: item.html?id=ITEM_KEY
 // لو بتستخدم اسم تاني غير "id" غيّره هنا
 const urlParams = new URLSearchParams(window.location.search);
-const ITEM_ID   = urlParams.get("id") || window.location.pathname; // fallback لـ path لو مفيش id
+
+// جيب الـ ID من الـ URL ?id=xxx
+// لو مفيش، اخد اسم الـ folder اللي فيه item.html (مثال: feyet-tree-slice من .../feyet-tree-slice/item.html)
+const ITEM_ID = (function () {
+  const fromQuery = urlParams.get("id");
+  if (fromQuery) return fromQuery;
+
+  // pathname مثال: /feyatimage/feyet-tree-slice/id-1/item.html
+  const parts = window.location.pathname
+    .split("/")
+    .filter(Boolean); // إزالة الفراغات
+
+  // شيل آخر جزء (item.html) وخد اللي قبله (اسم الـ folder)
+  // النتيجة: "id-1" أو "feyet-tree-slice" حسب بنية الـ folders
+  const folderName = parts.length >= 2
+    ? parts[parts.length - 2]   // الـ folder الأب لـ item.html
+    : parts[parts.length - 1] || "default-item";
+
+  // نظّف الاسم من أي حروف ممنوعة في Firebase (. # $ [ ])
+  return folderName.replace(/[.#$[\]]/g, "-");
+})();
 
 // ============================================================
 //  ④ إضافة كومنت جديد
