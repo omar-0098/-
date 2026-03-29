@@ -1,3 +1,69 @@
+const fs = require("fs");
+const path = require("path");
+
+const OLD_SCRIPT = `<script src="../../js/item.js"></script>`;
+const NEW_SCRIPT = `<script type="module" src="../../../js/main.js"></script>`;
+
+// ضع هنا المسار لمجلد المشروع
+const PROJECT_DIR = "./";
+
+let filesChanged = 0;
+let filesScanned = 0;
+
+function replaceInFile(filePath) {
+  const content = fs.readFileSync(filePath, "utf8");
+  if (content.includes(OLD_SCRIPT)) {
+    const newContent = content.split(OLD_SCRIPT).join(NEW_SCRIPT);
+    fs.writeFileSync(filePath, newContent, "utf8");
+    console.log(`✅ تم التعديل: ${filePath}`);
+    filesChanged++;
+  }
+}
+
+function walkDir(dir) {
+  const entries = fs.readdirSync(dir, { withFileTypes: true });
+  for (const entry of entries) {
+    const fullPath = path.join(dir, entry.name);
+    if (entry.isDirectory()) {
+      // تجاهل مجلدات node_modules و .git
+      if (entry.name === "node_modules" || entry.name === ".git") continue;
+      walkDir(fullPath);
+    } else if (entry.isFile() && entry.name.endsWith(".html")) {
+      filesScanned++;
+      replaceInFile(fullPath);
+    }
+  }
+}
+
+console.log("🔍 جاري البحث في ملفات HTML...\n");
+walkDir(PROJECT_DIR);
+console.log(`\n📊 النتيجة:`);
+console.log(`   ملفات تم فحصها: ${filesScanned}`);
+console.log(`   ملفات تم تعديلها: ${filesChanged}`);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 document.addEventListener('DOMContentLoaded', function() {
     const registerSection = document.getElementById('registerSection');
     const buyButton = document.querySelectorAll('.btn_cart')[0];
