@@ -25,6 +25,22 @@ const app     = initializeApp(firebaseConfig);
 const db      = getDatabase(app);
 const storage = getStorage(app);
 
+
+// ─── حقن CSS الأنيميشن ───────────────────────────────────────
+(function injectStyles() {
+  if (document.getElementById("vote-anim-styles")) return;
+  const style = document.createElement("style");
+  style.id = "vote-anim-styles";
+  style.textContent = `
+    @keyframes likeParticle {
+      0%   { transform: translate(-50%,-50%) translate(0,0); opacity:1; }
+      100% { transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))); opacity:0; }
+    }
+  `;
+  document.head.appendChild(style);
+})();
+
+
 // ============================================================
 //  🔵 زووم وسحب الصورة (من الملف القديم)
 // ============================================================
@@ -237,15 +253,34 @@ function formatDate(ts) {
   return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,"0")}-${String(d.getDate()).padStart(2,"0")}`;
 }
 
-// نفس createCommentElement القديمة بالضبط
 function createCommentElement({ id, userName, text, createdAt, userPhoto, rating, likes = 0, dislikes = 0 }) {
   const commentDiv = document.createElement("div");
   commentDiv.className = "comment";
   commentDiv.dataset.commentId = id;
 
-  // الأفاتار
+  // ── override الـ CSS القديم للـ comment ──
+  commentDiv.style.cssText = `
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    margin-bottom: 20px;
+    padding: 14px 16px;
+    border-radius: 12px;
+    background: #fff;
+    border: 1px solid #f0f0f0;
+    box-shadow: 0 1px 6px rgba(0,0,0,.05);
+    position: relative;
+    direction: rtl;
+    text-align: right;
+  `;
+
+  // ── الصف العلوي: أفاتار + اسم + تاريخ ──
+  const topRow = document.createElement("div");
+  topRow.style.cssText = "display:flex;align-items:center;gap:10px;margin-bottom:8px;";
+
   const avatar = document.createElement("div");
   avatar.className = "avatar";
+  avatar.style.cssText = "flex-shrink:0;width:44px;height:44px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:700;color:#fff;";
   if (userPhoto) {
     avatar.style.backgroundImage    = `url(${userPhoto})`;
     avatar.style.backgroundSize     = "cover";
@@ -255,32 +290,49 @@ function createCommentElement({ id, userName, text, createdAt, userPhoto, rating
     avatar.textContent = (userName || "م").charAt(0);
   }
 
-  // المحتوى
-  const content = document.createElement("div");
-  content.className = "comment-content";
-  const starsHtml = '<i class="fa-solid fa-star" id="star"></i>'.repeat(rating || 0);
-  content.innerHTML = `
-    <div class="comment-name">${escapeHtml(userName || "مجهول")}</div>
-    <div class="comment-date comment-stars">${formatDate(createdAt)}</div>
-    <div class="comment-text">${starsHtml}</div>
-    <div class="comment-text">${escapeHtml(text || "")}</div>
+  const metaDiv = document.createElement("div");
+  metaDiv.style.cssText = "display:flex;flex-direction:column;gap:2px;flex:1;";
+  metaDiv.innerHTML = `
+    <span class="comment-name" style="font-size:15px;">${escapeHtml(userName || "مجهول")}</span>
+    <span class="comment-date" style="font-size:12px;color:#999;">${formatDate(createdAt)}</span>
   `;
 
-  // الـ reactions — نفس الـ SVGs القديمة بالضبط
+  topRow.appendChild(avatar);
+  topRow.appendChild(metaDiv);
+
+  // ── النجوم ──
+  const starsDiv = document.createElement("div");
+  starsDiv.style.cssText = "margin-bottom:6px;";
+  starsDiv.innerHTML = '<i class="fa-solid fa-star" id="star"></i>'.repeat(rating || 0);
+
+  // ── نص الكومنت ──
+  const textDiv = document.createElement("div");
+  textDiv.className = "comment-text";
+  textDiv.style.cssText = "position:static;right:auto;width:auto;font-size:14px;line-height:1.6;color:#333;margin-bottom:10px;";
+  textDiv.textContent = text || "";
+
+  // ── الـ reactions ──
   const reactionDiv = document.createElement("div");
   reactionDiv.className = "comment-reactions";
+  reactionDiv.style.cssText = "position:static!important;bottom:auto!important;display:flex;align-items:center;gap:8px;padding-top:8px;border-top:1px solid #f5f5f5;";
   reactionDiv.innerHTML = `
-    <button class="dislike-btn" data-comment-id="${id}">
-<i class="fa-regular fa-thumbs-down"></i>
- ${dislikes}</button>
-    <span class="vote-separator"></span>
-    <button class="like-btn" data-comment-id="${id}">
-     <i class="fa-regular fa-thumbs-up"></i>
-        ${likes}</button>
+    <button class="dislike-btn" data-comment-id="${id}" style="display:flex;align-items:center;gap:5px;background:#f5f5f5;border:1.5px solid #ddd;border-radius:20px;padding:5px 12px;cursor:pointer;font-size:13px;color:#666;transition:all 0.2s ease;font-family:'Readex Pro',sans-serif;outline:none;">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" fill="currentColor" viewBox="0 0 256 256">
+        <path d="M239.82,157l-12-96A24,24,0,0,0,204,40H32A16,16,0,0,0,16,56v88a16,16,0,0,0,16,16H75.06l37.78,75.58A8,8,0,0,0,120,240a40,40,0,0,0,40-40V184h56a24,24,0,0,0,23.82-27ZM72,144H32V56H72Zm150,21.29a7.88,7.88,0,0,1-6,2.71H152a8,8,0,0,0-8,8v24a24,24,0,0,1-19.29,23.54L88,150.11V56H204a8,8,0,0,1,7.94,7l12,96A7.87,7.87,0,0,1,222,165.29Z"></path>
+      </svg>
+      <span class="dislike-count">${dislikes}</span>
+    </button>
+    <button class="like-btn" data-comment-id="${id}" style="display:flex;align-items:center;gap:5px;background:#f5f5f5;border:1.5px solid #ddd;border-radius:20px;padding:5px 12px;cursor:pointer;font-size:13px;color:#666;transition:all 0.2s ease;font-family:'Readex Pro',sans-serif;outline:none;position:relative;overflow:visible;">
+      <svg xmlns="http://www.w3.org/2000/svg" width="16px" height="16px" fill="currentColor" viewBox="0 0 256 256">
+        <path d="M234,80.12A24,24,0,0,0,216,72H160V56a40,40,0,0,0-40-40,8,8,0,0,0-7.16,4.42L75.06,96H32a16,16,0,0,0-16,16v88a16,16,0,0,0,16,16H204a24,24,0,0,0,23.82-21l12-96A24,24,0,0,0,234,80.12ZM32,112H72v88H32ZM223.94,97l-12,96a8,8,0,0,1-7.94,7H88V105.89l36.71-73.43A24,24,0,0,1,144,56V80a8,8,0,0,0,8,8h64a8,8,0,0,1,7.94,9Z"></path>
+      </svg>
+      <span class="like-count">${likes}</span>
+    </button>
   `;
 
-  commentDiv.appendChild(avatar);
-  commentDiv.appendChild(content);
+  commentDiv.appendChild(topRow);
+  commentDiv.appendChild(starsDiv);
+  commentDiv.appendChild(textDiv);
   commentDiv.appendChild(reactionDiv);
   setTimeout(() => attachReactionEvents(commentDiv, id), 0);
   return commentDiv;
@@ -293,10 +345,100 @@ function attachReactionEvents(commentDiv, id) {
   const dislikeBtn = commentDiv.querySelector(".dislike-btn");
   const voteKey    = `vote_${ITEM_ID}_${id}`;
   const prev       = localStorage.getItem(voteKey);
-  if (prev === "like")    likeBtn?.classList.add("voted");
-  if (prev === "dislike") dislikeBtn?.classList.add("voted");
+
+  // طبّق شكل voted لو سبق وصوّت
+  if (prev === "like")    applyVotedStyle(likeBtn,    "like",    true);
+  if (prev === "dislike") applyVotedStyle(dislikeBtn, "dislike", true);
+
+  // hover effects
+  [likeBtn, dislikeBtn].forEach(btn => {
+    btn?.addEventListener("mouseenter", () => {
+      if (!btn.classList.contains("voted"))
+        btn.style.background = "#efefef";
+    });
+    btn?.addEventListener("mouseleave", () => {
+      if (!btn.classList.contains("voted"))
+        btn.style.background = "#f5f5f5";
+    });
+  });
+
   likeBtn?.addEventListener("click",    () => handleVote(id, "like",    likeBtn, dislikeBtn));
   dislikeBtn?.addEventListener("click", () => handleVote(id, "dislike", likeBtn, dislikeBtn));
+}
+
+// تطبيق أو إزالة شكل الزر المصوَّت عليه
+function applyVotedStyle(btn, type, on) {
+  if (!btn) return;
+  if (on) {
+    btn.classList.add("voted");
+    if (type === "like") {
+      // اللايك — أحمر
+      btn.style.background  = "#fff0f0";
+      btn.style.border      = "1.5px solid #e53935";
+      btn.style.color       = "#e53935";
+      btn.style.transform   = "scale(1)";
+      btn.style.transition  = "all 0.25s ease";
+    } else {
+      // الديسلايك — رمادي داكن
+      btn.style.background  = "#f0f0f0";
+      btn.style.border      = "1.5px solid #888";
+      btn.style.color       = "#444";
+      btn.style.transition  = "all 0.25s ease";
+    }
+  } else {
+    btn.classList.remove("voted");
+    btn.style.background = "#f5f5f5";
+    btn.style.border     = "1.5px solid #ddd";
+    btn.style.color      = "#666";
+    btn.style.transform  = "scale(1)";
+    btn.style.transition = "all 0.25s ease";
+  }
+}
+
+// أنيميشن like — تكبر في الشاشة وترجع + particles
+function animateLike(btn) {
+  // المرحلة 1: تكبر كتير جداً (كأنها ملأت الشاشة تقريباً) ثم ترجع بـ bounce
+  btn.animate([
+    { transform: "scale(1)",    opacity: "1"   },
+    { transform: "scale(3.5)",  opacity: "0.9", offset: 0.35 },
+    { transform: "scale(2.8)",  opacity: "0.95", offset: 0.5  },
+    { transform: "scale(1.15)", opacity: "1",   offset: 0.75 },
+    { transform: "scale(1)",    opacity: "1"   }
+  ], { duration: 600, easing: "cubic-bezier(0.34,1.56,0.64,1)" });
+
+  // particles — قلوب صغيرة تطلع وتختفي
+  const colors = ["#e53935","#ff8a80","#ff4081","#f06292","#e91e63"];
+  for (let i = 0; i < 6; i++) {
+    const p = document.createElement("span");
+    p.textContent = "♥";
+    const angle  = (i / 6) * 360;
+    const radius = 28 + Math.random() * 14;
+    const tx = Math.cos((angle * Math.PI) / 180) * radius;
+    const ty = Math.sin((angle * Math.PI) / 180) * radius;
+    p.style.cssText = `
+      position:absolute; pointer-events:none; z-index:999;
+      font-size:${10 + Math.random()*8}px;
+      color:${colors[Math.floor(Math.random()*colors.length)]};
+      left:50%; top:50%;
+      transform:translate(-50%,-50%);
+      animation: likeParticle 0.7s ease-out forwards;
+      --tx:${tx}px; --ty:${ty}px;
+    `;
+    btn.appendChild(p);
+    setTimeout(() => p.remove(), 750);
+  }
+}
+
+// أنيميشن dislike — shake
+function animateDislike(btn) {
+  btn.animate([
+    { transform: "translateX(0)" },
+    { transform: "translateX(-5px)" },
+    { transform: "translateX(5px)" },
+    { transform: "translateX(-4px)" },
+    { transform: "translateX(4px)" },
+    { transform: "translateX(0)" }
+  ], { duration: 350, easing: "ease-out" });
 }
 
 async function handleVote(commentId, type, likeBtn, dislikeBtn) {
@@ -311,14 +453,24 @@ async function handleVote(commentId, type, likeBtn, dislikeBtn) {
     let dislikes = data.dislikes || 0;
 
     if (prev === type) {
+      // إلغاء التصويت
       if (type === "like") likes--; else dislikes--;
       localStorage.removeItem(voteKey);
-      likeBtn.classList.remove("voted"); dislikeBtn.classList.remove("voted");
+      applyVotedStyle(likeBtn,    "like",    false);
+      applyVotedStyle(dislikeBtn, "dislike", false);
     } else {
-      if (prev === "like")    { likes--;    likeBtn.classList.remove("voted");    }
-      if (prev === "dislike") { dislikes--; dislikeBtn.classList.remove("voted"); }
-      if (type === "like")    { likes++;    likeBtn.classList.add("voted");    }
-      else                    { dislikes++; dislikeBtn.classList.add("voted"); }
+      // تحويل أو تصويت جديد
+      if (prev === "like")    { likes--;    applyVotedStyle(likeBtn,    "like",    false); }
+      if (prev === "dislike") { dislikes--; applyVotedStyle(dislikeBtn, "dislike", false); }
+      if (type === "like") {
+        likes++;
+        applyVotedStyle(likeBtn, "like", true);
+        animateLike(likeBtn);           // 🎉 أنيميشن like
+      } else {
+        dislikes++;
+        applyVotedStyle(dislikeBtn, "dislike", true);
+        animateDislike(dislikeBtn);     // 😤 أنيميشن dislike
+      }
       localStorage.setItem(voteKey, type);
     }
 
