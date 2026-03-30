@@ -1,14 +1,3 @@
-
-
-
-
-
-
-
-
-
-
-
 // مشاركة المنتج
 function toggleShare() {
     const menu = document.getElementById("shareMenu");
@@ -269,15 +258,15 @@ function activateLike(button) {
   }
 
   // ── تحديث أيقونة الزر ────────────────────────────────────
-  function updateBtnIcon(btn) {
-    const isDark = document.documentElement.getAttribute("data-theme") === DARK;
-    btn = btn || document.getElementById("darkModeFloatBtn");
-    if (!btn) return;
-    btn.innerHTML = isDark
-      ? '<i class="fa-solid fa-sun"></i>'
-      : '<i class="fa-solid fa-moon"></i>';
-    btn.setAttribute("title", isDark ? "الوضع الفاتح" : "الوضع المظلم");
-  }
+  // function updateBtnIcon(btn) {
+  //   const isDark = document.documentElement.getAttribute("data-theme") === DARK;
+  //   btn = btn || document.getElementById("darkModeFloatBtn");
+  //   if (!btn) return;
+  //   btn.innerHTML = isDark
+  //     ? '<i class="fa-solid fa-sun"></i>'
+  //     : '<i class="fa-solid fa-moon"></i>';
+  //   btn.setAttribute("title", isDark ? "الوضع الفاتح" : "الوضع المظلم");
+  // }
 
   // ── تطبيق الثيم ──────────────────────────────────────────
   function applyTheme(dark) {
