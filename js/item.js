@@ -471,13 +471,42 @@ window.loadMoreComments = function () {
 };
 
 // ─── Real-Time Listener ───────────────────────────────────────
+// بنستخدم Set عشان نتتبع الـ IDs اللي اتعرضت ونتجنب إعادة الـ render لما الـ likes/dislikes بس تتغير
+
+let knownIds = new Set(); // IDs الكومنتس اللي بنعرفها
 
 function loadComments() {
   onValue(ref(db, `comments/${ITEM_ID}`), (snapshot) => {
-    allComments = [];
-    snapshot.forEach((child) => allComments.push({ id: child.key, ...child.val() }));
-    allComments.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
-    renderComments();
+    const freshComments = [];
+    snapshot.forEach((child) => freshComments.push({ id: child.key, ...child.val() }));
+    freshComments.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
+
+    // هل في كومنتس جديدة (IDs مش موجودة قبل)؟
+    const freshIds    = new Set(freshComments.map(c => c.id));
+    const hasNewComment = [...freshIds].some(id => !knownIds.has(id));
+    const hasDeleted    = [...knownIds].some(id => !freshIds.has(id));
+
+    // حدّث allComments دايماً عشان الأرقام تبقى صح
+    allComments = freshComments;
+
+    if (hasNewComment || hasDeleted) {
+      // في كومنت جديد أو محذوف → re-render كامل
+      knownIds = freshIds;
+      // لو الكومنت الجديد هو بتاعنا → اعرضه حتى لو visibleCount صغير
+      visibleCount = Math.max(visibleCount, allComments.length);
+      renderComments();
+    } else {
+      // بس الـ likes/dislikes اتغيرت → حدّث الأرقام في الـ DOM مباشرةً بدون re-render
+      allComments.forEach(c => {
+        const card = document.querySelector(`[data-comment-id="${c.id}"]`);
+        if (!card) return;
+        const lc = card.querySelector(".like-count");
+        const dc = card.querySelector(".dislike-count");
+        if (lc) lc.textContent = c.likes    || 0;
+        if (dc) dc.textContent = c.dislikes || 0;
+      });
+    }
+
     updateProductStats();
     updateCommentCount();
   });
