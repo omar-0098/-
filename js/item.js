@@ -25,6 +25,22 @@ const app     = initializeApp(firebaseConfig);
 const db      = getDatabase(app);
 const storage = getStorage(app);
 
+
+// ─── حقن CSS الأنيميشن ───────────────────────────────────────
+(function injectStyles() {
+  if (document.getElementById("vote-anim-styles")) return;
+  const style = document.createElement("style");
+  style.id = "vote-anim-styles";
+  style.textContent = `
+    @keyframes likeParticle {
+      0%   { transform: translate(-50%,-50%) translate(0,0); opacity:1; }
+      100% { transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))); opacity:0; }
+    }
+  `;
+  document.head.appendChild(style);
+})();
+
+
 // ============================================================
 //  🔵 زووم وسحب الصورة (من الملف القديم)
 // ============================================================
@@ -266,17 +282,23 @@ function createCommentElement({ id, userName, text, createdAt, userPhoto, rating
     <div class="comment-text">${escapeHtml(text || "")}</div>
   `;
 
-  // الـ reactions — نفس الـ SVGs القديمة بالضبط
+  // الـ reactions — أزرار واضحة مع أنيميشن
   const reactionDiv = document.createElement("div");
   reactionDiv.className = "comment-reactions";
+  reactionDiv.style.cssText = "position:relative!important;bottom:auto!important;display:flex;align-items:center;gap:8px;margin-top:12px;padding-top:8px;border-top:1px solid #f0f0f0;";
   reactionDiv.innerHTML = `
-    <button class="dislike-btn" data-comment-id="${id}"><svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" viewBox="0 0 256 256">
-                        <path d="M239.82,157l-12-96A24,24,0,0,0,204,40H32A16,16,0,0,0,16,56v88a16,16,0,0,0,16,16H75.06l37.78,75.58A8,8,0,0,0,120,240a40,40,0,0,0,40-40V184h56a24,24,0,0,0,23.82-27ZM72,144H32V56H72Zm150,21.29a7.88,7.88,0,0,1-6,2.71H152a8,8,0,0,0-8,8v24a24,24,0,0,1-19.29,23.54L88,150.11V56H204a8,8,0,0,1,7.94,7l12,96A7.87,7.87,0,0,1,222,165.29Z"></path>
-                      </svg> ${dislikes}</button>
-    <span class="vote-separator"></span>
-    <button class="like-btn" data-comment-id="${id}"><svg xmlns="http://www.w3.org/2000/svg" width="20px" height="20px" fill="currentColor" viewBox="0 0 256 256">
-      <path d="M234,80.12A24,24,0,0,0,216,72H160V56a40,40,0,0,0-40-40,8,8,0,0,0-7.16,4.42L75.06,96H32a16,16,0,0,0-16,16v88a16,16,0,0,0,16,16H204a24,24,0,0,0,23.82-21l12-96A24,24,0,0,0,234,80.12ZM32,112H72v88H32ZM223.94,97l-12,96a8,8,0,0,1-7.94,7H88V105.89l36.71-73.43A24,24,0,0,1,144,56V80a8,8,0,0,0,8,8h64a8,8,0,0,1,7.94,9Z"></path>
-        </svg>${likes}</button>
+    <button class="dislike-btn" data-comment-id="${id}" style="display:flex;align-items:center;gap:5px;background:#f5f5f5;border:1.5px solid #ddd;border-radius:20px;padding:6px 13px;cursor:pointer;font-size:13px;color:#666;transition:all 0.2s ease;font-family:'Readex Pro',sans-serif;outline:none;">
+      <svg xmlns="http://www.w3.org/2000/svg" width="17px" height="17px" fill="currentColor" viewBox="0 0 256 256">
+        <path d="M239.82,157l-12-96A24,24,0,0,0,204,40H32A16,16,0,0,0,16,56v88a16,16,0,0,0,16,16H75.06l37.78,75.58A8,8,0,0,0,120,240a40,40,0,0,0,40-40V184h56a24,24,0,0,0,23.82-27ZM72,144H32V56H72Zm150,21.29a7.88,7.88,0,0,1-6,2.71H152a8,8,0,0,0-8,8v24a24,24,0,0,1-19.29,23.54L88,150.11V56H204a8,8,0,0,1,7.94,7l12,96A7.87,7.87,0,0,1,222,165.29Z"></path>
+      </svg>
+      <span class="dislike-count">${dislikes}</span>
+    </button>
+    <button class="like-btn" data-comment-id="${id}" style="display:flex;align-items:center;gap:5px;background:#f5f5f5;border:1.5px solid #ddd;border-radius:20px;padding:6px 13px;cursor:pointer;font-size:13px;color:#666;transition:all 0.2s ease;font-family:'Readex Pro',sans-serif;outline:none;position:relative;overflow:visible;">
+      <svg xmlns="http://www.w3.org/2000/svg" width="17px" height="17px" fill="currentColor" viewBox="0 0 256 256">
+        <path d="M234,80.12A24,24,0,0,0,216,72H160V56a40,40,0,0,0-40-40,8,8,0,0,0-7.16,4.42L75.06,96H32a16,16,0,0,0-16,16v88a16,16,0,0,0,16,16H204a24,24,0,0,0,23.82-21l12-96A24,24,0,0,0,234,80.12ZM32,112H72v88H32ZM223.94,97l-12,96a8,8,0,0,1-7.94,7H88V105.89l36.71-73.43A24,24,0,0,1,144,56V80a8,8,0,0,0,8,8h64a8,8,0,0,1,7.94,9Z"></path>
+      </svg>
+      <span class="like-count">${likes}</span>
+    </button>
   `;
 
   commentDiv.appendChild(avatar);
@@ -293,10 +315,93 @@ function attachReactionEvents(commentDiv, id) {
   const dislikeBtn = commentDiv.querySelector(".dislike-btn");
   const voteKey    = `vote_${ITEM_ID}_${id}`;
   const prev       = localStorage.getItem(voteKey);
-  if (prev === "like")    likeBtn?.classList.add("voted");
-  if (prev === "dislike") dislikeBtn?.classList.add("voted");
+
+  // طبّق شكل voted لو سبق وصوّت
+  if (prev === "like")    applyVotedStyle(likeBtn,    "like",    true);
+  if (prev === "dislike") applyVotedStyle(dislikeBtn, "dislike", true);
+
+  // hover effects
+  [likeBtn, dislikeBtn].forEach(btn => {
+    btn?.addEventListener("mouseenter", () => {
+      if (!btn.classList.contains("voted"))
+        btn.style.background = "#efefef";
+    });
+    btn?.addEventListener("mouseleave", () => {
+      if (!btn.classList.contains("voted"))
+        btn.style.background = "#f5f5f5";
+    });
+  });
+
   likeBtn?.addEventListener("click",    () => handleVote(id, "like",    likeBtn, dislikeBtn));
   dislikeBtn?.addEventListener("click", () => handleVote(id, "dislike", likeBtn, dislikeBtn));
+}
+
+// تطبيق أو إزالة شكل الزر المصوَّت عليه
+function applyVotedStyle(btn, type, on) {
+  if (!btn) return;
+  if (on) {
+    btn.classList.add("voted");
+    if (type === "like") {
+      btn.style.background   = "#e8f5e9";
+      btn.style.border       = "1.5px solid #2e7d32";
+      btn.style.color        = "#2e7d32";
+    } else {
+      btn.style.background   = "#ffebee";
+      btn.style.border       = "1.5px solid #e53935";
+      btn.style.color        = "#e53935";
+    }
+  } else {
+    btn.classList.remove("voted");
+    btn.style.background = "#f5f5f5";
+    btn.style.border     = "1.5px solid #ddd";
+    btn.style.color      = "#666";
+  }
+}
+
+// أنيميشن like — bounce + particles
+function animateLike(btn) {
+  // bounce
+  btn.animate([
+    { transform: "scale(1)" },
+    { transform: "scale(1.45)" },
+    { transform: "scale(0.9)" },
+    { transform: "scale(1.15)" },
+    { transform: "scale(1)" }
+  ], { duration: 450, easing: "ease-out" });
+
+  // particles — قلوب صغيرة تطلع وتختفي
+  const colors = ["#e53935","#ff8a80","#ff4081","#f06292","#e91e63"];
+  for (let i = 0; i < 6; i++) {
+    const p = document.createElement("span");
+    p.textContent = "♥";
+    const angle  = (i / 6) * 360;
+    const radius = 28 + Math.random() * 14;
+    const tx = Math.cos((angle * Math.PI) / 180) * radius;
+    const ty = Math.sin((angle * Math.PI) / 180) * radius;
+    p.style.cssText = `
+      position:absolute; pointer-events:none; z-index:999;
+      font-size:${10 + Math.random()*8}px;
+      color:${colors[Math.floor(Math.random()*colors.length)]};
+      left:50%; top:50%;
+      transform:translate(-50%,-50%);
+      animation: likeParticle 0.7s ease-out forwards;
+      --tx:${tx}px; --ty:${ty}px;
+    `;
+    btn.appendChild(p);
+    setTimeout(() => p.remove(), 750);
+  }
+}
+
+// أنيميشن dislike — shake
+function animateDislike(btn) {
+  btn.animate([
+    { transform: "translateX(0)" },
+    { transform: "translateX(-5px)" },
+    { transform: "translateX(5px)" },
+    { transform: "translateX(-4px)" },
+    { transform: "translateX(4px)" },
+    { transform: "translateX(0)" }
+  ], { duration: 350, easing: "ease-out" });
 }
 
 async function handleVote(commentId, type, likeBtn, dislikeBtn) {
@@ -311,14 +416,24 @@ async function handleVote(commentId, type, likeBtn, dislikeBtn) {
     let dislikes = data.dislikes || 0;
 
     if (prev === type) {
+      // إلغاء التصويت
       if (type === "like") likes--; else dislikes--;
       localStorage.removeItem(voteKey);
-      likeBtn.classList.remove("voted"); dislikeBtn.classList.remove("voted");
+      applyVotedStyle(likeBtn,    "like",    false);
+      applyVotedStyle(dislikeBtn, "dislike", false);
     } else {
-      if (prev === "like")    { likes--;    likeBtn.classList.remove("voted");    }
-      if (prev === "dislike") { dislikes--; dislikeBtn.classList.remove("voted"); }
-      if (type === "like")    { likes++;    likeBtn.classList.add("voted");    }
-      else                    { dislikes++; dislikeBtn.classList.add("voted"); }
+      // تحويل أو تصويت جديد
+      if (prev === "like")    { likes--;    applyVotedStyle(likeBtn,    "like",    false); }
+      if (prev === "dislike") { dislikes--; applyVotedStyle(dislikeBtn, "dislike", false); }
+      if (type === "like") {
+        likes++;
+        applyVotedStyle(likeBtn, "like", true);
+        animateLike(likeBtn);           // 🎉 أنيميشن like
+      } else {
+        dislikes++;
+        applyVotedStyle(dislikeBtn, "dislike", true);
+        animateDislike(dislikeBtn);     // 😤 أنيميشن dislike
+      }
       localStorage.setItem(voteKey, type);
     }
 
