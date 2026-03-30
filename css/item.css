@@ -634,7 +634,7 @@ flex: 1;
 }
 .comment-reactions {
 display: flex;
-gap: 15px;
+gap: 8px;
     font-size: 18px;
     position: absolute;
     bottom: -24px;
