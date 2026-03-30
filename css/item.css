@@ -1146,7 +1146,6 @@ button.voted {
 
 
 input, select, button {
-      display: none;
 border: none;
     outline: none;
     font-family: "Rubik", sans-serif;
