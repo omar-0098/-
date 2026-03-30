@@ -640,16 +640,16 @@ gap: 15px;
     bottom: -24px;
 }
 .comment-reactions button {
-      font-family: 'Readex Pro';
-background: none;
+font-family: 'Readex Pro';
+    background: none;
     border: none;
     cursor: pointer;
-    font-size: 18px;
-color: #886364;
+    font-size: 16px;
+    color: #886364;
     transition: transform 0.1s;
     display: flex;
     align-items: center;
-    width: 40px;
+    width: 52px;
     gap: 0.3rem;
 }
 .comment-reactions button:hover {
