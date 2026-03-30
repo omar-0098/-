@@ -702,6 +702,28 @@ font-family: 'Readex Pro';
 
 
 @media (max-width:500px) {
+  .comment-reactions {
+        display: flex;
+        gap: 10px !important;
+        font-size: 18px;
+        position: absolute;
+        bottom: -22px !important;
+        right: 7px !important;
+    }
+.comment-reactions button {
+    font-family: 'Readex Pro';
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    color: #886364;
+    transition: transform 0.1s;
+    display: flex;
+    align-items: center;
+    /* width: 52px; */
+    gap: 0.3rem;
+    padding: 6px 9px;
+}
     body {
         padding-top: 135px;
     }
