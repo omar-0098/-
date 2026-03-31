@@ -614,7 +614,7 @@ window.postComment = async function () {
   if (text.length > 500) { showToast("التعليق طويل جداً (500 حرف كحد أقصى)", "error"); return; }
 
   isPosting = true;
-  if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = "جاري النشر..."; }
+  if (submitBtn) { submitBtn.disabled = true; submitBtn.textContent = "  جاري ..."; }
 
   const email     = getCurrentUserEmail();
   let   userPhoto = getCurrentUserPhoto();
