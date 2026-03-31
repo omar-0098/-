@@ -481,20 +481,21 @@ function loadComments() {
     snapshot.forEach((child) => freshComments.push({ id: child.key, ...child.val() }));
     freshComments.sort((a, b) => (b.createdAt || 0) - (a.createdAt || 0));
 
-    const freshIds      = new Set(freshComments.map(c => c.id));
+    // هل في كومنتس جديدة (IDs مش موجودة قبل)؟
+    const freshIds    = new Set(freshComments.map(c => c.id));
     const hasNewComment = [...freshIds].some(id => !knownIds.has(id));
     const hasDeleted    = [...knownIds].some(id => !freshIds.has(id));
 
-    // حدّث allComments دايماً
+    // حدّث allComments دايماً عشان الأرقام تبقى صح
     allComments = freshComments;
 
     if (hasNewComment || hasDeleted) {
-      // كومنت جديد أو محذوف → حدّث knownIds وارفع visibleCount وعمل render
-      knownIds     = new Set(freshIds); // نسخة جديدة دايماً
-      visibleCount = allComments.length; // اعرض كل الكومنتس الموجودة
+      // في كومنت جديد أو محذوف → re-render كامل
+      knownIds     = new Set(freshIds); // نسخة جديدة مستقلة دايماً
+      visibleCount = allComments.length; // اعرض كل الكومنتس
       renderComments();
     } else {
-      // بس likes/dislikes اتغيرت → حدّث الأرقام في الـ DOM من غير re-render
+      // بس الـ likes/dislikes اتغيرت → حدّث الأرقام في الـ DOM مباشرةً بدون re-render
       allComments.forEach(c => {
         const card = document.querySelector(`[data-comment-id="${c.id}"]`);
         if (!card) return;
