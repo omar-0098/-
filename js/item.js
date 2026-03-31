@@ -4,8 +4,6 @@
 // ============================================================
 
 import { initializeApp }   from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-import { getStorage, ref as sRef, uploadBytes, getDownloadURL }
-                            from "https://www.gstatic.com/firebasejs/10.12.0/firebase-storage.js";
 import {
   getDatabase, ref, push, set, get, onValue, update
 } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
@@ -21,9 +19,8 @@ const firebaseConfig = {
   appId:             "1:398522341614:web:99e0f897c61ec960cffbff"
 };
 
-const app     = initializeApp(firebaseConfig);
-const db      = getDatabase(app);
-const storage = getStorage(app);
+const app = initializeApp(firebaseConfig);
+const db  = getDatabase(app);
 
 // ─── حقن CSS الأنيميشن ───────────────────────────────────────
 (function injectStyles() {
@@ -178,18 +175,15 @@ async function fetchUserPhoto(email) {
   } catch { return ""; }
 }
 
-// رفع صورة base64 قديمة على Storage تلقائياً
-(async function syncPhotoToStorage() {
-  const email      = getCurrentUserEmail();
-  const localPhoto = getCurrentUserPhoto();
-  if (!email || !localPhoto || localPhoto.startsWith("https://")) return;
+// جيب صورة البروفايل من Database وحدّث localStorage
+(async function loadPhotoFromDB() {
+  const email = getCurrentUserEmail();
+  if (!email) return;
   try {
-    const blob = await (await fetch(localPhoto)).blob();
-    const sr   = sRef(storage, `profilePhotos/${emailKey(email)}`);
-    await uploadBytes(sr, blob);
-    const url = await getDownloadURL(sr);
-    await set(ref(db, `userPhotos/${emailKey(email)}`), url);
-    localStorage.setItem("kashmirProfileImg", url);
+    const snap = await get(ref(db, `userPhotos/${emailKey(email)}`));
+    if (snap.exists()) {
+      localStorage.setItem("kashmirProfileImg", snap.val());
+    }
   } catch { /* silent */ }
 })();
 
@@ -491,8 +485,9 @@ function loadComments() {
 
     if (hasNewComment || hasDeleted) {
       // في كومنت جديد أو محذوف → re-render كامل
-      knownIds     = new Set(freshIds); // نسخة جديدة مستقلة دايماً
-      visibleCount = allComments.length; // اعرض كل الكومنتس
+      knownIds = freshIds;
+      // لو الكومنت الجديد هو بتاعنا → اعرضه حتى لو visibleCount صغير
+      visibleCount = Math.max(visibleCount, allComments.length);
       renderComments();
     } else {
       // بس الـ likes/dislikes اتغيرت → حدّث الأرقام في الـ DOM مباشرةً بدون re-render
