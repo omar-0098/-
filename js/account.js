@@ -124,9 +124,56 @@ document.getElementById("deleteAccountBtn")?.addEventListener("click",()=>toast(
 
 // profile pic
 const fileInput=document.getElementById("fileInput"),pi=document.getElementById("profileImage"),ico=document.getElementById("icon_person");
-const si=localStorage.getItem("kashmirProfileImg");
-if(si&&pi&&ico){pi.src=si;pi.style.display="block";ico.style.display="none";}
-fileInput?.addEventListener("change",(e)=>{const file=e.target.files[0];if(!file)return;const r=new FileReader();r.onload=(ev)=>{pi.src=ev.target.result;pi.style.display="block";ico.style.display="none";localStorage.setItem("kashmirProfileImg",ev.target.result);};r.readAsDataURL(file);});
+
+// عرض الصورة الموجودة
+function showSavedPhoto(url){if(!url||!pi||!ico)return;pi.src=url;pi.style.display="block";ico.style.display="none";}
+
+// جيب الصورة من Database أولاً، وإلا من localStorage
+(async function loadSavedPhoto(){
+  const email=localStorage.getItem("kashmirSessionEmail");
+  if(email){
+    try{
+      const snap=await get(ref(db,`userPhotos/${eKey(email)}`));
+      if(snap.exists()){
+        const url=snap.val();
+        localStorage.setItem("kashmirProfileImg",url);
+        showSavedPhoto(url);
+        return;
+      }
+    }catch(e){}
+  }
+  // fallback: localStorage
+  const saved=localStorage.getItem("kashmirProfileImg");
+  if(saved) showSavedPhoto(saved);
+})();
+
+// لما يختار صورة → احفظها في Database كـ base64 مباشرةً (بدون Storage - بدون CORS)
+fileInput?.addEventListener("change",(e)=>{
+  const file=e.target.files[0];
+  if(!file)return;
+  // حجم الصورة أقل من 500KB عشان تتحفظ في Database
+  if(file.size > 500*1024){toast("❌ الصورة كبيرة جداً — اختر صورة أقل من 500KB","error");return;}
+  const r=new FileReader();
+  r.onload=async(ev)=>{
+    const base64=ev.target.result;
+    // عرض فوري
+    if(pi){pi.src=base64;pi.style.display="block";}
+    if(ico){ico.style.display="none";}
+    localStorage.setItem("kashmirProfileImg",base64);
+    // حفظ في Database
+    const email=localStorage.getItem("kashmirSessionEmail");
+    if(email){
+      try{
+        await set(ref(db,`userPhotos/${eKey(email)}`),base64);
+        toast("✅ تم حفظ الصورة","success");
+      }catch(err){
+        toast("❌ خطأ في حفظ الصورة","error");
+        console.error(err);
+      }
+    }
+  };
+  r.readAsDataURL(file);
+});
 
 // init
 // (async function(){
